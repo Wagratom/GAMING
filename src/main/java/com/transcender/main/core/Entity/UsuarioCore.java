@@ -32,7 +32,7 @@ public class UsuarioCore {
     public String getSenha() { return senha; }
     public String getNickname() { return nickname; }
     public String getTelefone() { return telefone; }
-    public boolean isOnline() { return online; }
+    public boolean getOnline() { return online; }
     public Instant getCriadoEm() { return criadoEm; }
     public Instant getAtualizadoEm() { return atualizadoEm; }
 

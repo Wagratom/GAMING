@@ -8,8 +8,10 @@ import com.transcender.main.core.port.in.UserPortIn;
 import com.transcender.main.core.port.out.EncryptPortOut;
 import com.transcender.main.core.port.out.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.ObjectError;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserApplication implements UserPortIn {
     private final UserRepository userRepository;
@@ -21,14 +23,30 @@ public class UserApplication implements UserPortIn {
         this.encryptPortOut = encryptPortOut;
     }
 
+
     @Override
-    public UsuarioCore getUser(Long userId) {
+    public UsuarioCore getUserById(Long userId) {
         if (userId <= 0) {
             throw new BadRequest("Id do usuario não pode ser negativo");
         }
         return this.userRepository.getUserById(userId)
                 .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
     }
+
+    @Override
+    public List<Map<String, Object>> getUsersOnlines() {
+        return userRepository.getUsersOnlines()
+                .orElse(Collections.emptyList()) // Desempacota o Optional
+                .stream()
+                .map(user -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("nickname", user.getNickname()); // Verifique se esse método existe
+                    map.put("online", user.getOnline()); // E esse também
+                    return map;
+                })
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public UsuarioCore getProfile(UsuarioCore login) {
