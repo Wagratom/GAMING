@@ -3,14 +3,17 @@ package com.transcender.main.core.port.in;
 import com.transcender.main.core.Entity.ChatCore;
 import com.transcender.main.core.Entity.UsuarioCore;
 
+import java.util.List;
+import java.util.Map;
+
 public interface ChatPort {
-    void getChat(Long chatID);
-    void createChat(ChatCore chart);
-    void deletarChat(UsuarioCore user);
-    void updateChat(UsuarioCore user);
+    ChatCore getChat(Long chatID);
+    ChatCore createChat(ChatCore chart);
+    ChatCore updateChat(ChatCore user);
+    boolean deleteChat(Long chatId, Long userId);
 
-
-    void addUsuarioChat(Long chatId, UsuarioCore usuario);
-    void bloquearUsuarioChat(Long chatId, UsuarioCore usuario);
-    void banirUsuarioChat(Long chatId, UsuarioCore usuario);
+    List<ChatCore> getAllChats();
+    boolean addUsuarioChat(Long chatId, UsuarioCore usuario);
+    boolean bloquearUsuarioChat(Long chatId, UsuarioCore usuario);
+    boolean banirUsuarioChat(Long chatId, UsuarioCore usuario);
 }
