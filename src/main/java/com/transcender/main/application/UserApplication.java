@@ -6,9 +6,9 @@ import com.transcender.main.core.exceptions.ResourceNotFound;
 import com.transcender.main.core.exceptions.Unauthorized;
 import com.transcender.main.core.port.in.UserPortIn;
 import com.transcender.main.core.port.out.EncryptPortOut;
+import com.transcender.main.core.port.out.TokenGeneratorPort;
 import com.transcender.main.core.port.out.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.ObjectError;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,13 +16,14 @@ import java.util.stream.Collectors;
 public class UserApplication implements UserPortIn {
     private final UserRepository userRepository;
     private final EncryptPortOut encryptPortOut;
+    private final TokenGeneratorPort tokenGeneratorPort;
 
     @Autowired
-    UserApplication(UserRepository userRepository, EncryptPortOut encryptPortOut) {
+    UserApplication(UserRepository userRepository, EncryptPortOut encryptPortOut, TokenGeneratorPort tokenGeneratorPort) {
         this.userRepository = userRepository;
         this.encryptPortOut = encryptPortOut;
+        this.tokenGeneratorPort = tokenGeneratorPort;
     }
-
 
     @Override
     public UsuarioCore getUserById(Long userId) {
@@ -47,16 +48,23 @@ public class UserApplication implements UserPortIn {
                 .collect(Collectors.toList());
     }
 
-
     @Override
-    public UsuarioCore getProfile(UsuarioCore login) {
+    public Map<String, Object> getProfile(UsuarioCore login) {
         validateInputLogin(login);
 
-        return (login.getEmail() != null
+        Optional<UsuarioCore> user = login.getEmail() != null
                 ? this.userRepository.getUserByEmail(login.getEmail())
-                : this.userRepository.getUserByNickname(login.getNickname()))
-                .filter(user -> this.encryptPortOut.checkPassword(login.getSenha(), user.getSenha()))
-                .orElseThrow(() -> new Unauthorized("Login inválido"));
+                : this.userRepository.getUserByNickname(login.getNickname());
+
+        if (user.isEmpty()) throw new Unauthorized("Usuário não encontrado");
+
+        if (encryptPortOut.checkPassword(login.getSenha(), user.get().getSenha())) {
+            throw new Unauthorized("Login e senha inválidos");
+        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", user.get());
+        response.put("access_token", tokenGeneratorPort.generateToken(user.get()));
+        return response;
     }
 
     @Override

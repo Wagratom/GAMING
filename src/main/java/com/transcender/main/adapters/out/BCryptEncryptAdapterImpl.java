@@ -3,7 +3,7 @@ package com.transcender.main.adapters.out;
 import com.transcender.main.core.port.out.EncryptPortOut;
 import org.mindrot.jbcrypt.BCrypt;
 
-public class BCryptEncryptAdapter implements EncryptPortOut {
+public class BCryptEncryptAdapterImpl implements EncryptPortOut {
 
     @Override
     public String encryptPassword(String password) {
