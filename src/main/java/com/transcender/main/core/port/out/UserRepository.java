@@ -9,7 +9,7 @@ public interface UserRepository {
     Optional<UsuarioCore> getUserById(Long userId);
     Optional<UsuarioCore> getUserByEmail(String email);
     Optional<UsuarioCore> getUserByNickname(String nickname);
-    Optional<List<UsuarioCore>> getUsersOnlines();
+    List<UsuarioCore> getUsersOnlines();
 
     UsuarioCore createUser(UsuarioCore user);
     boolean deleteUser(Long userId);

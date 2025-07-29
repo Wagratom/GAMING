@@ -4,7 +4,7 @@ import com.transcender.main.core.Entity.UsuarioCore;
 import com.transcender.main.core.port.out.TokenGeneratorPort;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
