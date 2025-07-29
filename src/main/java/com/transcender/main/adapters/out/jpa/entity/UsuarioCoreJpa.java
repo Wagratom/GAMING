@@ -29,6 +29,10 @@ public class UsuarioCoreJpa {
     @Column(nullable = false)
     private boolean online;
 
+    @Column(nullable = true)
+    private boolean ative;
+
+
     @CreationTimestamp
     @Column(name = "criado_em", updatable = false)
     private Instant criadoEm;
@@ -58,6 +62,7 @@ public class UsuarioCoreJpa {
     public String getNickname() { return nickname; }
     public String getTelefone() { return telefone; }
     public boolean getOnline() { return online; }
+    public boolean getAtive() { return ative; }
     public Instant getCriadoEm() { return criadoEm; }
     public Instant getAtualizadoEm() { return atualizadoEm; }
 
@@ -68,6 +73,7 @@ public class UsuarioCoreJpa {
     public void setNickname(String nickname) { this.nickname = nickname; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
     public void setOnline(boolean online) { this.online = online; }
+    public void setAtive(boolean ative) { this.ative = ative; }
     public void setCriadoEm(Instant criadoEm) { this.criadoEm = criadoEm; }
     public void setAtualizadoEm(Instant atualizadoEm) { this.atualizadoEm = atualizadoEm; }
 }

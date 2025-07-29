@@ -9,6 +9,7 @@ public class UsuarioCore {
     private String nickname;
     private String telefone;
     private boolean online;
+    private boolean ative;
     private Instant criadoEm;
     private Instant atualizadoEm;
 
@@ -22,6 +23,7 @@ public class UsuarioCore {
         this.nickname = nickname;
         this.telefone = telefone;
         this.online = online;
+
         this.criadoEm = criadoEm;
         this.atualizadoEm = atualizadoEm;
     }
@@ -33,6 +35,7 @@ public class UsuarioCore {
     public String getNickname() { return nickname; }
     public String getTelefone() { return telefone; }
     public boolean getOnline() { return online; }
+    public boolean getAtive() { return ative; }
     public Instant getCriadoEm() { return criadoEm; }
     public Instant getAtualizadoEm() { return atualizadoEm; }
 
@@ -43,6 +46,7 @@ public class UsuarioCore {
     public void setNickname(String nickname) { this.nickname = nickname; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
     public void setOnline(boolean online) { this.online = online; }
+    public void setAtive(boolean ative) { this.ative = ative; }
     public void setCriadoEm(Instant criadoEm) { this.criadoEm = criadoEm; }
     public void setAtualizadoEm(Instant atualizadoEm) { this.atualizadoEm = atualizadoEm; }
 }
