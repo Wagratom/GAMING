@@ -9,11 +9,13 @@ import com.transcender.main.core.port.in.ChatPort;
 import com.transcender.main.core.port.out.ChatRepository;
 import com.transcender.main.core.port.out.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
+@Service
 public class ChatApplication implements ChatPort {
 
     private final ChatRepository chatRepository;
@@ -48,6 +50,7 @@ public class ChatApplication implements ChatPort {
         userRepository.getUserById(chat.getChatOwner())
                 .orElseThrow(() -> new ResourceNotFound("Usuário", chat.getChatOwner()));
 
+        chat.setId(null);
         return chatRepository.createChat(chat);
     }
 

@@ -9,10 +9,12 @@ import com.transcender.main.core.port.out.EncryptPortOut;
 import com.transcender.main.core.port.out.TokenGeneratorPort;
 import com.transcender.main.core.port.out.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class UserApplication implements UserPortIn {
     private final UserRepository userRepository;
     private final EncryptPortOut encryptPortOut;
