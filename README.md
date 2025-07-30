@@ -193,7 +193,7 @@ Iremos utilizar **GitHub Workflows** para facilitar a integração contínua ent
 
 ---
 
-## ✅Arquitetura
+## ✅Arquitetura Hexagonal
 - [ ] spring-boot
   - [ ] adapters
     - [ ] entrada (driven)
