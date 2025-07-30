@@ -29,9 +29,9 @@ Cada entrega representará uma **feature funcional e testada**, mantendo o escop
 
 ---
 
-## 📦 Estrutura Base + Módulo de Usuários
+# 📦 Estrutura Base + Módulo de Usuários
 
-### ✅ Serviços
+## ✅ Serviços
 
 Abaixo, os serviços previstos para o servidor do jogo. A lista será marcada conforme o desenvolvimento avança.
 
@@ -177,7 +177,20 @@ Abaixo, os serviços previstos para o servidor do jogo. A lista será marcada co
 
 ---
 
-### ✅ Serviços
+## ✅ CI/CD – Integração e Entrega Contínua
+
+> Automatização do ciclo de build, testes e deploy com **GitHub Actions**.
+
+Iremos utilizar **GitHub Workflows** para facilitar a integração contínua entre branches e o deploy automático do servidor.
+
+- [ ] **(branch → `developer`)**
+  - Executar testes unitários
+  - Criar automaticamente um Pull Request para a branch `developer`
+
+- [ ] **(developer → `main`)**
+  - Compilar aplicação
+  - Realizar deploy automático para uma instância **EC2 Free Tier na AWS**
+
 
 ---
 ## 📚 Licença
