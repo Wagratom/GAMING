@@ -1,6 +1,6 @@
 package com.transcender.main.domain.Entity;
 
-import com.transcender.main.domain.exceptions.ChatArgumentInvalid;
+import com.transcender.main.domain.exceptions.UsuarioArgumentInvalid;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -20,8 +20,9 @@ public class ChatCore {
     // Construtor de criação com validações e inicialização de admins
     public ChatCore(String chatName, Long chatOwner, String type, String descricao, Set<Long> adms) {
         validate(chatName, descricao, type);
-        if (chatOwner == null || chatOwner <= 0)
-            throw new ChatArgumentInvalid("Id do proprietário inválido");
+        if (chatOwner == null || chatOwner <= 0) {
+            throw new UsuarioArgumentInvalid("Id do proprietário inválido");
+        }
 
         this.chatName = chatName;
         this.chatOwner = chatOwner;
@@ -35,6 +36,11 @@ public class ChatCore {
     // Construtor restrito para reconstrução a partir do banco de dados
     ChatCore(Long id, String chatName, Long chatOwner, String type, String descricao,
              Instant criadoEm, Instant atualizadoEm, Set<Long> adms) {
+
+        if (id == null || id <= 0) {
+            throw new UsuarioArgumentInvalid("Id inválido");
+        }
+
         this.id = id;
         this.chatName = chatName;
         this.chatOwner = chatOwner;
@@ -46,16 +52,20 @@ public class ChatCore {
     }
 
     private void validate(String chatName, String descricao, String type) {
-        if (chatName == null || chatName.trim().isEmpty())
-            throw new ChatArgumentInvalid("Nome do chat não pode estar vazio");
-        if (chatName.length() > 10)
-            throw new ChatArgumentInvalid("Nome do chat deve ter no máximo 10 caracteres");
+        if (chatName == null || chatName.trim().isEmpty()) {
+            throw new UsuarioArgumentInvalid("Nome do chat não pode estar vazio");
+        }
+        if (chatName.length() > 10){
+            throw new UsuarioArgumentInvalid("Nome do chat deve ter no máximo 10 caracteres");
+        }
 
-        if (descricao != null && descricao.length() > 100)
-            throw new ChatArgumentInvalid("Descrição deve ter no máximo 100 caracteres");
+        if (descricao != null && descricao.length() > 100) {
+            throw new UsuarioArgumentInvalid("Descrição deve ter no máximo 100 caracteres");
+        }
 
-        if (!"PUBLIC".equals(type) && !"PROTECT".equals(type) && !"PRIVATE".equals(type))
-            throw new ChatArgumentInvalid("Tipo de chat inválido");
+        if (!"PUBLIC".equals(type) && !"PROTECT".equals(type) && !"PRIVATE".equals(type)) {
+            throw new UsuarioArgumentInvalid("Tipo de chat inválido");
+        }
     }
 
     public void update(String nome, String descricao, String type, Long solicitanteId) {
@@ -69,7 +79,7 @@ public class ChatCore {
 
     private void hasPermissionUpdate(Long solicitanteId) {
         if (!verificarProprietario(solicitanteId) && !verificarAdm(solicitanteId)) {
-            throw new ChatArgumentInvalid("Usuário não possui permissão para atualizar o chat");
+            throw new UsuarioArgumentInvalid("Usuário não possui permissão para atualizar o chat");
         }
     }
 
