@@ -1,20 +1,21 @@
 package com.transcender.main.adapters.out.jpa;
 
 import com.transcender.main.adapters.out.jpa.entity.UsuarioCoreJpa;
-import com.transcender.main.adapters.out.jpa.repository.UserRepositoryImpl;
+import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.core.Entity.UsuarioCore;
-import com.transcender.main.core.port.out.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class UserRepositoryImplMethod implements UserRepository {
-    private final UserRepositoryImpl userRepository;
+@Component
+public class UserRepositoryAdapter implements com.transcender.main.core.port.out.UserRepository {
+    private final UserRepository userRepository;
 
     @Autowired
-    UserRepositoryImplMethod(UserRepositoryImpl usuarioRepository) {
+    UserRepositoryAdapter(UserRepository usuarioRepository) {
         this.userRepository = usuarioRepository;
     }
 
@@ -35,7 +36,7 @@ public class UserRepositoryImplMethod implements UserRepository {
 
     @Override
     public List<UsuarioCore> getUsersOnlines() {
-        return userRepository.findByOnlineTrueAndAtivosTrue()
+        return userRepository.findByOnlineTrueAndAtiveTrue()
                 .stream()
                 .map(this::toUsuarioCore)
                 .collect(Collectors.toList());

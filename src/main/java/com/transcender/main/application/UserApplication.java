@@ -39,7 +39,6 @@ public class UserApplication implements UserPortIn {
     @Override
     public List<Map<String, Object>> getUsersOnlines() {
         return userRepository.getUsersOnlines()
-                .orElse(Collections.emptyList()) // Desempacota o Optional
                 .stream()
                 .map(user -> {
                     Map<String, Object> map = new HashMap<>();

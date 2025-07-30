@@ -97,8 +97,7 @@ public class ChatApplication implements ChatPort {
 
     @Override
     public List<ChatCore> getAllChats() {
-        return chatRepository.getAllChats()
-                .orElse(Collections.emptyList());
+        return chatRepository.getAllChats();
     }
 
     @Override

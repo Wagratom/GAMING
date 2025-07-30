@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ChatRepositoryImpl extends JpaRepository<ChatCoreJpa, Long> {
+public interface ChatRepository extends JpaRepository<ChatCoreJpa, Long> {
     // Aqui você já tem todos os métodos básicos (save, findById, delete, etc)
 }

@@ -2,7 +2,9 @@ package com.transcender.main.adapters.out;
 
 import com.transcender.main.core.port.out.EncryptPortOut;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BCryptEncryptAdapterImpl implements EncryptPortOut {
 
     @Override
