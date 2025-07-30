@@ -1,6 +1,6 @@
 package com.transcender.main.adapters.out;
 
-import com.transcender.main.core.port.out.EncryptPortOut;
+import com.transcender.main.domain.port.out.EncryptPortOut;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 

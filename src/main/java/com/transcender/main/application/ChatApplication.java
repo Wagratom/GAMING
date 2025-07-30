@@ -1,18 +1,17 @@
 package com.transcender.main.application;
 
-import com.transcender.main.core.Entity.ChatCore;
-import com.transcender.main.core.Entity.UsuarioCore;
-import com.transcender.main.core.exceptions.BadRequest;
-import com.transcender.main.core.exceptions.Forbidden;
-import com.transcender.main.core.exceptions.ResourceNotFound;
-import com.transcender.main.core.port.in.ChatPort;
-import com.transcender.main.core.port.out.ChatRepository;
-import com.transcender.main.core.port.out.UserRepository;
+import com.transcender.main.domain.Entity.ChatCore;
+import com.transcender.main.domain.Entity.UsuarioCore;
+import com.transcender.main.domain.exceptions.BadRequest;
+import com.transcender.main.domain.exceptions.Forbidden;
+import com.transcender.main.domain.exceptions.ResourceNotFound;
+import com.transcender.main.domain.port.in.ChatPort;
+import com.transcender.main.domain.port.out.ChatRepository;
+import com.transcender.main.domain.port.out.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 
 @Service

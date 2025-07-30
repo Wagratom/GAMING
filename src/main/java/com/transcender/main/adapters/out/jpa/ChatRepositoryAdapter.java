@@ -2,7 +2,7 @@ package com.transcender.main.adapters.out.jpa;
 
 import com.transcender.main.adapters.out.jpa.entity.ChatCoreJpa;
 import com.transcender.main.adapters.out.jpa.repository.ChatRepository;
-import com.transcender.main.core.Entity.ChatCore;
+import com.transcender.main.domain.Entity.ChatCore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class ChatRepositoryAdapter implements com.transcender.main.core.port.out.ChatRepository {
+public class ChatRepositoryAdapter implements com.transcender.main.domain.port.out.ChatRepository {
     private final ChatRepository chatRepository;
 
     @Autowired

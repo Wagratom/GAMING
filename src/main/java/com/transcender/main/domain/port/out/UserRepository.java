@@ -1,6 +1,6 @@
-package com.transcender.main.core.port.out;
+package com.transcender.main.domain.port.out;
 
-import com.transcender.main.core.Entity.UsuarioCore;
+import com.transcender.main.domain.Entity.UsuarioCore;
 
 import java.util.List;
 import java.util.Optional;

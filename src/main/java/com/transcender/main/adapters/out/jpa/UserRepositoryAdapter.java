@@ -2,7 +2,7 @@ package com.transcender.main.adapters.out.jpa;
 
 import com.transcender.main.adapters.out.jpa.entity.UsuarioCoreJpa;
 import com.transcender.main.adapters.out.jpa.repository.UserRepository;
-import com.transcender.main.core.Entity.UsuarioCore;
+import com.transcender.main.domain.Entity.UsuarioCore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class UserRepositoryAdapter implements com.transcender.main.core.port.out.UserRepository {
+public class UserRepositoryAdapter implements com.transcender.main.domain.port.out.UserRepository {
     private final UserRepository userRepository;
 
     @Autowired

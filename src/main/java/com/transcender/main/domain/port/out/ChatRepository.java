@@ -1,6 +1,6 @@
-package com.transcender.main.core.port.out;
+package com.transcender.main.domain.port.out;
 
-import com.transcender.main.core.Entity.ChatCore;
+import com.transcender.main.domain.Entity.ChatCore;
 
 import java.util.List;
 import java.util.Optional;

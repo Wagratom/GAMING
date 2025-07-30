@@ -1,10 +1,9 @@
-package com.transcender.main.core.port.in;
+package com.transcender.main.domain.port.in;
 
-import com.transcender.main.core.Entity.UsuarioCore;
+import com.transcender.main.domain.Entity.UsuarioCore;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface UserPortIn {
     UsuarioCore getUserById(Long userId);

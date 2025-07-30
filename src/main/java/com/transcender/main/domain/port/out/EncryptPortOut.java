@@ -1,4 +1,4 @@
-package com.transcender.main.core.port.out;
+package com.transcender.main.domain.port.out;
 
 public interface EncryptPortOut {
     String encryptPassword(String password);

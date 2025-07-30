@@ -1,4 +1,4 @@
-package com.transcender.main.core.exceptions;
+package com.transcender.main.domain.exceptions;
 
 public class BadRequest extends RuntimeException {
     public BadRequest(String message) {

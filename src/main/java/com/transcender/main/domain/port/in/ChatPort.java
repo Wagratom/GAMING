@@ -1,10 +1,9 @@
-package com.transcender.main.core.port.in;
+package com.transcender.main.domain.port.in;
 
-import com.transcender.main.core.Entity.ChatCore;
-import com.transcender.main.core.Entity.UsuarioCore;
+import com.transcender.main.domain.Entity.ChatCore;
+import com.transcender.main.domain.Entity.UsuarioCore;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ChatPort {
     ChatCore getChat(Long chatID);

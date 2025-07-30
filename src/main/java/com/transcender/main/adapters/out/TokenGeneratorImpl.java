@@ -1,7 +1,7 @@
 package com.transcender.main.adapters.out;
 
-import com.transcender.main.core.Entity.UsuarioCore;
-import com.transcender.main.core.port.out.TokenGeneratorPort;
+import com.transcender.main.domain.Entity.UsuarioCore;
+import com.transcender.main.domain.port.out.TokenGeneratorPort;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;

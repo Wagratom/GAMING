@@ -1,13 +1,13 @@
 package com.transcender.main.application;
 
-import com.transcender.main.core.Entity.UsuarioCore;
-import com.transcender.main.core.exceptions.BadRequest;
-import com.transcender.main.core.exceptions.ResourceNotFound;
-import com.transcender.main.core.exceptions.Unauthorized;
-import com.transcender.main.core.port.in.UserPortIn;
-import com.transcender.main.core.port.out.EncryptPortOut;
-import com.transcender.main.core.port.out.TokenGeneratorPort;
-import com.transcender.main.core.port.out.UserRepository;
+import com.transcender.main.domain.Entity.UsuarioCore;
+import com.transcender.main.domain.exceptions.BadRequest;
+import com.transcender.main.domain.exceptions.ResourceNotFound;
+import com.transcender.main.domain.exceptions.Unauthorized;
+import com.transcender.main.domain.port.in.UserPortIn;
+import com.transcender.main.domain.port.out.EncryptPortOut;
+import com.transcender.main.domain.port.out.TokenGeneratorPort;
+import com.transcender.main.domain.port.out.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
