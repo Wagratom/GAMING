@@ -191,6 +191,31 @@ Iremos utilizar **GitHub Workflows** para facilitar a integração contínua ent
   - Compilar aplicação
   - Realizar deploy automático para uma instância **EC2 Free Tier na AWS**
 
+---
+
+## ✅Arquitetura
+- [ ] spring-boot
+  - [ ] adapters
+    - [ ] entrada (driven)
+      - [ ] API REST (controllers)
+      - [ ] WebSocket
+    - [ ] saída (driving)
+      - [ ] Banco de dados (JPA, Repositórios)
+      - [ ] Criptografia (ex: BCrypt)
+      - [ ] Autenticação (ex: JWT, OAuth)
+      - [ ] Mensageria (ex: Kafka, opcional)
+  - [ ] application
+    - [ ] Serviços (Use Cases de negócio)
+    - [ ] chat
+    - [ ] usuarios
+    - [ ] partidas
+  - [ ] domain
+    - [ ] Entidades
+    - [ ] Value Objects
+    - [ ] Portas (Interfaces)
+    - [ ] Regras de negócio
+    - [ ] Exceptions
+
 
 ---
 ## 📚 Licença
