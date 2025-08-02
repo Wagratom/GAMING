@@ -4,6 +4,7 @@ import com.transcender.main.domain.Entity.UsuarioCore;
 import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.exceptions.ResourceNotFound;
 import com.transcender.main.domain.exceptions.Unauthorized;
+import com.transcender.main.domain.exceptions.UsuarioArgumentInvalid;
 import com.transcender.main.domain.port.in.UserPortIn;
 import com.transcender.main.domain.port.out.EncryptPortOut;
 import com.transcender.main.domain.port.out.TokenGeneratorPort;
@@ -29,9 +30,8 @@ public class UserApplication implements UserPortIn {
 
     @Override
     public UsuarioCore getUserById(Long userId) {
-        if (userId <= 0) {
-            throw new BadRequest("Id do usuario não pode ser negativo");
-        }
+        if (userId <= 0) throw new BadRequest("Id do usuario não pode ser negativo");
+
         return this.userRepository.getUserById(userId)
                 .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
     }
@@ -51,8 +51,6 @@ public class UserApplication implements UserPortIn {
 
     @Override
     public Map<String, Object> getProfile(UsuarioCore login) {
-        validateInputLogin(login);
-
         Optional<UsuarioCore> user = login.getEmail() != null
                 ? this.userRepository.getUserByEmail(login.getEmail())
                 : this.userRepository.getUserByNickname(login.getNickname());
@@ -70,44 +68,29 @@ public class UserApplication implements UserPortIn {
 
     @Override
     public UsuarioCore registerUser(UsuarioCore user) {
-        validateUserForCreate(user); // valida os dados do usuário
-        user.setSenha(this.encryptPortOut.encryptPassword(user.getSenha())); // criptografa a senha
+        user.validateCreateUser();
+        user.setAtive(true);
+        user.setSenha(this.encryptPortOut.encryptPassword(user.getSenha()));
         return this.userRepository.createUser(user); // salva no banco
     }
 
     @Override
-    public UsuarioCore updateUser(UsuarioCore userUpdate) {
-        if (userUpdate.getId() == null || userUpdate.getId() <= 0) throw new BadRequest("Id inválido");
+    public UsuarioCore updateUser(String newNickname, Long userId ) {
+        if (userId == null || userId <= 0) throw new BadRequest("Id inválido: deve ser positivo");
+        if (newNickname == null || newNickname.trim().isEmpty()) throw new BadRequest("Nickname empty");
 
-        UsuarioCore oldUser = userRepository.getUserById(userUpdate.getId())
-                .orElseThrow(() -> new ResourceNotFound("Usuario", userUpdate.getId()));
+        UsuarioCore oldUser = userRepository
+                .getUserById(userId)
+                .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
 
-        if (isBlank(userUpdate.getSenha())) {
-            userUpdate.setSenha(oldUser.getSenha());
-        } else {
-            userUpdate.setSenha(encryptPortOut.encryptPassword(userUpdate.getSenha()));
-        }
-        return userRepository.updateUser(userUpdate);
+        oldUser.setNickname(newNickname);
+        return userRepository.updateUser(oldUser);
     }
 
     @Override
     public void deleteUser(Long userId) {
         if (userId == null || userId <= 0) throw new BadRequest("Id do usuario deve ser positivo");
         this.userRepository.deleteUser(userId); //deleta o usuario
-    }
-
-    public void validateInputLogin(UsuarioCore user) {
-        if (user == null) throw new BadRequest("Usuario nulo, nenhum dado recebido");
-        if (isBlank(user.getNickname()) && isBlank(user.getEmail())) throw new BadRequest("Login inválido: nickname ou email deve ser enviado.");
-        if (isBlank(user.getSenha())) throw new BadRequest("Senha inválida: senha deve ser enviada.");
-
-    }
-
-    public void validateUserForCreate(UsuarioCore user) {
-        if (user == null) throw new BadRequest("Usuário nulo");
-        if (isBlank(user.getEmail())) throw new BadRequest("Email inválido");
-        if (isBlank(user.getSenha())) throw new BadRequest("Senha inválida");
-        if (isBlank(user.getNickname())) throw new BadRequest("Nickname inválido");
     }
 
     public boolean isBlank(String value) {

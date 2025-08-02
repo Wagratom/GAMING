@@ -13,5 +13,5 @@ public interface UserPortIn {
     void deleteUser(Long userId);
 
     UsuarioCore registerUser(UsuarioCore user);
-    UsuarioCore updateUser(UsuarioCore user);
+    UsuarioCore updateUser(String newNickname, Long userId );
 }

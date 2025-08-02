@@ -1,22 +1,30 @@
 package com.transcender.main.adapters.out.jpa;
 
 import com.transcender.main.adapters.out.jpa.entity.ChatCoreJpa;
+import com.transcender.main.adapters.out.jpa.entity.UsuarioCoreJpa;
 import com.transcender.main.adapters.out.jpa.repository.ChatRepository;
+import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.domain.Entity.ChatCore;
+import com.transcender.main.domain.enuns.ChatType;
+import com.transcender.main.domain.enuns.PermitionChat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class ChatRepositoryAdapter implements com.transcender.main.domain.port.out.ChatRepository {
     private final ChatRepository chatRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    ChatRepositoryAdapter(ChatRepository chatRepository) {
+    ChatRepositoryAdapter(ChatRepository chatRepository, UserRepository userRepository) {
         this.chatRepository = chatRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -34,6 +42,7 @@ public class ChatRepositoryAdapter implements com.transcender.main.domain.port.o
     @Override
     public ChatCore updateChat(ChatCore chat) {
         ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
+
         return toChatCore(chatJpa);
     }
 
@@ -71,10 +80,11 @@ public class ChatRepositoryAdapter implements com.transcender.main.domain.port.o
     }
 
     public ChatCoreJpa toChatCoreJpa(ChatCore chat) {
+        UsuarioCoreJpa owner = userRepository.findById(chat.getChatOwner()).orElseThrow(() -> new RuntimeException("error"));
         ChatCoreJpa chatJpa = new ChatCoreJpa();
         chatJpa.setId(chat.getId());
         chatJpa.setChatName(chat.getChatName());
-        chatJpa.setChatOwner(chat.getChatOwner());
+        chatJpa.setOnwer(owner);
         chatJpa.setDescricao(chat.getDescricao());
         chatJpa.setCriadoEm(chat.getCriadoEm());
         chatJpa.setAtualizadoEm(chat.getAtualizadoEm());
@@ -82,13 +92,30 @@ public class ChatRepositoryAdapter implements com.transcender.main.domain.port.o
     }
 
     public ChatCore toChatCore(ChatCoreJpa chatJpa) {
+        Long id = chatJpa.getId();
+        String chatName = chatJpa.getChatName();
+        Long chatOwnerId = chatJpa.getOnwer().getId(); // conversão de entidade para ID
+        ChatType type = chatJpa.getType(); // enum → string
+        String descricao = chatJpa.getDescricao();
+        Instant criadoEm = chatJpa.getCriadoEm();
+        Instant atualizadoEm = chatJpa.getAtualizadoEm();
+
+        // Filtra usuários com permissão de ADMIN
+        Set<Long> adms = chatJpa.getUsuarios().stream()
+                .filter(u -> u.getPermitionChat() == PermitionChat.AMD)
+                .map(u -> u.getUsuario().getId())
+                .collect(Collectors.toSet());
+
         return new ChatCore(
-                chatJpa.getId(),
-                chatJpa.getChatName(),
-                chatJpa.getChatOwner(),
-                chatJpa.getDescricao(),
-                chatJpa.getCriadoEm(),
-                chatJpa.getAtualizadoEm()
+                id,
+                chatName,
+                chatOwnerId,
+                type,
+                descricao,
+                criadoEm,
+                atualizadoEm,
+                adms
         );
     }
+
 }

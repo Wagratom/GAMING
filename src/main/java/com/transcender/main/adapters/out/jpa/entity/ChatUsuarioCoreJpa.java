@@ -1,43 +1,41 @@
 package com.transcender.main.adapters.out.jpa.entity;
 
+import com.transcender.main.domain.enuns.PermitionChat;
+import com.transcender.main.domain.enuns.StatusChat;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.Instant;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "chat_usuarios")
+@IdClass(ChatUsuarioIdJpa.class)
 public class ChatUsuarioCoreJpa {
 
-    @EmbeddedId
-    private ChatUsuarioIdJpa id;
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "chat_id", nullable = false)
+    private ChatCoreJpa chat;
 
-    @Column(nullable = false)
-    private String status;
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private UsuarioCoreJpa usuario;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_chat", nullable = false, length = 10)
+    private StatusChat statusChat;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "permition_chat", nullable = false, length = 10)
+    private PermitionChat permitionChat;
 
     @Column(name = "entrou_em", nullable = false)
-    private Instant entrouEm;
+    private Instant entrouEm = Instant.now();
 
     @Column(name = "saiu_em")
     private Instant saiuEm;
-
-    public ChatUsuarioCoreJpa() {}
-
-    public ChatUsuarioCoreJpa(ChatUsuarioIdJpa id, String status, Instant entrouEm, Instant saiuEm) {
-        this.id = id;
-        this.status = status;
-        this.entrouEm = entrouEm;
-        this.saiuEm = saiuEm;
-    }
-
-    public ChatUsuarioIdJpa getId() { return id; }
-    public void setId(ChatUsuarioIdJpa id) { this.id = id; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public Instant getEntrouEm() { return entrouEm; }
-    public void setEntrouEm(Instant entrouEm) { this.entrouEm = entrouEm; }
-
-    public Instant getSaiuEm() { return saiuEm; }
-    public void setSaiuEm(Instant saiuEm) { this.saiuEm = saiuEm; }
 }
-

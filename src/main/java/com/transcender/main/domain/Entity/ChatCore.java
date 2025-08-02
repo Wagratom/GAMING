@@ -1,6 +1,7 @@
 package com.transcender.main.domain.Entity;
 
-import com.transcender.main.domain.exceptions.UsuarioArgumentInvalid;
+import com.transcender.main.domain.enuns.ChatType;
+import com.transcender.main.domain.exceptions.ChatArgumentInvalid;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -12,18 +13,13 @@ public class ChatCore {
     private String chatName;
     private Long chatOwner;
     private Set<Long> adms;
-    private String type;
+    private ChatType type;
     private String descricao;
     private Instant criadoEm;
     private Instant atualizadoEm;
 
     // Construtor de criação com validações e inicialização de admins
-    public ChatCore(String chatName, Long chatOwner, String type, String descricao, Set<Long> adms) {
-        validate(chatName, descricao, type);
-        if (chatOwner == null || chatOwner <= 0) {
-            throw new UsuarioArgumentInvalid("Id do proprietário inválido");
-        }
-
+    public ChatCore(String chatName, Long chatOwner, ChatType type, String descricao, Set<Long> adms) {
         this.chatName = chatName;
         this.chatOwner = chatOwner;
         this.type = type;
@@ -34,11 +30,11 @@ public class ChatCore {
     }
 
     // Construtor restrito para reconstrução a partir do banco de dados
-    ChatCore(Long id, String chatName, Long chatOwner, String type, String descricao,
+    public ChatCore(Long id, String chatName, Long chatOwner, ChatType type, String descricao,
              Instant criadoEm, Instant atualizadoEm, Set<Long> adms) {
 
         if (id == null || id <= 0) {
-            throw new UsuarioArgumentInvalid("Id inválido");
+            throw new ChatArgumentInvalid("Id inválido");
         }
 
         this.id = id;
@@ -51,35 +47,35 @@ public class ChatCore {
         this.adms = adms != null ? adms : new HashSet<>();
     }
 
-    private void validate(String chatName, String descricao, String type) {
+    public void validateCreateChat() {
         if (chatName == null || chatName.trim().isEmpty()) {
-            throw new UsuarioArgumentInvalid("Nome do chat não pode estar vazio");
+            throw new ChatArgumentInvalid("Nome do chat não pode estar vazio");
         }
         if (chatName.length() > 10){
-            throw new UsuarioArgumentInvalid("Nome do chat deve ter no máximo 10 caracteres");
+            throw new ChatArgumentInvalid("Nome do chat deve ter no máximo 10 caracteres");
         }
 
         if (descricao != null && descricao.length() > 100) {
-            throw new UsuarioArgumentInvalid("Descrição deve ter no máximo 100 caracteres");
+            throw new ChatArgumentInvalid("Descrição deve ter no máximo 100 caracteres");
         }
 
         if (!"PUBLIC".equals(type) && !"PROTECT".equals(type) && !"PRIVATE".equals(type)) {
-            throw new UsuarioArgumentInvalid("Tipo de chat inválido");
+            throw new ChatArgumentInvalid("Tipo de chat inválido");
+        }
+        if (chatOwner == null || chatOwner <= 0) {
+            throw new ChatArgumentInvalid("Id do proprietário inválido");
         }
     }
 
-    public void update(String nome, String descricao, String type, Long solicitanteId) {
+    public void validateUpdateChat(Long solicitanteId) {
+        if (solicitanteId == null || solicitanteId <= 0) throw new ChatArgumentInvalid("ID do solicitante inválido");
         hasPermissionUpdate(solicitanteId);
-        validate(nome, descricao, type);
-        this.chatName = nome;
-        this.descricao = descricao;
-        this.type = type;
-        this.atualizadoEm = Instant.now();
+        this.criadoEm = null;
     }
 
-    private void hasPermissionUpdate(Long solicitanteId) {
+    public void hasPermissionUpdate(Long solicitanteId) {
         if (!verificarProprietario(solicitanteId) && !verificarAdm(solicitanteId)) {
-            throw new UsuarioArgumentInvalid("Usuário não possui permissão para atualizar o chat");
+            throw new ChatArgumentInvalid("Usuário não possui permissão para atualizar o chat");
         }
     }
 
@@ -90,6 +86,47 @@ public class ChatCore {
     public boolean verificarAdm(Long solicitanteId) {
         return adms.contains(solicitanteId);
     }
+
+    public void updateChatName(String novoNome) {
+        if (novoNome == null || novoNome.trim().isEmpty()) {
+            throw new ChatArgumentInvalid("Nome do chat não pode estar vazio");
+        }
+        if (novoNome.length() > 10) {
+            throw new ChatArgumentInvalid("Nome do chat deve ter no máximo 10 caracteres");
+        }
+        this.chatName = novoNome;
+        this.atualizadoEm = Instant.now();
+    }
+
+    public void updateDescricao(String novaDescricao) {
+        if (novaDescricao != null && novaDescricao.length() > 100) {
+            throw new ChatArgumentInvalid("Descrição deve ter no máximo 100 caracteres");
+        }
+        this.descricao = novaDescricao;
+        this.atualizadoEm = Instant.now();
+    }
+
+    public void updateType(ChatType novoTipo) {
+        if ((novoTipo != ChatType.PRIVATE) && (novoTipo != ChatType.PROTECT) && (novoTipo != ChatType.PUBLIC)) {
+            throw new ChatArgumentInvalid("Tipo de chat inválido");
+        }
+        this.type = novoTipo;
+        this.atualizadoEm = Instant.now();
+    }
+
+    public void addAdm(Long userId) {
+        if (userId == null || userId <= 0) {
+            throw new ChatArgumentInvalid("ID de admin inválido");
+        }
+        this.adms.add(userId);
+        this.atualizadoEm = Instant.now();
+    }
+
+    public void removeAdm(Long userId) {
+        this.adms.remove(userId);
+        this.atualizadoEm = Instant.now();
+    }
+
 
     // Getters
     public Long getId() {
@@ -108,7 +145,7 @@ public class ChatCore {
         return new HashSet<>(adms); // retornando cópia defensiva
     }
 
-    public String getType() {
+    public ChatType getType() {
         return type;
     }
 

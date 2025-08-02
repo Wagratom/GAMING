@@ -28,8 +28,7 @@ public class ChatApplication implements ChatPort {
 
     @Override
     public ChatCore getChat(Long chatId) {
-        if (chatId == null || chatId <= 0)
-            throw new BadRequest("Id do chat inválido");
+        if (chatId == null || chatId <= 0) throw new BadRequest("Id do chat inválido");
 
         return chatRepository.findChatById(chatId)
                 .orElseThrow(() -> new ResourceNotFound("Chat", chatId));
@@ -37,20 +36,12 @@ public class ChatApplication implements ChatPort {
 
     @Override
     public ChatCore createChat(ChatCore chat) {
-        if (chat == null)
-            throw new BadRequest("Informações do chat não encontradas");
+       chat.validateCreateChat();
 
-        if (isBlank(chat.getChatName()))
-            throw new BadRequest("Nome do chat está vazio");
-
-        if (chat.getChatOwner() == null || chat.getChatOwner() <= 0)
-            throw new BadRequest("Id do dono inválido");
-
-        userRepository.getUserById(chat.getChatOwner())
+       userRepository.getUserById(chat.getChatOwner())
                 .orElseThrow(() -> new ResourceNotFound("Usuário", chat.getChatOwner()));
 
-        chat.setId(null);
-        return chatRepository.createChat(chat);
+       return chatRepository.createChat(chat);
     }
 
     @Override
@@ -71,27 +62,19 @@ public class ChatApplication implements ChatPort {
     }
 
     @Override
-    public ChatCore updateChat(ChatCore chatUpdate) {
-        if (chatUpdate == null)
-            throw new BadRequest("Informações de chat não encontradas");
-
-        if (chatUpdate.getId() == null || chatUpdate.getId() <= 0)
-            throw new BadRequest("Id do chat inválido");
-
-        if (chatUpdate.getChatOwner() == null || chatUpdate.getChatOwner() <= 0)
-            throw new BadRequest("Id do dono inválido");
-
+    public ChatCore updateChat(ChatCore chatUpdate, Long solicitanteId) {
         ChatCore oldChat = chatRepository.findChatById(chatUpdate.getId())
                 .orElseThrow(() -> new ResourceNotFound("Chat", chatUpdate.getId()));
 
-        if (!oldChat.getChatOwner().equals(chatUpdate.getChatOwner()))
-            throw new Forbidden("Você não tem permissão para atualizar este chat");
+        oldChat.validateUpdateChat(solicitanteId);
 
-        chatUpdate.setCriadoEm(oldChat.getCriadoEm());
-        chatUpdate.setAtualizadoEm(Instant.now());
+        // Atualizações encapsuladas
+        oldChat.updateChatName(chatUpdate.getChatName());
+        oldChat.updateDescricao(chatUpdate.getDescricao());
+        oldChat.updateType(chatUpdate.getType());
 
-        chatRepository.updateChat(chatUpdate);
-        return chatUpdate;
+        chatRepository.updateChat(oldChat);
+        return oldChat;
     }
 
     @Override

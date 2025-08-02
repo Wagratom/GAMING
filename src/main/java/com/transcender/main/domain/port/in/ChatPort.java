@@ -8,7 +8,7 @@ import java.util.List;
 public interface ChatPort {
     ChatCore getChat(Long chatID);
     ChatCore createChat(ChatCore chart);
-    ChatCore updateChat(ChatCore user);
+    ChatCore updateChat(ChatCore user, Long solicitanteId);
     boolean deleteChat(Long chatId, Long userId);
 
     List<ChatCore> getAllChats();

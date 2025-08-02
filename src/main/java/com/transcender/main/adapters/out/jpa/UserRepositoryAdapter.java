@@ -70,7 +70,7 @@ public class UserRepositoryAdapter implements com.transcender.main.domain.port.o
         UsuarioCore userJpa = new UsuarioCore();
         userJpa.setId(user.getId());
         userJpa.setEmail(user.getEmail());
-        userJpa.setSenha(user.getSenha());
+        userJpa.setSenha(user.getSenhaHash());
         userJpa.setNickname(user.getNickname());
         userJpa.setTelefone(user.getTelefone());
         userJpa.setOnline(user.getOnline());
@@ -81,7 +81,7 @@ public class UserRepositoryAdapter implements com.transcender.main.domain.port.o
         UsuarioCoreJpa userJpa = new UsuarioCoreJpa();
         userJpa.setId(user.getId());
         userJpa.setEmail(user.getEmail());
-        userJpa.setSenha(user.getSenha());
+        userJpa.setSenhaHash(user.getSenha());
         userJpa.setNickname(user.getNickname());
         userJpa.setTelefone(user.getTelefone());
         userJpa.setOnline(user.getOnline());

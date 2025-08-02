@@ -1,12 +1,16 @@
 package com.transcender.main.adapters.out.jpa.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "partidas")
 public class PartidaCoreJpa {
 
@@ -51,22 +55,22 @@ public class PartidaCoreJpa {
     }
 
     // Getters
-    public Long getId() { return id; }
-    public Long getUsuario1Id() { return usuario1Id; }
-    public Long getUsuario2Id() { return usuario2Id; }
-    public int getScoreUsuario1() { return scoreUsuario1; }
-    public int getScoreUsuario2() { return scoreUsuario2; }
-    public String getMapa() { return mapa; }
-    public Instant getCriadoEm() { return criadoEm; }
-    public Instant getAtualizadoEm() { return atualizadoEm; }
+    //public Long getId() { return id; }
+    //public Long getUsuario1Id() { return usuario1Id; }
+    //public Long getUsuario2Id() { return usuario2Id; }
+    //public int getScoreUsuario1() { return scoreUsuario1; }
+    //public int getScoreUsuario2() { return scoreUsuario2; }
+    //public String getMapa() { return mapa; }
+    //public Instant getCriadoEm() { return criadoEm; }
+    //public Instant getAtualizadoEm() { return atualizadoEm; }
 
     // Setters
-    public void setId(Long id) { this.id = id; }
-    public void setUsuario1Id(Long usuario1Id) { this.usuario1Id = usuario1Id; }
-    public void setUsuario2Id(Long usuario2Id) { this.usuario2Id = usuario2Id; }
-    public void setScoreUsuario1(int scoreUsuario1) { this.scoreUsuario1 = scoreUsuario1; }
-    public void setScoreUsuario2(int scoreUsuario2) { this.scoreUsuario2 = scoreUsuario2; }
-    public void setMapa(String mapa) { this.mapa = mapa; }
-    public void setCriadoEm(Instant criadoEm) { this.criadoEm = criadoEm; }
-    public void setAtualizadoEm(Instant atualizadoEm) { this.atualizadoEm = atualizadoEm; }
+    //public void setId(Long id) { this.id = id; }
+    //public void setUsuario1Id(Long usuario1Id) { this.usuario1Id = usuario1Id; }
+    //public void setUsuario2Id(Long usuario2Id) { this.usuario2Id = usuario2Id; }
+    //public void setScoreUsuario1(int scoreUsuario1) { this.scoreUsuario1 = scoreUsuario1; }
+    //public void setScoreUsuario2(int scoreUsuario2) { this.scoreUsuario2 = scoreUsuario2; }
+    //public void setMapa(String mapa) { this.mapa = mapa; }
+    //public void setCriadoEm(Instant criadoEm) { this.criadoEm = criadoEm; }
+    //public void setAtualizadoEm(Instant atualizadoEm) { this.atualizadoEm = atualizadoEm; }
 }
