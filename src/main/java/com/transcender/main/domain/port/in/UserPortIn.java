@@ -1,17 +1,17 @@
 package com.transcender.main.domain.port.in;
 
-import com.transcender.main.domain.Entity.UsuarioCore;
+import com.transcender.main.domain.Entity.UserCore;
 
 import java.util.List;
 import java.util.Map;
 
 public interface UserPortIn {
-    UsuarioCore getUserById(Long userId);
+    UserCore getUserById(Long userId);
     List<Map<String, Object>> getUsersOnlines();
-    Map<String, Object> getProfile(UsuarioCore user);
+    Map<String, Object> getProfile(UserCore user);
 
     void deleteUser(Long userId);
 
-    UsuarioCore registerUser(UsuarioCore user);
-    UsuarioCore updateUser(String newNickname, Long userId );
+    UserCore registerUser(UserCore user);
+    UserCore updateUser(String newNickname, Long userId );
 }

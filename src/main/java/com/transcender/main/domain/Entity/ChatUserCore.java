@@ -1,6 +1,6 @@
 package com.transcender.main.domain.Entity;
 
-public record ChatUsuarioCore(
+public record ChatUserCore(
         Long chatId,
         Long usuarioId,
         String statusChat,
