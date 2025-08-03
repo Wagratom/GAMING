@@ -102,7 +102,7 @@ public class ChatRepositoryAdapter implements com.transcender.main.domain.port.o
 
         // Filtra usuários com permissão de ADMIN
         Set<Long> adms = chatJpa.getUsuarios().stream()
-                .filter(u -> u.getPermitionChat() == PermitionChat.AMD)
+                .filter(u -> u.getPermitionChat() == PermitionChat.ADM)
                 .map(u -> u.getUsuario().getId())
                 .collect(Collectors.toSet());
 

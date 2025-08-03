@@ -1,5 +1,5 @@
 package com.transcender.main.domain.enuns;
 
 public enum PermitionChat {
-    MEMBER, AMD, OWNER
+    MEMBER, ADM, OWNER
 }
