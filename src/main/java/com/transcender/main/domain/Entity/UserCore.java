@@ -3,6 +3,7 @@ package com.transcender.main.domain.Entity;
 import com.transcender.main.domain.exceptions.UsuarioArgumentInvalid;
 
 import java.time.Instant;
+import java.util.Optional;
 
 public class UserCore {
     private Long id;
@@ -31,7 +32,8 @@ public class UserCore {
         this.atualizadoEm = atualizadoEm;
     }
 
-    public UserCore(String email, String senha, String nickname, String telefone) {
+    public UserCore(String email, String senha, String nickname, String telefone, Optional<Long> id) {
+        id.ifPresent(value -> this.id = value);
         this.email = email;
         this.senha = senha;
         this.nickname = nickname;
