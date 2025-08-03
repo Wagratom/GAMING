@@ -43,4 +43,5 @@ public class ChatCoreJpa {
 
     @OneToMany(mappedBy = "chat")
     private List<ChatUserCoreJpa> usuarios;
+
 }
