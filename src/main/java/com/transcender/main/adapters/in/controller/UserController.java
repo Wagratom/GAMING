@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
     private final UserPortIn userApplication;
 
@@ -67,3 +68,4 @@ public class UserController {
     //    ResponseEntity.ok().
     //}
 }
+

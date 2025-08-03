@@ -77,10 +77,9 @@ public class UserApplication implements UserPortIn {
 
         // Monta o mapa com os dados do usuário
         Map<String, Object> payload = new HashMap<>();
+        payload.put("id", user.get().getId());
         payload.put("email", user.get().getEmail());
         payload.put("nickname", user.get().getNickname());
-        payload.put("isOnline", user.get().getOnline());
-        payload.put("criado_em", user.get().getCriadoEm());
 
         // Retorna o JWT gerado com base nos dados
         return jwtPortOut.generateToken(payload);
@@ -100,7 +99,6 @@ public class UserApplication implements UserPortIn {
         }
         Map<String, Object> response = new HashMap<>();
         response.put("user", user.get());
-        response.put("access_token", tokenGeneratorPort.generateToken(user.get()));
         return response;
     }
 

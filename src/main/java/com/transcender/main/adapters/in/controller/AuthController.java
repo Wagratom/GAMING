@@ -10,18 +10,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class LoginController {
+public class AuthController {
     final private UserApplication userApplication;
 
     @Autowired
-    LoginController(UserApplication userApplication) {
+    AuthController(UserApplication userApplication) {
         this.userApplication = userApplication;
     }
 
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginDto body) {
         return ResponseEntity.ok().body(
         userApplication.login(body.nickname(), body.email(), body.senha())
+        );
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@Valid @RequestBody LoginDto body) {
+        return ResponseEntity.ok().body(
+                userApplication.login(body.nickname(), body.email(), body.senha())
+        );
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@Valid @RequestBody LoginDto body) {
+        return ResponseEntity.ok().body(
+                userApplication.login(body.nickname(), body.email(), body.senha())
         );
     }
 }

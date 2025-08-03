@@ -3,19 +3,23 @@ package com.transcender.main.adapters.out;
 import com.transcender.main.domain.port.out.JwtGeneratorPort;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 
+@Component
 public class JwtImplement implements JwtGeneratorPort {
 
     private final Key secretKey;
     private final long expirationMillis;
 
-    public JwtImplement(String secret, long expirationMillis) {
-        // Chave secreta para assinar o JWT (deve ter pelo menos 256 bits para HS256)
-        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+    public JwtImplement(@Value("${jwt.secret}") String secret,
+                        @Value("${jwt.expiration-millis}") long expirationMillis) {
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expirationMillis = expirationMillis;
     }
 
