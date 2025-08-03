@@ -1,7 +1,7 @@
 package com.transcender.main.adapters.out.jpa;
 
 import com.transcender.main.adapters.out.jpa.entity.ChatCoreJpa;
-import com.transcender.main.adapters.out.jpa.entity.UsuarioCoreJpa;
+import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
 import com.transcender.main.adapters.out.jpa.repository.ChatRepository;
 import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.domain.Entity.ChatCore;
@@ -80,7 +80,7 @@ public class ChatRepositoryAdapter implements com.transcender.main.domain.port.o
     }
 
     public ChatCoreJpa toChatCoreJpa(ChatCore chat) {
-        UsuarioCoreJpa owner = userRepository.findById(chat.getChatOwner()).orElseThrow(() -> new RuntimeException("error"));
+        UserCoreJpa owner = userRepository.findById(chat.getChatOwner()).orElseThrow(() -> new RuntimeException("error"));
         ChatCoreJpa chatJpa = new ChatCoreJpa();
         chatJpa.setId(chat.getId());
         chatJpa.setChatName(chat.getChatName());

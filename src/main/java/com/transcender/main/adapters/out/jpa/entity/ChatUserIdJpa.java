@@ -10,14 +10,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class ChatUsuarioIdJpa implements Serializable {
+public class ChatUserIdJpa implements Serializable {
 
     private Long chat;
     private Long usuario;
 
-    public ChatUsuarioIdJpa() {}
+    public ChatUserIdJpa() {}
 
-    public ChatUsuarioIdJpa(Long chat, Long usuario) {
+    public ChatUserIdJpa(Long chat, Long usuario) {
         this.chat = chat;
         this.usuario = usuario;
     }
@@ -25,8 +25,8 @@ public class ChatUsuarioIdJpa implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ChatUsuarioIdJpa)) return false;
-        ChatUsuarioIdJpa that = (ChatUsuarioIdJpa) o;
+        if (!(o instanceof ChatUserIdJpa)) return false;
+        ChatUserIdJpa that = (ChatUserIdJpa) o;
         return Objects.equals(chat, that.chat) &&
                 Objects.equals(usuario, that.usuario);
     }

@@ -25,7 +25,7 @@ public class ChatCoreJpa {
 
     @ManyToOne
     @JoinColumn(name = "onwer", nullable = false)
-    private UsuarioCoreJpa onwer;
+    private UserCoreJpa onwer;
 
     
     @Enumerated(EnumType.STRING)
@@ -42,6 +42,6 @@ public class ChatCoreJpa {
     private Instant atualizadoEm = Instant.now();
 
     @OneToMany(mappedBy = "chat")
-    private List<ChatUsuarioCoreJpa> usuarios;
+    private List<ChatUserCoreJpa> usuarios;
 
 }

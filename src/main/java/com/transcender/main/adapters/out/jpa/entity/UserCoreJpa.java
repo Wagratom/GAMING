@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "usuarios")
-public class UsuarioCoreJpa {
+public class UserCoreJpa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,5 +43,5 @@ public class UsuarioCoreJpa {
     private List<ChatCoreJpa> chatsCriados;
 
     @OneToMany(mappedBy = "usuario")
-    private List<ChatUsuarioCoreJpa> chatsParticipando;
+    private List<ChatUserCoreJpa> chatsParticipando;
 }

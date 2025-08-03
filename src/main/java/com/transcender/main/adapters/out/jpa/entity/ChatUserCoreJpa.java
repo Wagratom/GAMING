@@ -12,8 +12,8 @@ import java.time.Instant;
 @Getter
 @Entity
 @Table(name = "chat_usuarios")
-@IdClass(ChatUsuarioIdJpa.class)
-public class ChatUsuarioCoreJpa {
+@IdClass(ChatUserIdJpa.class)
+public class ChatUserCoreJpa {
 
     @Id
     @ManyToOne
@@ -23,7 +23,7 @@ public class ChatUsuarioCoreJpa {
     @Id
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
-    private UsuarioCoreJpa usuario;
+    private UserCoreJpa usuario;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_chat", nullable = false, length = 10)

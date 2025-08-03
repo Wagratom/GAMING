@@ -1,10 +1,9 @@
 package com.transcender.main.application;
 
-import com.transcender.main.domain.Entity.UsuarioCore;
+import com.transcender.main.domain.Entity.UserCore;
 import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.exceptions.ResourceNotFound;
 import com.transcender.main.domain.exceptions.Unauthorized;
-import com.transcender.main.domain.exceptions.UsuarioArgumentInvalid;
 import com.transcender.main.domain.port.in.UserPortIn;
 import com.transcender.main.domain.port.out.EncryptPortOut;
 import com.transcender.main.domain.port.out.TokenGeneratorPort;
@@ -29,7 +28,7 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public UsuarioCore getUserById(Long userId) {
+    public UserCore getUserById(Long userId) {
         if (userId <= 0) throw new BadRequest("Id do usuario não pode ser negativo");
 
         return this.userRepository.getUserById(userId)
@@ -50,8 +49,8 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public Map<String, Object> getProfile(UsuarioCore login) {
-        Optional<UsuarioCore> user = login.getEmail() != null
+    public Map<String, Object> getProfile(UserCore login) {
+        Optional<UserCore> user = login.getEmail() != null
                 ? this.userRepository.getUserByEmail(login.getEmail())
                 : this.userRepository.getUserByNickname(login.getNickname());
 
@@ -67,7 +66,7 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public UsuarioCore registerUser(UsuarioCore user) {
+    public UserCore registerUser(UserCore user) {
         user.validateCreateUser();
         user.setAtive(true);
         user.setSenha(this.encryptPortOut.encryptPassword(user.getSenha()));
@@ -75,11 +74,11 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public UsuarioCore updateUser(String newNickname, Long userId ) {
+    public UserCore updateUser(String newNickname, Long userId ) {
         if (userId == null || userId <= 0) throw new BadRequest("Id inválido: deve ser positivo");
         if (newNickname == null || newNickname.trim().isEmpty()) throw new BadRequest("Nickname empty");
 
-        UsuarioCore oldUser = userRepository
+        UserCore oldUser = userRepository
                 .getUserById(userId)
                 .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
 

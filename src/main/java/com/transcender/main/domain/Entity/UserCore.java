@@ -1,11 +1,11 @@
 package com.transcender.main.domain.Entity;
 
-import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.exceptions.UsuarioArgumentInvalid;
 
 import java.time.Instant;
+import java.util.Optional;
 
-public class UsuarioCore {
+public class UserCore {
     private Long id;
     private String email;
     private String senha;
@@ -16,10 +16,10 @@ public class UsuarioCore {
     private Instant criadoEm;
     private Instant atualizadoEm;
 
-    public UsuarioCore() {}
+    public UserCore() {}
 
-    UsuarioCore(Long id, String email, String senha, String nickname, String telefone,
-                boolean online, Instant criadoEm, Instant atualizadoEm) {
+    public UserCore(Long id, String email, String senha, String nickname, String telefone,
+             boolean online, Instant criadoEm, Instant atualizadoEm) {
         if (id == null || id <= 0) throw new UsuarioArgumentInvalid("Id invalido");
         this.id = id;
         this.email = email;
@@ -32,7 +32,8 @@ public class UsuarioCore {
         this.atualizadoEm = atualizadoEm;
     }
 
-    public UsuarioCore(String email, String senha, String nickname, String telefone) {
+    public UserCore(String email, String senha, String nickname, String telefone, Optional<Long> id) {
+        id.ifPresent(value -> this.id = value);
         this.email = email;
         this.senha = senha;
         this.nickname = nickname;
