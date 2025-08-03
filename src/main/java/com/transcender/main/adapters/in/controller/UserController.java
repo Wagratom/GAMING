@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
     private final UserPortIn userApplication;
 
@@ -35,14 +36,14 @@ public class UserController {
     }
 
     //GET -> users/1234
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getUserById(@PathVariable Long userId) {
         UserCore user =  userApplication.getUserById(userId);
         return UserDtoRegister.toEntity(user);
     }
 
     //DELETE -> users/1234
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUserById(@PathVariable Long userId) {
         userApplication.deleteUser(userId);
         return ResponseEntity.ok().body("Sucesso");
