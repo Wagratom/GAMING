@@ -27,6 +27,7 @@ public class ChatCoreJpa {
     @JoinColumn(name = "onwer", nullable = false)
     private UsuarioCoreJpa onwer;
 
+    
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     private ChatType type; //tenho que criar uma entidade no banco de dados aqui ou apenas criar um enum no domain?
