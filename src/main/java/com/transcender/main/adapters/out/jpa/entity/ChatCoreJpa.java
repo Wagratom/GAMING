@@ -41,6 +41,6 @@ public class ChatCoreJpa {
     private Instant atualizadoEm = Instant.now();
 
     @OneToMany(mappedBy = "chat")
-    private List<ChatUsuarioCoreJpa> usuarios;
+    private List<ChatUserCoreJpa> usuarios;
 
 }

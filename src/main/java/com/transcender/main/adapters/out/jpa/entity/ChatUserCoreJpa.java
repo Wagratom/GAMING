@@ -12,8 +12,8 @@ import java.time.Instant;
 @Getter
 @Entity
 @Table(name = "chat_usuarios")
-@IdClass(ChatUsuarioIdJpa.class)
-public class ChatUsuarioCoreJpa {
+@IdClass(ChatUserIdJpa.class)
+public class ChatUserCoreJpa {
 
     @Id
     @ManyToOne

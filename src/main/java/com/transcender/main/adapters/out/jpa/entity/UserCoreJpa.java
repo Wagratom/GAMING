@@ -43,5 +43,5 @@ public class UserCoreJpa {
     private List<ChatCoreJpa> chatsCriados;
 
     @OneToMany(mappedBy = "usuario")
-    private List<ChatUsuarioCoreJpa> chatsParticipando;
+    private List<ChatUserCoreJpa> chatsParticipando;
 }
