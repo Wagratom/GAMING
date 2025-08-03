@@ -49,6 +49,7 @@ public class UserApplication implements UserPortIn {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public String login(Optional<String> nickname, Optional<String> email, String senha) {
         // Só um dos dois pode ser presente
         if (nickname.isPresent() && email.isPresent()) {
