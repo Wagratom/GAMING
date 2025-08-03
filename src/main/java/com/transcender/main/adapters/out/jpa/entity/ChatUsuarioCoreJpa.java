@@ -23,7 +23,7 @@ public class ChatUsuarioCoreJpa {
     @Id
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
-    private UsuarioCoreJpa usuario;
+    private UserCoreJpa usuario;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_chat", nullable = false, length = 10)

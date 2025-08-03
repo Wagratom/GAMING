@@ -25,7 +25,7 @@ public class ChatCoreJpa {
 
     @ManyToOne
     @JoinColumn(name = "onwer", nullable = false)
-    private UsuarioCoreJpa onwer;
+    private UserCoreJpa onwer;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
