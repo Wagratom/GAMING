@@ -1,6 +1,6 @@
 package com.transcender.main.adapters.out;
 
-import com.transcender.main.domain.Entity.UsuarioCore;
+import com.transcender.main.domain.Entity.UserCore;
 import com.transcender.main.domain.port.out.TokenGeneratorPort;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,7 +17,7 @@ public class TokenGeneratorImpl implements TokenGeneratorPort {
     private String secret;
 
     @Override
-    public String generateToken(UsuarioCore user) {
+    public String generateToken(UserCore user) {
         return Jwts.builder()
                 .setSubject(user.getId().toString())
                 .claim("email", user.getEmail())

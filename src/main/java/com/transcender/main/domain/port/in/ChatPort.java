@@ -1,7 +1,7 @@
 package com.transcender.main.domain.port.in;
 
 import com.transcender.main.domain.Entity.ChatCore;
-import com.transcender.main.domain.Entity.UsuarioCore;
+import com.transcender.main.domain.Entity.UserCore;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public interface ChatPort {
     boolean deleteChat(Long chatId, Long userId);
 
     List<ChatCore> getAllChats();
-    boolean addUsuarioChat(Long chatId, UsuarioCore usuario);
-    boolean bloquearUsuarioChat(Long chatId, UsuarioCore usuario);
-    boolean banirUsuarioChat(Long chatId, UsuarioCore usuario);
+    boolean addUsuarioChat(Long chatId, UserCore usuario);
+    boolean bloquearUsuarioChat(Long chatId, UserCore usuario);
+    boolean banirUsuarioChat(Long chatId, UserCore usuario);
 }

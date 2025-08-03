@@ -1,8 +1,8 @@
 package com.transcender.main.adapters.out.jpa;
 
-import com.transcender.main.adapters.out.jpa.entity.UsuarioCoreJpa;
+import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
 import com.transcender.main.adapters.out.jpa.repository.UserRepository;
-import com.transcender.main.domain.Entity.UsuarioCore;
+import com.transcender.main.domain.Entity.UserCore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,31 +20,31 @@ public class UserRepositoryAdapter implements com.transcender.main.domain.port.o
     }
 
     @Override
-    public Optional<UsuarioCore> getUserById(Long userId) {
-        return userRepository.findById(userId).map((this::toUsuarioCore));
+    public Optional<UserCore> getUserById(Long userId) {
+        return userRepository.findById(userId).map((this::toUserCore));
     }
 
     @Override
-    public Optional<UsuarioCore> getUserByEmail(String email) {
-        return userRepository.findByEmail(email).map(this::toUsuarioCore);
+    public Optional<UserCore> getUserByEmail(String email) {
+        return userRepository.findByEmail(email).map(this::toUserCore);
     }
 
     @Override
-    public Optional<UsuarioCore> getUserByNickname(String nickname) {
-        return userRepository.findByNickname(nickname).map(this::toUsuarioCore);
+    public Optional<UserCore> getUserByNickname(String nickname) {
+        return userRepository.findByNickname(nickname).map(this::toUserCore);
     }
 
     @Override
-    public List<UsuarioCore> getUsersOnlines() {
+    public List<UserCore> getUsersOnlines() {
         return userRepository.findByOnlineTrueAndAtiveTrue()
                 .stream()
-                .map(this::toUsuarioCore)
+                .map(this::toUserCore)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UsuarioCore createUser(UsuarioCore user) {
-        return toUsuarioCore(userRepository.save(toUsuarioCoreJpa(user)));
+    public UserCore createUser(UserCore user) {
+        return toUserCore(userRepository.save(toUserCoreJpa(user)));
     }
 
     @Override
@@ -62,12 +62,12 @@ public class UserRepositoryAdapter implements com.transcender.main.domain.port.o
     }
 
     @Override
-    public UsuarioCore updateUser(UsuarioCore user) {
-        return toUsuarioCore(userRepository.save(toUsuarioCoreJpa(user)));
+    public UserCore updateUser(UserCore user) {
+        return toUserCore(userRepository.save(toUserCoreJpa(user)));
     }
 
-    public UsuarioCore toUsuarioCore(UsuarioCoreJpa user) {
-        UsuarioCore userJpa = new UsuarioCore();
+    public UserCore toUserCore(UserCoreJpa user) {
+        UserCore userJpa = new UserCore();
         userJpa.setId(user.getId());
         userJpa.setEmail(user.getEmail());
         userJpa.setSenha(user.getSenhaHash());
@@ -77,8 +77,8 @@ public class UserRepositoryAdapter implements com.transcender.main.domain.port.o
         userJpa.setAtualizadoEm(user.getAtualizadoEm());
         return userJpa;
     }
-    public UsuarioCoreJpa toUsuarioCoreJpa(UsuarioCore user) {
-        UsuarioCoreJpa userJpa = new UsuarioCoreJpa();
+    public UserCoreJpa toUserCoreJpa(UserCore user) {
+        UserCoreJpa userJpa = new UserCoreJpa();
         userJpa.setId(user.getId());
         userJpa.setEmail(user.getEmail());
         userJpa.setSenhaHash(user.getSenha());

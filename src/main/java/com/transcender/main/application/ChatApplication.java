@@ -1,7 +1,7 @@
 package com.transcender.main.application;
 
 import com.transcender.main.domain.Entity.ChatCore;
-import com.transcender.main.domain.Entity.UsuarioCore;
+import com.transcender.main.domain.Entity.UserCore;
 import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.exceptions.Forbidden;
 import com.transcender.main.domain.exceptions.ResourceNotFound;
@@ -11,7 +11,6 @@ import com.transcender.main.domain.port.out.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -83,19 +82,19 @@ public class ChatApplication implements ChatPort {
     }
 
     @Override
-    public boolean addUsuarioChat(Long chatId, UsuarioCore usuario) {
+    public boolean addUsuarioChat(Long chatId, UserCore usuario) {
         // TODO: Implementar regra de negócio
         return false;
     }
 
     @Override
-    public boolean bloquearUsuarioChat(Long chatId, UsuarioCore usuario) {
+    public boolean bloquearUsuarioChat(Long chatId, UserCore usuario) {
         // TODO: Implementar regra de negócio
         return false;
     }
 
     @Override
-    public boolean banirUsuarioChat(Long chatId, UsuarioCore usuario) {
+    public boolean banirUsuarioChat(Long chatId, UserCore usuario) {
         // TODO: Implementar regra de negócio
         return false;
     }

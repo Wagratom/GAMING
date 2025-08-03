@@ -1,17 +1,17 @@
 package com.transcender.main.domain.port.out;
 
-import com.transcender.main.domain.Entity.UsuarioCore;
+import com.transcender.main.domain.Entity.UserCore;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
-    Optional<UsuarioCore> getUserById(Long userId);
-    Optional<UsuarioCore> getUserByEmail(String email);
-    Optional<UsuarioCore> getUserByNickname(String nickname);
-    List<UsuarioCore> getUsersOnlines();
+    Optional<UserCore> getUserById(Long userId);
+    Optional<UserCore> getUserByEmail(String email);
+    Optional<UserCore> getUserByNickname(String nickname);
+    List<UserCore> getUsersOnlines();
 
-    UsuarioCore createUser(UsuarioCore user);
+    UserCore createUser(UserCore user);
     boolean deleteUser(Long userId);
-    UsuarioCore updateUser(UsuarioCore user);
+    UserCore updateUser(UserCore user);
 }
