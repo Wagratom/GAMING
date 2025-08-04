@@ -1,11 +1,8 @@
 package com.transcender.main.application;
 
 import com.transcender.main.domain.entity.UserCore;
-import com.transcender.main.domain.exceptions.BadRequest;
-import com.transcender.main.domain.exceptions.Forbidden;
+import com.transcender.main.domain.exceptions.*;
 import com.transcender.main.domain.exceptions.InternalError;
-import com.transcender.main.domain.exceptions.ResourceNotFound;
-import com.transcender.main.domain.exceptions.Unauthorized;
 import com.transcender.main.domain.port.in.UserPortIn;
 import com.transcender.main.domain.port.out.EncryptPortOut;
 import com.transcender.main.domain.port.out.JwtGeneratorPort;
@@ -53,6 +50,7 @@ public class UserApplication implements UserPortIn {
     @Override
     public String login(Optional<String> nickname, Optional<String> email, String senha) {
         // Só um dos dois pode ser presente
+        System.out.println("Iniciando validação");
         if (nickname.isPresent() && email.isPresent()) {
             throw new BadRequest("Envie apenas nickname ou email, não ambos.");
         }
@@ -63,6 +61,7 @@ public class UserApplication implements UserPortIn {
         }
 
         // Recupera o usuário
+        System.out.println("Consultando o usuario na base");
         Optional<UserCore> user = nickname.isPresent()
                 ? userRepository.getUserByNickname(nickname.get())
                 : userRepository.getUserByEmail(email.get());
@@ -72,6 +71,7 @@ public class UserApplication implements UserPortIn {
         }
 
         // Verifica a senha (se NÃO confere, lança exceção)
+        System.out.println("Verificando credenciais");
         if (!encryptPortOut.checkPassword(senha, user.get().getSenha())) {
             throw new Forbidden("Efetuar login: credenciais inválidas");
         }
@@ -83,6 +83,7 @@ public class UserApplication implements UserPortIn {
         payload.put("nickname", user.get().getNickname());
 
         // Retorna o JWT gerado com base nos dados
+        System.out.println("Gerando token de auth");
         return jwtPortOut.generateToken(payload);
     }
 
@@ -105,11 +106,16 @@ public class UserApplication implements UserPortIn {
 
     @Override
     public UserCore registerUser(UserCore user) {
+        user.validateCreateUser();
+        if (user.getEmail() != null && userRepository.getUserByEmail(user.getEmail()).isPresent()) {
+            throw new Conflict("Esse email já esta sendo utilizado");
+        }
+        if (user.getNickname() != null && userRepository.getUserByNickname(user.getNickname()).isPresent()) {
+            throw new Conflict("Esse nickname já esta sendo utilizado");
+        }
+        user.setAtive(true);
+        user.setSenha(this.encryptPortOut.encryptPassword(user.getSenha()));
         try {
-            user.validateCreateUser();
-            user.setAtive(true);
-            user.setSenha(this.encryptPortOut.encryptPassword(user.getSenha()));
-            Map<String, Object> map = new HashMap<>();
             return this.userRepository.createUser(user); // salva no banco
         } catch (Exception err) {
             System.out.printf("cai no exception: %s%n", err.getMessage());

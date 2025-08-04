@@ -1,8 +1,9 @@
-CREATE TABLE Usuarios (
+-- Tabela de usuários (UserCoreJpa)
+CREATE TABLE usuarios (
     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID único do usuário',
-    email VARCHAR(255) NOT NULL UNIQUE COMMENT 'E-mail do usuário',
+    email VARCHAR(255) UNIQUE COMMENT 'E-mail do usuário (único se não for nulo)',
     senha_hash VARCHAR(512) NOT NULL COMMENT 'Hash da senha',
-    nickname VARCHAR(255) NOT NULL,
+    nickname VARCHAR(255) UNIQUE COMMENT 'Apelido único (único se não for nulo)',
     telefone VARCHAR(20),
     online BOOLEAN,
     ative BOOLEAN,
@@ -10,25 +11,35 @@ CREATE TABLE Usuarios (
     atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+
+
+
+-- Tabela de chats (ChatCoreJpa)
 CREATE TABLE Chat (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    chatname VARCHAR(255) NOT NULL COMMENT 'Nome do chat',
+    chatname VARCHAR(20) NOT NULL COMMENT 'Nome do chat',
+    onwer BIGINT NOT NULL COMMENT 'ID do dono do chat',
+    type VARCHAR(10) NOT NULL COMMENT 'PUBLIC, PRIVATE, PROTECT',
     descricao TEXT,
     criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (onwer) REFERENCES Usuarios(id)
 );
 
+-- Tabela intermediária: usuários no chat (ChatUserCoreJpa)
 CREATE TABLE ChatUsuarios (
     chat_id BIGINT NOT NULL,
     usuario_id BIGINT NOT NULL,
-    status VARCHAR(50) NOT NULL COMMENT 'ativo, bloqueado, banido, removido',
-    entrou_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Data que entrou no chat',
-    saiu_em TIMESTAMP NULL COMMENT 'Data que saiu do chat, se aplicável',
+    status_chat VARCHAR(10) NOT NULL COMMENT 'ativo, bloqueado, banido, removido',
+    permition_chat VARCHAR(10) NOT NULL COMMENT 'admin, member, viewer, etc',
+    entrou_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    saiu_em TIMESTAMP NULL,
     PRIMARY KEY (chat_id, usuario_id),
     FOREIGN KEY (chat_id) REFERENCES Chat(id),
     FOREIGN KEY (usuario_id) REFERENCES Usuarios(id)
 );
 
+-- Tabela de amigos
 CREATE TABLE Amigos (
     usuario_1 BIGINT NOT NULL,
     usuario_2 BIGINT NOT NULL,
@@ -40,6 +51,7 @@ CREATE TABLE Amigos (
     FOREIGN KEY (usuario_2) REFERENCES Usuarios(id)
 );
 
+-- Tabela de partidas
 CREATE TABLE Partidas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     usuario_1 BIGINT NOT NULL,

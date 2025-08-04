@@ -23,7 +23,7 @@ public class UserCoreJpa {
     @Column(name = "senha_hash", nullable = false, length = 512)
     private String senhaHash;
 
-    @Column(nullable = true, length = 15)
+    @Column(nullable = true, unique = true, length = 15)
     private String nickname;
 
     @Column(length = 20)

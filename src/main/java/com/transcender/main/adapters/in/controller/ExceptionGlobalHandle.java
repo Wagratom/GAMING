@@ -1,10 +1,7 @@
 package com.transcender.main.adapters.in.controller;
 
-import com.transcender.main.domain.exceptions.BadRequest;
-import com.transcender.main.domain.exceptions.Forbidden;
+import com.transcender.main.domain.exceptions.*;
 import com.transcender.main.domain.exceptions.InternalError;
-import com.transcender.main.domain.exceptions.ResourceNotFound;
-import com.transcender.main.domain.exceptions.Unauthorized;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -39,7 +36,6 @@ public class ExceptionGlobalHandle {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
     }
 
-
     @ExceptionHandler(ResourceNotFound.class)
     public ResponseEntity<String> handleNotFound(ResourceNotFound ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
@@ -63,5 +59,11 @@ public class ExceptionGlobalHandle {
     @ExceptionHandler(InternalError.class)
     public ResponseEntity<String> InternalError(InternalError ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+
+
+    @ExceptionHandler(Conflict.class)
+    public ResponseEntity<String> Conflict(Conflict ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }
