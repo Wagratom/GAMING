@@ -1,6 +1,6 @@
 package com.transcender.main.domain.port.in;
 
-import com.transcender.main.domain.Entity.UserCore;
+import com.transcender.main.domain.entity.UserCore;
 
 import java.util.List;
 import java.util.Map;

@@ -1,7 +1,7 @@
 package com.transcender.main.domain.port.in;
 
-import com.transcender.main.domain.Entity.ChatCore;
-import com.transcender.main.domain.Entity.UserCore;
+import com.transcender.main.domain.entity.ChatCore;
+import com.transcender.main.domain.entity.UserCore;
 
 import java.util.List;
 

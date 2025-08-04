@@ -1,15 +1,13 @@
 package com.transcender.main.adapters.in.controller;
 
 import com.transcender.main.adapters.in.controller.dto.UserDtoRegister;
-import com.transcender.main.adapters.in.controller.dto.UserDtoUpdate;
 import com.transcender.main.application.UserApplication;
-import com.transcender.main.domain.Entity.UserCore;
+import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.port.in.UserPortIn;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.transcender.main.domain.Entity;
+package com.transcender.main.domain.entity;
 
 import com.transcender.main.domain.enuns.ChatType;
 import com.transcender.main.domain.exceptions.ChatArgumentInvalid;

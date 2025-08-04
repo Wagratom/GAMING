@@ -1,12 +1,11 @@
 package com.transcender.main.adapters.in.controller.dto;
 
-import com.transcender.main.domain.Entity.UserCore;
+import com.transcender.main.domain.entity.UserCore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.transcender.main.domain.Entity;
+package com.transcender.main.domain.entity;
 
 public record ChatUserCore(
         Long chatId,
