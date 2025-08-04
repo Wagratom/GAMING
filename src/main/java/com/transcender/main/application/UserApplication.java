@@ -1,8 +1,9 @@
 package com.transcender.main.application;
 
-import com.transcender.main.domain.Entity.UserCore;
+import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.exceptions.Forbidden;
+import com.transcender.main.domain.exceptions.InternalError;
 import com.transcender.main.domain.exceptions.ResourceNotFound;
 import com.transcender.main.domain.exceptions.Unauthorized;
 import com.transcender.main.domain.port.in.UserPortIn;
@@ -104,11 +105,16 @@ public class UserApplication implements UserPortIn {
 
     @Override
     public UserCore registerUser(UserCore user) {
-        user.validateCreateUser();
-        user.setAtive(true);
-        user.setSenha(this.encryptPortOut.encryptPassword(user.getSenha()));
-        Map<String, Object> map = new HashMap<>();
-        return this.userRepository.createUser(user); // salva no banco
+        try {
+            user.validateCreateUser();
+            user.setAtive(true);
+            user.setSenha(this.encryptPortOut.encryptPassword(user.getSenha()));
+            Map<String, Object> map = new HashMap<>();
+            return this.userRepository.createUser(user); // salva no banco
+        } catch (Exception err) {
+            System.out.printf("cai no exception: %s%n", err.getMessage());
+            throw new InternalError();
+        }
     }
 
     @Override
