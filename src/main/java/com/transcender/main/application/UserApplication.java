@@ -73,9 +73,6 @@ public class UserApplication implements UserPortIn {
 
         // Verifica a senha (se NÃO confere, lança exceção)
         System.out.println("Verificando credenciais");
-        System.out.println(senha);
-        System.out.println(user.get().getSenha());
-        System.out.println(encryptPortOut.checkPassword(senha, user.get().getSenha()));
 
         if (!encryptPortOut.checkPassword(senha, user.get().getSenha())) {
             throw new Forbidden("Efetuar login: credenciais inválidas");
@@ -101,8 +98,6 @@ public class UserApplication implements UserPortIn {
             String jwt = headerAuth.startsWith("Bearer ") ? headerAuth.substring(7) : headerAuth;
             System.out.println("Decodificando o token");
             Map<String, Object> infoJwt = jwtPortOut.validateTokenAndGetClaims(jwt);
-            System.out.println("User info");
-            System.out.println(infoJwt);
 
             Long id = ((Number) infoJwt.get("id")).longValue();
 
