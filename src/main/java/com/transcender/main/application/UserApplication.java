@@ -7,6 +7,7 @@ import com.transcender.main.domain.port.in.UserPortIn;
 import com.transcender.main.domain.port.out.EncryptPortOut;
 import com.transcender.main.domain.port.out.JwtGeneratorPort;
 import com.transcender.main.domain.port.out.UserRepository;
+import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,6 +73,10 @@ public class UserApplication implements UserPortIn {
 
         // Verifica a senha (se NÃO confere, lança exceção)
         System.out.println("Verificando credenciais");
+        System.out.println(senha);
+        System.out.println(user.get().getSenha());
+        System.out.println(encryptPortOut.checkPassword(senha, user.get().getSenha()));
+
         if (!encryptPortOut.checkPassword(senha, user.get().getSenha())) {
             throw new Forbidden("Efetuar login: credenciais inválidas");
         }
@@ -89,20 +94,34 @@ public class UserApplication implements UserPortIn {
 
 
     @Override
-    public Map<String, Object> getProfile(UserCore login) {
-        Optional<UserCore> user = login.getEmail() != null
-                ? this.userRepository.getUserByEmail(login.getEmail())
-                : this.userRepository.getUserByNickname(login.getNickname());
+    public Map<String, Object> getProfile(String headerAuth) {
+        if (headerAuth == null) throw new BadRequest("Token não enviado");
 
-        if (user.isEmpty()) throw new Unauthorized("Usuário não encontrado");
+        try {
+            String jwt = headerAuth.startsWith("Bearer ") ? headerAuth.substring(7) : headerAuth;
+            System.out.println("Decodificando o token");
+            Map<String, Object> infoJwt = jwtPortOut.validateTokenAndGetClaims(jwt);
+            System.out.println("User info");
+            System.out.println(infoJwt);
 
-        if (encryptPortOut.checkPassword(login.getSenha(), user.get().getSenha())) {
-            throw new Unauthorized("Login e senha inválidos");
+            Long id = ((Number) infoJwt.get("id")).longValue();
+
+            UserCore user = userRepository.getUserById(id)
+                    .orElseThrow(() -> new ResourceNotFound("Usuario", id));
+
+            Map<String, Object> jsonUser = new HashMap<>();
+            jsonUser.put("id", user.getId());
+            jsonUser.put("nickname", user.getNickname());
+            jsonUser.put("email", user.getEmail());
+            jsonUser.put("online", user.getOnline());
+            jsonUser.put("criando_em", user.getCriadoEm());
+            return jsonUser;
+
+        } catch (JwtException e) {
+            throw new Unauthorized("Token invalido");
         }
-        Map<String, Object> response = new HashMap<>();
-        response.put("user", user.get());
-        return response;
     }
+
 
     @Override
     public UserCore registerUser(UserCore user) {

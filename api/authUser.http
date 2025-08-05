@@ -8,8 +8,18 @@
 # }
 
 
-POST http://localhost:8080/login
+# POST http://localhost:8080/login
+# Content-Type: application/json
+
+# {
+#     "password": "123456",
+#     "nickname": "wagratom"
+# }
+
+
+POST http://localhost:8080/profile
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJuaWNrbmFtZSI6IndhZ3JhdG9tIiwiaWQiOjEsImlhdCI6MTc1NDM1MDc1MSwiZXhwIjoxNzU0MzU0MzUxfQ.kLETLrayZhaKhV-jUw8dLjuL1uYKfwgN5N-V6kn0VH0
 
 {
     "password": "123456",

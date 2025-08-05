@@ -25,6 +25,7 @@ public class UserController {
     public ResponseEntity<List<Map<String, Object>>> getAllUsers() {
         return ResponseEntity.ok().body(userApplication.getUsersOnlines());
     }
+
     //POST -> /users
     @PostMapping
     public ResponseEntity<Map<String, Object>> registerUser(@Valid @RequestBody UserDtoRegister body) {

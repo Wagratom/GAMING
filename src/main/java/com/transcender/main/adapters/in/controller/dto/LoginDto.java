@@ -9,5 +9,5 @@ public record LoginDto (
     Optional<String> email,
 
     @NotBlank(message = "A senha não pode ser vazio ou nulo")
-    String senha
+    String password
 ){};

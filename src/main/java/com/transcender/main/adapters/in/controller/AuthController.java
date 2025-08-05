@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -26,7 +27,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginDto body) {
         return ResponseEntity.ok().body(
-        userApplication.login(body.nickname(), body.email(), body.senha())
+        userApplication.login(body.nickname(), body.email(), body.password())
         );
     }
 
@@ -47,7 +48,14 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@Valid @RequestBody LoginDto body) {
         return ResponseEntity.ok().body(
-                userApplication.login(body.nickname(), body.email(), body.senha())
+                userApplication.login(body.nickname(), body.email(), body.password())
+        );
+    }
+
+    @PostMapping("/profile")
+    public ResponseEntity<Map<String, Object>> profile(@RequestHeader("Authorization") String authorizationHeader) {
+        return ResponseEntity.ok().body(
+                userApplication.getProfile(authorizationHeader)
         );
     }
 }
