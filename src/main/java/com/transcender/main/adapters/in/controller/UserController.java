@@ -1,24 +1,29 @@
 package com.transcender.main.adapters.in.controller;
 
 import com.transcender.main.adapters.in.controller.dto.UserDtoRegister;
-import com.transcender.main.adapters.in.controller.dto.UserDtoUpdate;
 import com.transcender.main.application.UserApplication;
-import com.transcender.main.domain.Entity.UserCore;
+import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.port.in.UserPortIn;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
     private final UserPortIn userApplication;
 
     public UserController(UserApplication userApplication) {
         this.userApplication = userApplication;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Map<String, Object>>> getAllUsers() {
+        return ResponseEntity.ok().body(userApplication.getUsersOnlines());
     }
 
     //POST -> /users
@@ -35,30 +40,31 @@ public class UserController {
     }
 
     //GET -> users/1234
-    @GetMapping
+    @GetMapping("/{userId}")
     public ResponseEntity<Map<String, Object>> getUserById(@PathVariable Long userId) {
-        UserCore user =  userApplication.getUserById(userId);
-        return UserDtoRegister.toEntity(user);
+        return UserDtoRegister.toEntity(userApplication.getUserById(userId));
     }
 
     //DELETE -> users/1234
-    @DeleteMapping
+    @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUserById(@PathVariable Long userId) {
         userApplication.deleteUser(userId);
         return ResponseEntity.ok().body("Sucesso");
     }
 
     //put -> /users
-    @PutMapping
-    public void UpdateUser(@Valid @RequestBody UserDtoUpdate body) {
-        UserCore user = new UserCore(
-                body.getEmail(),
-                body.getPassword(),
-                body.getNickname(),
-                body.getTelefone(),
-                Optional.of(body.getId())
-        );
+    //@PutMapping
+    //public ResponseEntity<String, Object> UpdateUser(@Valid @RequestBody UserDtoUpdate body) {
+    //    UserCore user = new UserCore(
+    //            body.getEmail(),
+    //            body.getPassword(),
+    //            body.getNickname(),
+    //            body.getTelefone(),
+    //            Optional.of(body.getId())
+    //    );
 
-        userApplication.registerUser(user);
-    }
+    //    userApplication.updateUser(user);
+    //    ResponseEntity.ok().
+    //}
 }
+
