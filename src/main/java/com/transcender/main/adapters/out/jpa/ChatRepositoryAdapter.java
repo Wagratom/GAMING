@@ -4,7 +4,7 @@ import com.transcender.main.adapters.out.jpa.entity.ChatCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
 import com.transcender.main.adapters.out.jpa.repository.ChatRepository;
 import com.transcender.main.adapters.out.jpa.repository.UserRepository;
-import com.transcender.main.domain.Entity.ChatCore;
+import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.enuns.ChatType;
 import com.transcender.main.domain.enuns.PermitionChat;
 import org.springframework.beans.factory.annotation.Autowired;

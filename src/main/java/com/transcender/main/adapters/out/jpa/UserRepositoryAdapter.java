@@ -2,7 +2,7 @@ package com.transcender.main.adapters.out.jpa;
 
 import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
 import com.transcender.main.adapters.out.jpa.repository.UserRepository;
-import com.transcender.main.domain.Entity.UserCore;
+import com.transcender.main.domain.entity.UserCore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -67,16 +67,18 @@ public class UserRepositoryAdapter implements com.transcender.main.domain.port.o
     }
 
     public UserCore toUserCore(UserCoreJpa user) {
-        UserCore userJpa = new UserCore();
-        userJpa.setId(user.getId());
-        userJpa.setEmail(user.getEmail());
-        userJpa.setSenha(user.getSenhaHash());
-        userJpa.setNickname(user.getNickname());
-        userJpa.setTelefone(user.getTelefone());
-        userJpa.setOnline(user.getOnline());
-        userJpa.setAtualizadoEm(user.getAtualizadoEm());
-        return userJpa;
+        return new UserCore(
+                user.getId(),
+                user.getEmail(),
+                user.getSenhaHash(),
+                user.getNickname(),
+                user.getTelefone(),
+                user.getOnline(),
+                user.getCriadoEm(),
+                user.getAtualizadoEm()
+        );
     }
+
     public UserCoreJpa toUserCoreJpa(UserCore user) {
         UserCoreJpa userJpa = new UserCoreJpa();
         userJpa.setId(user.getId());
