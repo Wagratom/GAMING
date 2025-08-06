@@ -35,7 +35,15 @@ public class UserRepositoryAdapter implements com.transcender.main.domain.port.o
     }
 
     @Override
-    public List<UserCore> getUsersOnlines() {
+    public List<UserCore> getUsersOnline() {
+        return userRepository.findByOnlineTrueAndAtiveTrue()
+                .stream()
+                .map(this::toUserCore)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserCore> getFriendsOnline(Long userId) {
         return userRepository.findByOnlineTrueAndAtiveTrue()
                 .stream()
                 .map(this::toUserCore)
