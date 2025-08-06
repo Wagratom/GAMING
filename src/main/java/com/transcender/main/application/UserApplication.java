@@ -128,6 +128,7 @@ public class UserApplication implements UserPortIn {
             throw new Conflict("Esse nickname já esta sendo utilizado");
         }
         user.setAtive(true);
+        user.setOnline(true);
         user.setSenha(this.encryptPortOut.encryptPassword(user.getSenha()));
         try {
             return this.userRepository.createUser(user); // salva no banco
