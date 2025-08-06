@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface UserPortIn {
     String login(Optional<String> nickname, Optional<String> email, String senha);
     UserCore getUserById(Long userId);
-    List<Map<String, Object>> getUsersOnlines();
+    List<Map<String, Object>> getUsers(Boolean online, Boolean friends, String jwt);
     Map<String, Object> getProfile(String jwt);
 
     void deleteUser(Long userId);

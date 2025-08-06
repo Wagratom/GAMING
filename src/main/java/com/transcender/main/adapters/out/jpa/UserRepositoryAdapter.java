@@ -1,22 +1,25 @@
 package com.transcender.main.adapters.out.jpa;
 
 import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
+import com.transcender.main.adapters.out.jpa.repository.AmizadeRepository;
 import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.domain.entity.UserCore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import com.transcender.main.domain.port.out.UserRepositoryPort;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class UserRepositoryAdapter implements com.transcender.main.domain.port.out.UserRepository {
+public class UserRepositoryAdapter implements UserRepositoryPort {
     private final UserRepository userRepository;
+    private final AmizadeRepository amizadeRepository;
 
     @Autowired
-    UserRepositoryAdapter(UserRepository usuarioRepository) {
+    UserRepositoryAdapter(UserRepository usuarioRepository,  AmizadeRepository amizadeRepository) {
         this.userRepository = usuarioRepository;
+        this.amizadeRepository = amizadeRepository;
     }
 
     @Override
@@ -43,12 +46,13 @@ public class UserRepositoryAdapter implements com.transcender.main.domain.port.o
     }
 
     @Override
-    public List<UserCore> getFriendsOnline(Long userId) {
-        return userRepository.findByOnlineTrueAndAtiveTrue()
+    public List<UserCore> getFriends(Long userId) {
+        return amizadeRepository.findFriendsOfUser(userId)
                 .stream()
                 .map(this::toUserCore)
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public UserCore createUser(UserCore user) {

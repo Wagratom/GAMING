@@ -6,7 +6,7 @@ import com.transcender.main.domain.exceptions.InternalError;
 import com.transcender.main.domain.port.in.UserPortIn;
 import com.transcender.main.domain.port.out.EncryptPortOut;
 import com.transcender.main.domain.port.out.JwtGeneratorPort;
-import com.transcender.main.domain.port.out.UserRepository;
+import com.transcender.main.domain.port.out.UserRepositoryPort;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserApplication implements UserPortIn {
-    private final UserRepository userRepository;
+    private final UserRepositoryPort userRepository;
     private final EncryptPortOut encryptPortOut;
     private final JwtGeneratorPort jwtPortOut;
 
     @Autowired
-    UserApplication(UserRepository userRepository, EncryptPortOut encryptPortOut, JwtGeneratorPort jwtPortOut) {
+    UserApplication(UserRepositoryPort userRepository, EncryptPortOut encryptPortOut, JwtGeneratorPort jwtPortOut) {
         this.userRepository = userRepository;
         this.encryptPortOut = encryptPortOut;
         this.jwtPortOut = jwtPortOut;
@@ -36,8 +36,14 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public List<Map<String, Object>> getUsersOnlines() {
-        return userRepository.getUsersOnlines()
+    public List<Map<String, Object>> getUsers(Boolean online, Boolean friends, String jwt) {
+        List<UserCore> users;
+        if (online != null && friends != null) {
+            users = userRepository.getUsersOnline();
+        }
+
+        Map<String, Object> userInfo = jwtPortOut.validateTokenAndGetClaims(jwt);
+        return userRepository.getUsersOnline()
                 .stream()
                 .map(user -> {
                     Map<String, Object> map = new HashMap<>();

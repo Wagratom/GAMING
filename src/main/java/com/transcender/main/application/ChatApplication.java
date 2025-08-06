@@ -7,7 +7,7 @@ import com.transcender.main.domain.exceptions.Forbidden;
 import com.transcender.main.domain.exceptions.ResourceNotFound;
 import com.transcender.main.domain.port.in.ChatPort;
 import com.transcender.main.domain.port.out.ChatRepository;
-import com.transcender.main.domain.port.out.UserRepository;
+import com.transcender.main.domain.port.out.UserRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +17,10 @@ import java.util.List;
 public class ChatApplication implements ChatPort {
 
     private final ChatRepository chatRepository;
-    private final UserRepository userRepository;
+    private final UserRepositoryPort userRepository;
 
     @Autowired
-    public ChatApplication(ChatRepository chatRepository, UserRepository userRepository) {
+    public ChatApplication(ChatRepository chatRepository, UserRepositoryPort userRepository) {
         this.chatRepository = chatRepository;
         this.userRepository = userRepository;
     }

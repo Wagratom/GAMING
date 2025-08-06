@@ -11,9 +11,6 @@ CREATE TABLE usuarios (
     atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-
-
-
 -- Tabela de chats (ChatCoreJpa)
 CREATE TABLE Chat (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -40,16 +37,18 @@ CREATE TABLE ChatUsuarios (
 );
 
 -- Tabela de amigos
-CREATE TABLE Amigos (
-    usuario_1 BIGINT NOT NULL,
-    usuario_2 BIGINT NOT NULL,
-    status VARCHAR(50) NOT NULL COMMENT 'pendente, aceito, bloqueado',
-    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (usuario_1, usuario_2),
-    FOREIGN KEY (usuario_1) REFERENCES Usuarios(id),
-    FOREIGN KEY (usuario_2) REFERENCES Usuarios(id)
+CREATE TABLE amigos (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  usuario_1_id BIGINT NOT NULL,
+  usuario_2_id BIGINT NOT NULL,
+  status VARCHAR(50) NOT NULL COMMENT 'pendente, aceito, bloqueado',
+  criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE (usuario_1_id, usuario_2_id),
+  FOREIGN KEY (usuario_1_id) REFERENCES usuarios(id),
+  FOREIGN KEY (usuario_2_id) REFERENCES usuarios(id)
 );
+
 
 -- Tabela de partidas
 CREATE TABLE Partidas (
