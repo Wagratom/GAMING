@@ -6,12 +6,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDtoUpdate extends UserDtoRegister {
+public class UserDtoPut extends UserDtoRegister {
 
     @NotNull(message = "O ID não pode ser nulo")
     private Long id;
 
-    public UserDtoUpdate() {
+    public UserDtoPut() {
         super();
     }
 }
