@@ -1,20 +1,19 @@
 package com.transcender.main.adapters.in.controller;
 
 import com.transcender.main.adapters.in.controller.dto.UserDtoRegister;
-import com.transcender.main.adapters.in.controller.dto.UserDtoUpdate;
 import com.transcender.main.application.UserApplication;
-import com.transcender.main.domain.Entity.UserCore;
+import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.port.in.UserPortIn;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
     private final UserPortIn userApplication;
 
@@ -26,6 +25,7 @@ public class UserController {
     public ResponseEntity<List<Map<String, Object>>> getAllUsers() {
         return ResponseEntity.ok().body(userApplication.getUsersOnlines());
     }
+
     //POST -> /users
     @PostMapping
     public ResponseEntity<Map<String, Object>> registerUser(@Valid @RequestBody UserDtoRegister body) {
@@ -67,3 +67,4 @@ public class UserController {
     //    ResponseEntity.ok().
     //}
 }
+

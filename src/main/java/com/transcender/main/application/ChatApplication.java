@@ -1,7 +1,7 @@
 package com.transcender.main.application;
 
-import com.transcender.main.domain.Entity.ChatCore;
-import com.transcender.main.domain.Entity.UserCore;
+import com.transcender.main.domain.entity.ChatCore;
+import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.exceptions.Forbidden;
 import com.transcender.main.domain.exceptions.ResourceNotFound;

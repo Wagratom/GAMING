@@ -17,13 +17,13 @@ public class UserCoreJpa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = true, unique = true, length = 50)
     private String email;
 
     @Column(name = "senha_hash", nullable = false, length = 512)
     private String senhaHash;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = true, unique = true, length = 15)
     private String nickname;
 
     @Column(length = 20)
