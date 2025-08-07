@@ -38,6 +38,14 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
+    public List<UserCore> getUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(this::toUserCore)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<UserCore> getUsersOnline() {
         return userRepository.findByOnlineTrueAndAtiveTrue()
                 .stream()
@@ -47,7 +55,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
 
     @Override
     public List<UserCore> getFriends(Long userId) {
-        return amizadeRepository.findFriendsOfUser(userId)
+        return amizadeRepository.buscarAmigosAtivos(userId)
                 .stream()
                 .map(this::toUserCore)
                 .collect(Collectors.toList());

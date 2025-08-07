@@ -8,6 +8,8 @@ import com.transcender.main.domain.port.out.EncryptPortOut;
 import com.transcender.main.domain.port.out.JwtGeneratorPort;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
 import io.jsonwebtoken.JwtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ public class UserApplication implements UserPortIn {
     private final UserRepositoryPort userRepository;
     private final EncryptPortOut encryptPortOut;
     private final JwtGeneratorPort jwtPortOut;
+    private static final Logger logger = LoggerFactory.getLogger(UserApplication.class);
 
     @Autowired
     UserApplication(UserRepositoryPort userRepository, EncryptPortOut encryptPortOut, JwtGeneratorPort jwtPortOut) {
@@ -37,22 +40,44 @@ public class UserApplication implements UserPortIn {
 
     @Override
     public List<Map<String, Object>> getUsers(Boolean online, Boolean friends, String jwt) {
-        List<UserCore> users;
-        if (online != null && friends != null) {
-            users = userRepository.getUsersOnline();
-        }
+        try {
+            List<UserCore> users;
 
-        Map<String, Object> userInfo = jwtPortOut.validateTokenAndGetClaims(jwt);
-        return userRepository.getUsersOnline()
-                .stream()
-                .map(user -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("nickname", user.getNickname()); // Verifique se esse método existe
-                    map.put("online", user.getOnline()); // E esse também
-                    return map;
-                })
-                .collect(Collectors.toList());
+            if (Boolean.TRUE.equals(online) && Boolean.TRUE.equals(friends)) {
+                Map<String, Object> claims = jwtPortOut.validateTokenAndGetClaims(jwt);
+                Long userId = ((Number) claims.get("id")).longValue();
+                //TODO: Corrigir aqui
+                users = userRepository.getUsersOnline();
+            } else if (Boolean.TRUE.equals(friends)) {
+                Map<String, Object> claims = jwtPortOut.validateTokenAndGetClaims(jwt);
+                Long userId = ((Number) claims.get("id")).longValue();
+                users = userRepository.getFriends(userId);
+            } else if (Boolean.TRUE.equals(online)) {
+                users = userRepository.getUsersOnline();
+            } else {
+                users = userRepository.getUsers();
+            }
+
+            return users.stream()
+                    .map(user -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("id", user.getId());
+                        map.put("nickname", user.getNickname());
+                        map.put("online", user.getOnline());
+                        map.put("criando_em", user.getCriadoEm());
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+
+        } catch (JwtException ex) {
+            logger.warn("Token JWT inválido: {}", ex.getMessage());
+            throw new Forbidden("Token inválido");
+        } catch (Exception ex) {
+            logger.error("Erro ao tentar listar os usuários", ex); // Loga com stack trace
+            throw new InternalError();
+        }
     }
+
 
     @Override
     public String login(Optional<String> nickname, Optional<String> email, String senha) {

@@ -2,10 +2,12 @@ package com.transcender.main.adapters.in.controller;
 
 import com.transcender.main.domain.exceptions.*;
 import com.transcender.main.domain.exceptions.InternalError;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -27,6 +29,23 @@ public class ExceptionGlobalHandle {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<Map<String, String>> HandleInvalidHeaders(MissingRequestHeaderException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("header", ex.getHeaderName());
+        error.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidTokenJwt(MalformedJwtException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Token JWT inválido");
+        error.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
 
     @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Map<String, String>> handleMethodNotSupported(org.springframework.web.HttpRequestMethodNotSupportedException ex) {

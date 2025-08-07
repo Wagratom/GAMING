@@ -10,6 +10,7 @@ public interface UserRepositoryPort {
     Optional<UserCore> getUserByEmail(String email);
     Optional<UserCore> getUserByNickname(String nickname);
 
+    List<UserCore> getUsers();
     List<UserCore> getUsersOnline();
     List<UserCore> getFriends(Long userId);
 
