@@ -44,17 +44,21 @@ public class UserApplication implements UserPortIn {
             List<UserCore> users;
 
             if (Boolean.TRUE.equals(online) && Boolean.TRUE.equals(friends)) {
+                logger.info("Pegando todos os amigos online");
                 Map<String, Object> claims = jwtPortOut.validateTokenAndGetClaims(jwt);
                 Long userId = ((Number) claims.get("id")).longValue();
                 //TODO: Corrigir aqui
                 users = userRepository.getUsersOnline();
             } else if (Boolean.TRUE.equals(friends)) {
+                logger.info("Pegando todos os amigos");
                 Map<String, Object> claims = jwtPortOut.validateTokenAndGetClaims(jwt);
                 Long userId = ((Number) claims.get("id")).longValue();
                 users = userRepository.getFriends(userId);
             } else if (Boolean.TRUE.equals(online)) {
+                logger.info("Pegando todos os usuarios onlines");
                 users = userRepository.getUsersOnline();
             } else {
+                logger.info("Pegando todos os usuarios");
                 users = userRepository.getUsers();
             }
 
