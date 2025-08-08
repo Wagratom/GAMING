@@ -4,6 +4,7 @@ import com.transcender.main.domain.exceptions.UsuarioArgumentInvalid;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.Set;
 
 public class UserCore {
     private Long id;
@@ -15,6 +16,9 @@ public class UserCore {
     private boolean ative;
     private Instant criadoEm;
     private Instant atualizadoEm;
+
+    private Set<Long> solicitadas;
+    private Set<Long> recebidas;
 
     public UserCore() {}
 

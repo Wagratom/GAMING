@@ -44,4 +44,10 @@ public class UserCoreJpa {
 
     @OneToMany(mappedBy = "usuario")
     private List<ChatUserCoreJpa> chatsParticipando;
+
+    @OneToMany(mappedBy = "usuario1")
+    private List<AmizadeJpa> solicitadas;
+
+    @OneToMany(mappedBy = "usuario2")
+    private List<AmizadeJpa> recebidas;
 }
