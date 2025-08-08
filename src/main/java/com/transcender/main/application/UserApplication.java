@@ -85,8 +85,6 @@ public class UserApplication implements UserPortIn {
 
     @Override
     public String login(Optional<String> nickname, Optional<String> email, String senha) {
-        // Só um dos dois pode ser presente
-        System.out.println("Iniciando validação");
         if (nickname.isPresent() && email.isPresent()) {
             throw new BadRequest("Envie apenas nickname ou email, não ambos.");
         }
@@ -97,7 +95,7 @@ public class UserApplication implements UserPortIn {
         }
 
         // Recupera o usuário
-        System.out.println("Consultando o usuario na base");
+        logger.info("Consultando o usuario na base");
         Optional<UserCore> user = nickname.isPresent()
                 ? userRepository.getUserByNickname(nickname.get())
                 : userRepository.getUserByEmail(email.get());
@@ -106,9 +104,7 @@ public class UserApplication implements UserPortIn {
             throw new ResourceNotFound("Usuário", 0L);
         }
 
-        // Verifica a senha (se NÃO confere, lança exceção)
-        System.out.println("Verificando credenciais");
-
+        logger.info("Check password");
         if (!encryptPortOut.checkPassword(senha, user.get().getSenha())) {
             throw new Forbidden("Efetuar login: credenciais inválidas");
         }
@@ -120,7 +116,7 @@ public class UserApplication implements UserPortIn {
         payload.put("nickname", user.get().getNickname());
 
         // Retorna o JWT gerado com base nos dados
-        System.out.println("Gerando token de auth");
+        logger.info("Gerando token de auth");
         return jwtPortOut.generateToken(payload);
     }
 
@@ -147,14 +143,18 @@ public class UserApplication implements UserPortIn {
             jsonUser.put("criando_em", user.getCriadoEm());
             return jsonUser;
 
-        } catch (JwtException e) {
+        } catch (JwtException ex) {
             throw new Unauthorized("Token invalido");
+        } catch (Exception ex) {
+            logger.error("Erro ao tentar pegar o profile", ex); // Loga com stack trace
+            throw new InternalError();
         }
     }
 
 
     @Override
     public UserCore registerUser(UserCore user) {
+        logger.info("Register user");
         user.validateCreateUser();
         if (user.getEmail() != null && userRepository.getUserByEmail(user.getEmail()).isPresent()) {
             throw new Conflict("Esse email já esta sendo utilizado");
@@ -164,35 +164,45 @@ public class UserApplication implements UserPortIn {
         }
         user.setAtive(true);
         user.setOnline(true);
-        user.setSenha(this.encryptPortOut.encryptPassword(user.getSenha()));
         try {
+            logger.info("Encripy password");
+            user.setSenha(this.encryptPortOut.encryptPassword(user.getSenha()));
+            logger.info("Criando Usuario");
             return this.userRepository.createUser(user); // salva no banco
-        } catch (Exception err) {
-            System.out.printf("cai no exception: %s%n", err.getMessage());
+        } catch (Exception ex) {
+            logger.error("Erro ao tentar registrar os usuários", ex); // Loga com stack trace
             throw new InternalError();
         }
     }
 
     @Override
     public UserCore updateUser(String newNickname, Long userId ) {
-        if (userId == null || userId <= 0) throw new BadRequest("Id inválido: deve ser positivo");
-        if (newNickname == null || newNickname.trim().isEmpty()) throw new BadRequest("Nickname empty");
+        try {
+            if (userId == null || userId <= 0) throw new BadRequest("Id inválido: deve ser positivo");
+            if (newNickname == null || newNickname.trim().isEmpty()) throw new BadRequest("Nickname empty");
 
-        UserCore oldUser = userRepository
-                .getUserById(userId)
-                .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
+            logger.info("Pegando usuario antigo DB");
+            UserCore oldUser = userRepository
+                    .getUserById(userId)
+                    .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
 
-        oldUser.setNickname(newNickname);
-        return userRepository.updateUser(oldUser);
+            oldUser.setNickname(newNickname);
+            logger.info("Atualizando usuario");
+            return userRepository.updateUser(oldUser);
+        } catch (Exception ex) {
+            logger.error("Erro ao tentar atualizar o usuários", ex); // Loga com stack trace
+            throw new InternalError();
+        }
     }
 
     @Override
     public void deleteUser(Long userId) {
-        if (userId == null || userId <= 0) throw new BadRequest("Id do usuario deve ser positivo");
-        this.userRepository.deleteUser(userId); //deleta o usuario
-    }
-
-    public boolean isBlank(String value) {
-        return value == null || value.isBlank();
+        try {
+            if (userId == null || userId <= 0) throw new BadRequest("Id do usuario deve ser positivo");
+            this.userRepository.deleteUser(userId); //deleta o usuario
+        } catch (Exception ex) {
+            logger.error("Erro ao tentar deletar o usuários", ex); // Loga com stack trace
+            throw new InternalError();
+        }
     }
 }
