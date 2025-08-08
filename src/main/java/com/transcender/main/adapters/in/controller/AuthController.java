@@ -46,10 +46,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@Valid @RequestBody LoginDto body) {
-        return ResponseEntity.ok().body(
-                userApplication.login(body.nickname(), body.email(), body.password())
-        );
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String jwt) {
+        userApplication.logout(jwt);
+        return ResponseEntity.ok().body("Success");
     }
 
     @PostMapping("/profile")

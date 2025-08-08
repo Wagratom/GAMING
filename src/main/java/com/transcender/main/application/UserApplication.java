@@ -120,6 +120,24 @@ public class UserApplication implements UserPortIn {
         return jwtPortOut.generateToken(payload);
     }
 
+    @Override
+    public void logout(String jwt) {
+        try {
+            logger.info("Validando token jwt");
+            Map<String, Object> userInfo = jwtPortOut.validateTokenAndGetClaims(jwt);
+            Long id = ((Number) userInfo.get("id")).longValue();
+
+            logger.info("Consultando o usuario na base");
+            UserCore user = userRepository.getUserById(id)
+                    .orElseThrow(() -> new ResourceNotFound("usuario", id));
+            user.setOnline(false);
+            logger.info("Atualizando o usuario na base");
+            userRepository.updateUser(user);
+        } catch (Exception ex) {
+            logger.error("Erro ao tentar fazer logout", ex); // Loga com stack trace
+            throw new InternalError();
+        }
+    }
 
     @Override
     public Map<String, Object> getProfile(String headerAuth) {
