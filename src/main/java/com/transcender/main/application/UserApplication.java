@@ -2,10 +2,9 @@ package com.transcender.main.application;
 
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.exceptions.*;
-import com.transcender.main.domain.exceptions.InternalError;
 import com.transcender.main.domain.port.in.UserPortIn;
-import com.transcender.main.domain.port.out.EncryptPortOut;
-import com.transcender.main.domain.port.out.JwtGeneratorPort;
+import com.transcender.main.domain.port.out.EncriptyService;
+import com.transcender.main.domain.port.out.JwtService;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
 import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
@@ -19,15 +18,15 @@ import java.util.stream.Collectors;
 @Service
 public class UserApplication implements UserPortIn {
     private final UserRepositoryPort userRepository;
-    private final EncryptPortOut encryptPortOut;
-    private final JwtGeneratorPort jwtPortOut;
+    private final EncriptyService encriptyService;
+    private final JwtService jwtService;
     private static final Logger logger = LoggerFactory.getLogger(UserApplication.class);
 
     @Autowired
-    UserApplication(UserRepositoryPort userRepository, EncryptPortOut encryptPortOut, JwtGeneratorPort jwtPortOut) {
+    UserApplication(UserRepositoryPort userRepository, EncriptyService encryptPortOut, JwtService jwtPortOut) {
         this.userRepository = userRepository;
-        this.encryptPortOut = encryptPortOut;
-        this.jwtPortOut = jwtPortOut;
+        this.encriptyService = encryptPortOut;
+        this.jwtService = jwtPortOut;
     }
 
     @Override
@@ -41,7 +40,7 @@ public class UserApplication implements UserPortIn {
     @Override
     public List<Map<String, Object>> getUsers(Boolean online, Boolean friends, String jwt) {
         try {
-            Map<String, Object> claims = jwtPortOut.validateTokenAndGetClaims(jwt.substring(7));
+            Map<String, Object> claims = jwtService.validateTokenAndGetClaims(jwt.substring(7));
             List<UserCore> users;
 
             if (Boolean.TRUE.equals(online) && Boolean.TRUE.equals(friends)) {
@@ -101,7 +100,7 @@ public class UserApplication implements UserPortIn {
         }
 
         logger.info("Check password");
-        if (!encryptPortOut.checkPassword(senha, user.get().getSenha())) {
+        if (!encriptyService.checkPassword(senha, user.get().getSenha())) {
             throw new Forbidden("credenciais inválidas");
         }
 
@@ -113,14 +112,14 @@ public class UserApplication implements UserPortIn {
 
         // Retorna o JWT gerado com base nos dados
         logger.info("Gerando token de auth");
-        return jwtPortOut.generateToken(payload);
+        return jwtService.generateToken(payload);
     }
 
     @Override
     public void logout(String jwt) {
         try {
             logger.info("Validando token jwt");
-            Map<String, Object> userInfo = jwtPortOut.validateTokenAndGetClaims(jwt.substring(7));
+            Map<String, Object> userInfo = jwtService.validateTokenAndGetClaims(jwt.substring(7));
             Long id = ((Number) userInfo.get("id")).longValue();
 
             logger.info("Consultando o usuario na base");
@@ -144,7 +143,7 @@ public class UserApplication implements UserPortIn {
         try {
             String jwt = headerAuth.startsWith("Bearer ") ? headerAuth.substring(7) : headerAuth;
             System.out.println("Decodificando o token");
-            Map<String, Object> infoJwt = jwtPortOut.validateTokenAndGetClaims(jwt);
+            Map<String, Object> infoJwt = jwtService.validateTokenAndGetClaims(jwt);
 
             Long id = ((Number) infoJwt.get("id")).longValue();
 
@@ -178,7 +177,7 @@ public class UserApplication implements UserPortIn {
         user.setAtive(true);
         user.setOnline(true);
         logger.info("Encripy password");
-        user.setSenha(this.encryptPortOut.encryptPassword(user.getSenha()));
+        user.setSenha(this.encriptyService.encryptPassword(user.getSenha()));
         logger.info("Criando Usuario");
         return this.userRepository.createUser(user); // salva no banco
     }
