@@ -29,11 +29,10 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
         this.mapperToJpaEntity = mapperToJpaEntity;
     }
 
-
     @Override
     public List<UserCore> getFriends(Long userId, FriendStatus status) {
-        logger.info("FriendRepositoryAdapter > getFriends > exec");
-        return amizadeRepository.findAcceptedFriendsByUserId(userId, status)
+        logger.info("FriendRepositoryAdapter::getFriends::{}", status);
+        return amizadeRepository.findAcceptedFriendsByUserId(userId, status.name())
                 .stream()
                 .map((user) -> mapperToJpaEntity.toUserCore(user, false))
                 .collect(Collectors.toList());

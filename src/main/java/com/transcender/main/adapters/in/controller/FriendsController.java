@@ -45,7 +45,6 @@ public class FriendsController {
         } else {
             friendStatus = FriendStatus.ACCEPTED;
         }
-
         return ResponseEntity.ok(friendsApplication.getFriends(jwt, friendStatus));
     }
 

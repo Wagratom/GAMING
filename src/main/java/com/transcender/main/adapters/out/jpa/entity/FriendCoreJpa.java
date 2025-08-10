@@ -11,7 +11,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "amigos", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"usuario_1_id", "usuario_2_id"})
+        @UniqueConstraint(columnNames = {"usuario1_id", "usuario2_id"})
 })
 public class FriendCoreJpa {
 
@@ -27,7 +27,8 @@ public class FriendCoreJpa {
     @JoinColumn(name = "usuario2_id")
     private UserCoreJpa usuario2; // Quem recebeu
 
-    @Column(nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private FriendStatus status;
 
     @Column(name = "criado_em", nullable = false)

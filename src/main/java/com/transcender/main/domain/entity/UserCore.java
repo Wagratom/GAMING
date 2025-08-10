@@ -49,6 +49,7 @@ public class UserCore {
         this.nickname = nickname;
         this.telefone = telefone;
         this.online = false;
+        this.ative = true;
         this.criadoEm = Instant.now();
         this.atualizadoEm = Instant.now();
     }

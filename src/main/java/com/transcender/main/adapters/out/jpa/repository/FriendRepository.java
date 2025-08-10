@@ -24,7 +24,7 @@ public interface FriendRepository extends JpaRepository<FriendCoreJpa, Long> {
         AND u.ative = true
     """, nativeQuery = true)
     List<UserCoreJpa> findAcceptedFriendsByUserId(@Param("userId") Long userId,
-                                                  @Param("status") FriendStatus status);
+                                                  @Param("status") String status);
 
     @Query(value = """
     SELECT

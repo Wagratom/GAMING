@@ -119,7 +119,6 @@ public class UserApplication implements UserPortIn {
             UserCore user = userRepository.getUserById(id)
                     .orElseThrow(() -> new ResourceNotFound("usuario", id));
 
-            System.out.println("passei");
             user.setOnline(false);
             logger.info("Atualizando o usuario na base");
             userRepository.updateUser(user);
@@ -135,7 +134,6 @@ public class UserApplication implements UserPortIn {
 
         try {
             String jwt = headerAuth.startsWith("Bearer ") ? headerAuth.substring(7) : headerAuth;
-            System.out.println("Decodificando o token");
             Map<String, Object> infoJwt = jwtService.validateTokenAndGetClaims(jwt);
 
             Long id = ((Number) infoJwt.get("id")).longValue();
