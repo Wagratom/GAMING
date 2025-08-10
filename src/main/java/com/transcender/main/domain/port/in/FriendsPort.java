@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface FriendsPort {
     List<Map<String, Object>> getFriends(String jwt);
-    boolean addFriend(Long userId, String jwt);
-    boolean removeFriend(Long userId, String jwt);
-    boolean blockFriend(Long userId, String jwt);
+    boolean addFriend(String jwt, Long friendId);
+    List<Map<String, Object>> removeFriend(String jwt, Long friendId);
+    List<Map<String, Object>> blockFriend(String jwt, Long friendId);
 }

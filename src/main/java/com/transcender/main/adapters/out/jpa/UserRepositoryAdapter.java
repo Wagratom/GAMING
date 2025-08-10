@@ -1,6 +1,5 @@
 package com.transcender.main.adapters.out.jpa;
 
-import com.transcender.main.adapters.out.jpa.repository.FriendRepository;
 import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.adapters.out.jpa.mapper.MapperToJpaEntity;
 import com.transcender.main.domain.entity.UserCore;
@@ -14,13 +13,11 @@ import java.util.stream.Collectors;
 @Component
 public class UserRepositoryAdapter implements UserRepositoryPort {
     private final UserRepository userRepository;
-    private final FriendRepository amizadeRepository;
     private final MapperToJpaEntity mapperToJpaEntity;
 
     @Autowired
-    UserRepositoryAdapter(UserRepository usuarioRepository, FriendRepository amizadeRepository, MapperToJpaEntity mapperToJpaEntity) {
+    UserRepositoryAdapter(UserRepository usuarioRepository, MapperToJpaEntity mapperToJpaEntity) {
         this.userRepository = usuarioRepository;
-        this.amizadeRepository = amizadeRepository;
         this.mapperToJpaEntity = mapperToJpaEntity;
     }
 

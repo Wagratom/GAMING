@@ -42,7 +42,7 @@ public interface FriendRepository extends JpaRepository<FriendCoreJpa, Long> {
 
     //Verifica se existe uma coluna de amizade entre os usuarios
     @Query("""
-    SELECT a FROM AmizadeCoreJpa a
+    SELECT a FROM FriendCoreJpa a
     WHERE (a.usuario1.id = :userId1 AND a.usuario2.id = :userId2)
        OR (a.usuario1.id = :userId2 AND a.usuario2.id = :userId1)
     """)

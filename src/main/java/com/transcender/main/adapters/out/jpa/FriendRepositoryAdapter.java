@@ -3,7 +3,6 @@ package com.transcender.main.adapters.out.jpa;
 import com.transcender.main.adapters.out.jpa.entity.FriendCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
 import com.transcender.main.adapters.out.jpa.repository.FriendRepository;
-import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.adapters.out.jpa.mapper.MapperToJpaEntity;
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.FriendStatus;
@@ -19,15 +18,11 @@ import java.util.stream.Collectors;
 @Repository
 public class FriendRepositoryAdapter implements FriendsRepositoryPort {
     private final FriendRepository amizadeRepository;
-    private final UserRepository userRepository;
     private final MapperToJpaEntity mapperToJpaEntity;
 
     @Autowired
-    public FriendRepositoryAdapter(FriendRepository amizadeRepository,
-                                   UserRepository userRepository,
-                                   MapperToJpaEntity mapperToJpaEntity) {
+    public FriendRepositoryAdapter(FriendRepository amizadeRepository, MapperToJpaEntity mapperToJpaEntity) {
         this.amizadeRepository = amizadeRepository;
-        this.userRepository = userRepository;
         this.mapperToJpaEntity = mapperToJpaEntity;
     }
 
@@ -41,12 +36,12 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
     }
 
     @Override
-    public boolean addFriend(UserCore user1, UserCore user2) {
-        UserCoreJpa user1Jpa = mapperToJpaEntity.toUserCoreJpa(user1);
-        UserCoreJpa user2Jpa = mapperToJpaEntity.toUserCoreJpa(user2);
+    public boolean addFriend(UserCore solicitante, UserCore friend) {
+        UserCoreJpa solicitanteJpa = mapperToJpaEntity.toUserCoreJpa(solicitante);
+        UserCoreJpa friendJpa = mapperToJpaEntity.toUserCoreJpa(friend);
 
         Optional<FriendCoreJpa> amizadeExistente = amizadeRepository
-                .findFriendshipBetweenUsers(user1Jpa.getId(), user2Jpa.getId());
+                .findFriendshipBetweenUsers(solicitanteJpa.getId(), friendJpa.getId());
 
         if (amizadeExistente.isPresent()) {
             // UPDATE — altera status da amizade existente
@@ -56,8 +51,8 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
         } else {
             // CREATE — cria nova amizade
             amizadeRepository.save(new FriendCoreJpa(
-                    user1Jpa,
-                    user2Jpa,
+                    solicitanteJpa,
+                    friendJpa,
                     FriendStatus.PENDING
             ));
         }
@@ -66,25 +61,25 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
     }
 
     @Override
-    public boolean removeFriend(Long userId, Long friendId) {
+    public  List<UserCore> removeFriend(Long userId, Long friendId) {
         FriendCoreJpa coluna = amizadeRepository.findFriendshipBetweenUsers(userId, friendId)
                 .orElseThrow(() -> new NoSuchElementException(
                         String.format("Amizade entre usuário %d e %d não encontrada", userId, friendId)
                 ));
         coluna.setStatus(FriendStatus.REMOVED);
         amizadeRepository.save(coluna);
-        return true;
+        return getFriends(userId);
     }
 
     @Override
-    public boolean blockFriend(Long userId, Long friendId) {
+    public  List<UserCore> blockFriend(Long userId, Long friendId) {
         FriendCoreJpa coluna = amizadeRepository.findFriendshipBetweenUsers(userId, friendId)
                 .orElseThrow(() -> new NoSuchElementException(
                         String.format("Amizade entre usuário %d e %d não encontrada", userId, friendId)
                 ));
         coluna.setStatus(FriendStatus.BLOCKED);
         amizadeRepository.save(coluna);
-        return true;
+        return getFriends(userId);
     }
 
     @Override
