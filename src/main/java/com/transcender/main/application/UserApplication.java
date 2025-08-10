@@ -97,10 +97,11 @@ public class UserApplication implements UserPortIn {
         userRepository.updateUser(user);
 
         // Monta o mapa com os dados do usuário
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("id", user.getId());
-        payload.put("email", user.getEmail());
-        payload.put("nickname", user.getNickname());
+        Map<String, Object> payload = Map.of(
+                "id", user.getId(),
+                "nickname", user.getNickname() != null ? user.getNickname() : "",
+                "email",  user.getEmail()!= null ? user.getEmail()  : ""
+        );
 
         // Retorna o JWT gerado com base nos dados
         logger.info("Gerando token JWT");
@@ -142,12 +143,14 @@ public class UserApplication implements UserPortIn {
             UserCore user = userRepository.getUserById(id)
                     .orElseThrow(() -> new ResourceNotFound("Usuario", id));
 
-            Map<String, Object> jsonUser = new HashMap<>();
-            jsonUser.put("id", user.getId());
-            jsonUser.put("nickname", user.getNickname());
-            jsonUser.put("email", user.getEmail());
-            jsonUser.put("online", user.getOnline());
-            jsonUser.put("criando_em", user.getCriadoEm());
+            Map<String, Object> jsonUser = Map.of(
+                    "id", user.getId(),
+                    "nickname", user.getNickname() != null ? user.getNickname() : "",
+                    "email",  user.getEmail()!= null ? user.getEmail()  : "",
+                    "online", user.getOnline(),
+                    "criando_em", user.getCriadoEm()
+            );
+
             return jsonUser;
 
         } catch (JwtException ex) {
