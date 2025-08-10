@@ -45,9 +45,9 @@ public class UserCoreJpa {
     @OneToMany(mappedBy = "usuario")
     private List<ChatUserCoreJpa> chatsParticipando;
 
-    @OneToMany(mappedBy = "usuario1")
-    private List<AmizadeJpa> solicitadas;
+    @OneToMany(mappedBy = "usuario1", fetch = FetchType.LAZY)
+    private List<FriendCoreJpa> solicitadas;
 
-    @OneToMany(mappedBy = "usuario2")
-    private List<AmizadeJpa> recebidas;
+    @OneToMany(mappedBy = "usuario2", fetch = FetchType.LAZY)
+    private List<FriendCoreJpa> recebidas;
 }

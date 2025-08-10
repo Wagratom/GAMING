@@ -72,7 +72,7 @@ public class UserApplication implements UserPortIn {
                     .collect(Collectors.toList());
 
         } catch (JwtException ex) {
-            logger.warn("Token JWT inválido: {}", ex.getMessage());
+            logger.error("Token JWT inválido: {}", ex.getMessage());
             throw new Forbidden("Token inválido");
         }
     }
@@ -100,7 +100,7 @@ public class UserApplication implements UserPortIn {
         }
 
         logger.info("Check password");
-        if (!encriptyService.checkPassword(senha, user.get().getSenha())) {
+        if (!encriptyService.checkPassword(senha, user.get().getGetSenhaHash())) {
             throw new Forbidden("credenciais inválidas");
         }
 
@@ -159,6 +159,7 @@ public class UserApplication implements UserPortIn {
             return jsonUser;
 
         } catch (JwtException ex) {
+            logger.error("Erro ao tentar decodificar o token", ex); // Loga com stack trace
             throw new Unauthorized("Token invalido");
         }
     }
@@ -177,7 +178,7 @@ public class UserApplication implements UserPortIn {
         user.setAtive(true);
         user.setOnline(true);
         logger.info("Encripy password");
-        user.setSenha(this.encriptyService.encryptPassword(user.getSenha()));
+        user.setGetSenhaHash(this.encriptyService.encryptPassword(user.getGetSenhaHash()));
         logger.info("Criando Usuario");
         return this.userRepository.createUser(user); // salva no banco
     }
