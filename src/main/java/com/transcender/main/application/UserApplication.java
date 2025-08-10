@@ -68,7 +68,6 @@ public class UserApplication implements UserPortIn {
         }
     }
 
-
     @Override
     public String login(Optional<String> nickname, Optional<String> email, String senha) {
         if (nickname.isPresent() && email.isPresent()) {
@@ -91,7 +90,7 @@ public class UserApplication implements UserPortIn {
         }
 
         logger.info("Check password");
-        if (!encriptyService.checkPassword(senha, user.get().getGetSenhaHash())) {
+        if (!encriptyService.checkPassword(senha, user.get().getSenhaHash())) {
             throw new Forbidden("credenciais inválidas");
         }
 
@@ -157,7 +156,8 @@ public class UserApplication implements UserPortIn {
 
     @Override
     public UserCore registerUser(UserCore user) {
-        logger.info("Register user");
+        logger.info("UserApplication > registerUser > exec");
+        if (user == null) throw new BadRequest("Usuario nulo");
         user.validateCreateUser();
         if (user.getEmail() != null && userRepository.getUserByEmail(user.getEmail()).isPresent()) {
             throw new Conflict("Esse email já esta sendo utilizado");
@@ -168,8 +168,8 @@ public class UserApplication implements UserPortIn {
         user.setAtive(true);
         user.setOnline(true);
         logger.info("Encripy password");
-        user.setGetSenhaHash(this.encriptyService.encryptPassword(user.getGetSenhaHash()));
-        logger.info("Criando Usuario");
+        user.setSenhaHash(this.encriptyService.encryptPassword(user.getSenhaHash()));
+        logger.info("Criando Usuario: {}", user);
         return this.userRepository.createUser(user); // salva no banco
     }
 

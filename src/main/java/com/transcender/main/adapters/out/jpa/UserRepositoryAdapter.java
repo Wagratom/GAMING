@@ -66,6 +66,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     @Override
     public UserCore createUser(UserCore user) {
         logger.info("UserRepositoryAdapter > createUser > exec");
+        logger.info("User: {}", user);
         return mapperToJpaEntity.toUserCore(userRepository.save(mapperToJpaEntity.toUserCoreJpa(user)), false);
     }
 

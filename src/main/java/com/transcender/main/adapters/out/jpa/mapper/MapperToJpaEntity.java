@@ -36,16 +36,24 @@ public class MapperToJpaEntity {
     }
 
     public UserCoreJpa toUserCoreJpa(UserCore user) {
-        UserCoreJpa userJpa = new UserCoreJpa();
-        userJpa.setId(user.getId());
-        userJpa.setEmail(user.getEmail());
-        userJpa.setSenhaHash(user.getGetSenhaHash());
-        userJpa.setNickname(user.getNickname());
-        userJpa.setTelefone(user.getTelefone());
-        userJpa.setOnline(user.getOnline());
-        userJpa.setAtualizadoEm(user.getAtualizadoEm());
-        return userJpa;
+        return new UserCoreJpa(
+                user.getId(),
+                user.getEmail(),
+                user.getSenhaHash(),
+                user.getNickname(),
+                user.getTelefone(),
+                user.getOnline(),
+                user.getAtive(),
+                null,
+                null,
+                null,
+                null,
+                user.getCriadoEm(),
+                user.getAtualizadoEm()
+        );
     }
+
+
 
     public FriendCore toAFriendCore(FriendCoreJpa friendjpa) {
         return new FriendCore(

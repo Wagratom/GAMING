@@ -9,7 +9,7 @@ import java.util.Set;
 public class UserCore {
     private Long id;
     private String email;
-    private String getSenhaHash;
+    private String senhaHash;
     private String nickname;
     private String telefone;
     private boolean online;
@@ -29,7 +29,7 @@ public class UserCore {
         if (id == null || id <= 0) throw new UsuarioArgumentInvalid("Id invalido");
         this.id = id;
         this.email = email;
-        this.getSenhaHash = senha;
+        this.senhaHash = senha;
         this.nickname = nickname;
         this.telefone = telefone;
         this.online = online;
@@ -45,7 +45,7 @@ public class UserCore {
     public UserCore(String email, String senha, String nickname, String telefone, Optional<Long> id) {
         id.ifPresent(value -> this.id = value);
         this.email = email;
-        this.getSenhaHash = senha;
+        this.senhaHash = senha;
         this.nickname = nickname;
         this.telefone = telefone;
         this.online = false;
@@ -75,15 +75,32 @@ public class UserCore {
             throw new UsuarioArgumentInvalid("Email inválido: deve ter no máximo 100 caracteres");
         }
 
-        if (getSenhaHash == null || getSenhaHash.trim().isEmpty()) {
+        if (senhaHash == null || senhaHash.trim().isEmpty()) {
             throw new UsuarioArgumentInvalid("Senha inválida");
         }
     }
 
+    @Override
+    public String toString() {
+        return "UserCore{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", online=" + online +
+                ", ative=" + ative +
+                ", criadoEm=" + criadoEm +
+                ", atualizadoEm=" + atualizadoEm +
+                ", solicitadasCount=" + (solicitadas != null ? solicitadas.size() : 0) +
+                ", recebidasCount=" + (recebidas != null ? recebidas.size() : 0) +
+                '}';
+    }
+
+
     // Getters
     public Long getId() { return id; }
     public String getEmail() { return email; }
-    public String getGetSenhaHash() { return getSenhaHash; }
+    public String getSenhaHash() { return senhaHash; }
     public String getNickname() { return nickname; }
     public String getTelefone() { return telefone; }
     public boolean getOnline() { return online; }
@@ -96,7 +113,7 @@ public class UserCore {
     // Setters
     public void setId(Long id) { this.id = id; }
     public void setEmail(String email) { this.email = email; }
-    public void setGetSenhaHash(String getSenhaHash) { this.getSenhaHash = getSenhaHash; }
+    public void setSenhaHash(String getSenhaHash) { this.senhaHash = getSenhaHash; }
     public void setNickname(String nickname) { this.nickname = nickname; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
     public void setOnline(boolean online) { this.online = online; }

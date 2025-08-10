@@ -1,7 +1,9 @@
 package com.transcender.main.adapters.out.jpa.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -10,6 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor        // cria construtor vazio
+@AllArgsConstructor       // cria construtor com todos os campos (incluindo collections)
 @Table(name = "usuarios")
 public class UserCoreJpa {
 
@@ -29,15 +33,11 @@ public class UserCoreJpa {
     @Column(length = 20)
     private String telefone;
 
+    @Column(name = "online", nullable = false)
     private Boolean online;
 
+    @Column(name = "ative", nullable = true)
     private Boolean ative;
-
-    @Column(name = "criado_em", nullable = false)
-    private Instant criadoEm = Instant.now();
-
-    @Column(name = "atualizado_em", nullable = false)
-    private Instant atualizadoEm = Instant.now();
 
     @OneToMany(mappedBy = "onwer")
     private List<ChatCoreJpa> chatsCriados;
@@ -50,4 +50,10 @@ public class UserCoreJpa {
 
     @OneToMany(mappedBy = "usuario2", fetch = FetchType.LAZY)
     private List<FriendCoreJpa> recebidas;
+
+    @Column(name = "criado_em", nullable = false)
+    private Instant criadoEm = Instant.now();
+
+    @Column(name = "atualizado_em", nullable = false)
+    private Instant atualizadoEm = Instant.now();
 }
