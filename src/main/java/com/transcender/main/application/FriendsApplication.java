@@ -1,6 +1,7 @@
 package com.transcender.main.application;
 
 import com.transcender.main.domain.entity.UserCore;
+import com.transcender.main.domain.enuns.FriendStatus;
 import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.exceptions.ResourceNotFound;
 import com.transcender.main.domain.exceptions.Unauthorized;
@@ -35,6 +36,8 @@ public class FriendsApplication implements FriendsPort {
 
     public Long getIdJwt(String jwt) {
         try {
+            if (jwt == null) throw new Unauthorized("Token invalido");
+
             Map<String, Object> userInfo = jwtService.validateTokenAndGetClaims(jwt.substring(7));
             return ((Number) userInfo.get("id")).longValue();
         } catch (JwtException ex) {
@@ -44,9 +47,11 @@ public class FriendsApplication implements FriendsPort {
     };
 
     @Override
-    public List<Map<String, Object>> getFriends(String jwt) {
+    public List<Map<String, Object>> getFriends(String jwt, FriendStatus status) {
         try {
-            return toJson(friendsRepository.getFriends(getIdJwt(jwt)));
+            logger.info("FriendsApplication::getFriends");
+            status = status != null ? status : FriendStatus.ACCEPTED;
+            return toJson(friendsRepository.getFriends(getIdJwt(jwt), status));
         } catch (JwtException ex) {
             logger.error("Erro ao tentar decodificar o token", ex); // Loga com stack trace
             throw new Unauthorized("Token invalido");

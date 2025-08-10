@@ -31,9 +31,9 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
 
 
     @Override
-    public List<UserCore> getFriends(Long userId) {
+    public List<UserCore> getFriends(Long userId, FriendStatus status) {
         logger.info("FriendRepositoryAdapter > getFriends > exec");
-        return amizadeRepository.findAcceptedFriendsByUserId(userId)
+        return amizadeRepository.findAcceptedFriendsByUserId(userId, status)
                 .stream()
                 .map((user) -> mapperToJpaEntity.toUserCore(user, false))
                 .collect(Collectors.toList());
@@ -73,7 +73,7 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
                 ));
         coluna.setStatus(FriendStatus.REMOVED);
         amizadeRepository.save(coluna);
-        return getFriends(userId);
+        return getFriends(userId, FriendStatus.ACCEPTED);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
                 ));
         coluna.setStatus(FriendStatus.BLOCKED);
         amizadeRepository.save(coluna);
-        return getFriends(userId);
+        return getFriends(userId, FriendStatus.ACCEPTED);
     }
 
     @Override

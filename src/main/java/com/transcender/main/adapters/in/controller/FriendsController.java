@@ -1,8 +1,10 @@
 package com.transcender.main.adapters.in.controller;
 import com.transcender.main.adapters.in.controller.dto.AddUserDto;
 import com.transcender.main.application.FriendsApplication;
+import com.transcender.main.domain.enuns.FriendStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +21,35 @@ public class FriendsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Map<String, Object>>> getFriends(@RequestHeader("Authorization") String jwt) {
-        return ResponseEntity.ok().body(friendsApplication.getFriends(jwt));
+    public ResponseEntity<?> getFriends(
+            @RequestHeader("Authorization") String jwt,
+            @RequestParam(value = "status", required = false) String status
+    ) {
+        FriendStatus friendStatus = null;
+
+        if (status != null && !status.isBlank()) {
+            try {
+                friendStatus = FriendStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                        "error", """
+                            Status inválido. Valores permitidos:
+                            PENDING   - Awaiting response from the other user
+                            ACCEPTED  - Both users are friends
+                            DECLINED  - Friend request was declined
+                            BLOCKED   - One user blocked the other
+                            REMOVED   - Removed from friends list
+                            """
+                ));
+            }
+        } else {
+            friendStatus = FriendStatus.ACCEPTED;
+        }
+
+        return ResponseEntity.ok(friendsApplication.getFriends(jwt, friendStatus));
     }
+
+
 
     @PostMapping
     public ResponseEntity<String> addFriend(

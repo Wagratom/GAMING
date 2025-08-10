@@ -2,6 +2,7 @@ package com.transcender.main.adapters.out.jpa.repository;
 
 import com.transcender.main.adapters.out.jpa.entity.FriendCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
+import com.transcender.main.domain.enuns.FriendStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,10 +20,11 @@ public interface FriendRepository extends JpaRepository<FriendCoreJpa, Long> {
         ON (a.usuario1_id = :userId AND a.usuario2_id = u.id)
         OR (a.usuario2_id = :userId AND a.usuario1_id = u.id)
     WHERE
-        a.status = 'ACCEPTED'
+        a.status = :status
         AND u.ative = true
     """, nativeQuery = true)
-    List<UserCoreJpa> findAcceptedFriendsByUserId(@Param("userId") Long userId);
+    List<UserCoreJpa> findAcceptedFriendsByUserId(@Param("userId") Long userId,
+                                                  @Param("status") FriendStatus status);
 
     @Query(value = """
     SELECT
