@@ -1,12 +1,12 @@
 package com.transcender.main.domain.entity;
 
-import com.transcender.main.domain.enuns.AmizadeStatus;
+import com.transcender.main.domain.enuns.FriendStatus;
 
-public record AmizadeCore(
+public record FriendCore(
         Long id,
         Long usuario1Id,
         Long usuario2Id,
-        AmizadeStatus status,
+        FriendStatus status,
         java.time.Instant criadoEm,
         java.time.Instant atualizadoEm
 ) {}
