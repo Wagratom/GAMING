@@ -38,21 +38,12 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public List<Map<String, Object>> getUsers(Boolean online, Boolean friends, String jwt) {
+    public List<Map<String, Object>> getUsers(Boolean online, String jwt) {
         try {
             Map<String, Object> claims = jwtService.validateTokenAndGetClaims(jwt.substring(7));
             List<UserCore> users;
 
-            if (Boolean.TRUE.equals(online) && Boolean.TRUE.equals(friends)) {
-                logger.info("Pegando todos os amigos online");
-                Long userId = ((Number) claims.get("id")).longValue();
-                //TODO: Corrigir aqui
-                users = userRepository.getUsersOnline();
-            } else if (Boolean.TRUE.equals(friends)) {
-                logger.info("Pegando todos os amigos");
-                Long userId = ((Number) claims.get("id")).longValue();
-                users = userRepository.getFriends(userId);
-            } else if (Boolean.TRUE.equals(online)) {
+            if (Boolean.TRUE.equals(online)) {
                 logger.info("Pegando todos os usuarios onlines");
                 users = userRepository.getUsersOnline();
             } else {
@@ -163,7 +154,6 @@ public class UserApplication implements UserPortIn {
             throw new Unauthorized("Token invalido");
         }
     }
-
 
     @Override
     public UserCore registerUser(UserCore user) {

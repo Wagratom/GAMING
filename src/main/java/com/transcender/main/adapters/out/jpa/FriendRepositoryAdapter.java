@@ -9,12 +9,14 @@ import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.FriendStatus;
 import com.transcender.main.domain.port.out.FriendsRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Repository
 public class FriendRepositoryAdapter implements FriendsRepositoryPort {
     private final FriendRepository amizadeRepository;
     private final UserRepository userRepository;

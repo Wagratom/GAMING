@@ -70,6 +70,7 @@ public class FriendsApplication implements FriendsPort {
             if (friendsRepository.existsBlock(user1.getId(), user2.getId()))  {
                 new BadRequest("Não é permitido adicionar um usuário bloqueado.");
             }
+            //TODO EU TENHO QUE CRIAR A ENTTITY AQUI E NAO LA
             return this.friendsRepository.addFriend(user1, user2);
         } catch (JwtException ex) {
             logger.error("Erro ao tentar decodificar o token", ex); // Loga com stack trace

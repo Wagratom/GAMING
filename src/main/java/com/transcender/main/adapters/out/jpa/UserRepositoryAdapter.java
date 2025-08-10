@@ -59,15 +59,6 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
-    public List<UserCore> getFriends(Long userId) {
-        return amizadeRepository.buscarAmigosAtivos(userId)
-                .stream()
-                .map((user) -> mapperToJpaEntity.toUserCore(user, false))
-                .collect(Collectors.toList());
-    }
-
-
-    @Override
     public UserCore createUser(UserCore user) {
         return mapperToJpaEntity.toUserCore(userRepository.save(mapperToJpaEntity.toUserCoreJpa(user)), false);
     }

@@ -10,7 +10,7 @@ public interface UserPortIn {
     String login(Optional<String> nickname, Optional<String> email, String senha);
     void logout(String jwt);
     UserCore getUserById(Long userId);
-    List<Map<String, Object>> getUsers(Boolean online, Boolean friends, String jwt);
+    List<Map<String, Object>> getUsers(Boolean online, String jwt);
     Map<String, Object> getProfile(String jwt);
 
     void deleteUser(Long userId);

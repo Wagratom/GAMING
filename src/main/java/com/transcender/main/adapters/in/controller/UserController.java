@@ -24,11 +24,10 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<Map<String, Object>>> listUsers(
             @RequestParam(required = false) Boolean online,
-            @RequestParam(required = false) Boolean friends,
             @RequestHeader("Authorization") String jwt
     ) {
         return ResponseEntity.ok().body(
-                userApplication.getUsers(online, friends, jwt)
+                userApplication.getUsers(online, jwt)
         );
     }
 
