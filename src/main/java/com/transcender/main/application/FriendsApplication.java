@@ -35,7 +35,7 @@ public class FriendsApplication implements FriendsPort {
 
     public Long getIdJwt(String jwt) {
         try {
-            Map<String, Object> userInfo = jwtService.validateTokenAndGetClaims(jwt);
+            Map<String, Object> userInfo = jwtService.validateTokenAndGetClaims(jwt.substring(7));
             return ((Number) userInfo.get("id")).longValue();
         } catch (JwtException ex) {
             logger.error("Erro ao tentar decodificar o token", ex); // Loga com stack trace
@@ -57,6 +57,7 @@ public class FriendsApplication implements FriendsPort {
     public boolean addFriend(String jwt, Long friendId) {
         try {
             Long solicitanteId = getIdJwt(jwt);
+            logger.info("FriendsApplication > addFriend > Solicitante: {} | FriendId {}", solicitanteId, friendId);
 
             UserCore user1 = userRepository.getUserById(solicitanteId)
                     .orElseThrow(() -> new ResourceNotFound("UsuarioSolicitante", solicitanteId));
@@ -66,6 +67,7 @@ public class FriendsApplication implements FriendsPort {
 
             if (user1.getId().equals(user2.getId())) throw new BadRequest("O usuario não pode adicionar ele mesmo");
 
+            logger.info("Verificando se o usuario nao esta bloqueado");
             if (friendsRepository.existsBlock(user1.getId(), user2.getId()))  {
                 new BadRequest("Não é permitido adicionar um usuário bloqueado.");
             }

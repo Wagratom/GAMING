@@ -20,11 +20,11 @@ public class FriendCoreJpa {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "usuario_1_id")
+    @JoinColumn(name = "usuario1_id")
     private UserCoreJpa usuario1; // Quem iniciou
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "usuario_2_id")
+    @JoinColumn(name = "usuario2_id")
     private UserCoreJpa usuario2; // Quem recebeu
 
     @Column(nullable = false, length = 50)

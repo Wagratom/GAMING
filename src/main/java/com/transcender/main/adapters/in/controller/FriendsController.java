@@ -1,4 +1,5 @@
 package com.transcender.main.adapters.in.controller;
+import com.transcender.main.adapters.in.controller.dto.AddUserDto;
 import com.transcender.main.application.FriendsApplication;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -25,10 +26,10 @@ public class FriendsController {
     @PostMapping
     public ResponseEntity<String> addFriend(
             @RequestHeader("Authorization") String jwt,
-            @Valid @RequestBody @NotBlank String friendId
+            @Valid @RequestBody AddUserDto friend
     ) {
         //adiciona um amigo
-        friendsApplication.addFriend(jwt, Long.parseLong(friendId));
+        friendsApplication.addFriend(jwt, Long.parseLong(friend.friendId()));
         return ResponseEntity.ok().body("Sucess");
     }
 

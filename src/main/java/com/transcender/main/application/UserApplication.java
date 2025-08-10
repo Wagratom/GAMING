@@ -70,6 +70,7 @@ public class UserApplication implements UserPortIn {
 
     @Override
     public String login(Optional<String> nickname, Optional<String> email, String senha) {
+        logger.info("UserApplication > login > exec");
         if (nickname.isPresent() && email.isPresent()) {
             throw new BadRequest("Envie apenas nickname ou email, não ambos.");
         }
@@ -79,29 +80,30 @@ public class UserApplication implements UserPortIn {
             throw new BadRequest("É necessário informar nickname ou email.");
         }
 
-        // Recupera o usuário
         logger.info("Consultando o usuario na base");
-        Optional<UserCore> user = nickname.isPresent()
-                ? userRepository.getUserByNickname(nickname.get())
-                : userRepository.getUserByEmail(email.get());
+        UserCore user = nickname
+                .map(nick -> userRepository.getUserByNickname(nick)
+                        .orElseThrow(() -> new Forbidden("credenciais inválidas")))
+                .orElseGet(() -> userRepository.getUserByEmail(email.get())
+                        .orElseThrow(() -> new Forbidden("credenciais inválidas")));
 
-        if (user.isEmpty()) {
-            throw new ResourceNotFound("Usuário", 0L);
-        }
-
-        logger.info("Check password");
-        if (!encriptyService.checkPassword(senha, user.get().getSenhaHash())) {
+        logger.info("Verificando password");
+        if (!encriptyService.checkPassword(senha, user.getSenhaHash())) {
             throw new Forbidden("credenciais inválidas");
         }
 
+        user.setOnline(true);
+        logger.info("Atualizando o usuario na base: online=true");
+        userRepository.updateUser(user);
+
         // Monta o mapa com os dados do usuário
         Map<String, Object> payload = new HashMap<>();
-        payload.put("id", user.get().getId());
-        payload.put("email", user.get().getEmail());
-        payload.put("nickname", user.get().getNickname());
+        payload.put("id", user.getId());
+        payload.put("email", user.getEmail());
+        payload.put("nickname", user.getNickname());
 
         // Retorna o JWT gerado com base nos dados
-        logger.info("Gerando token de auth");
+        logger.info("Gerando token JWT");
         return jwtService.generateToken(payload);
     }
 
@@ -165,11 +167,8 @@ public class UserApplication implements UserPortIn {
         if (user.getNickname() != null && userRepository.getUserByNickname(user.getNickname()).isPresent()) {
             throw new Conflict("Esse nickname já esta sendo utilizado");
         }
-        user.setAtive(true);
-        user.setOnline(true);
         logger.info("Encripy password");
         user.setSenhaHash(this.encriptyService.encryptPassword(user.getSenhaHash()));
-        logger.info("Criando Usuario: {}", user);
         return this.userRepository.createUser(user); // salva no banco
     }
 

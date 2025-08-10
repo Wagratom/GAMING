@@ -46,13 +46,17 @@ public class ExceptionGlobalHandle {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
-
     @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Map<String, String>> handleMethodNotSupported(org.springframework.web.HttpRequestMethodNotSupportedException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", "Método HTTP não permitido");
         error.put("mensagem", ex.getMessage()); // ou uma mensagem mais amigável
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
+    }
+
+    @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> handleBodyNotSendend(org.springframework.http.converter.HttpMessageNotReadableException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Body não enviado"));
     }
 
     @ExceptionHandler(ResourceNotFound.class)

@@ -32,8 +32,8 @@ public interface FriendRepository extends JpaRepository<FriendCoreJpa, Long> {
         END
     FROM amigos
     WHERE
-        ((usuario_1_id = :userId1 AND usuario_2_id = :userId2)
-         OR (usuario_1_id = :userId2 AND usuario_2_id = :userId1))
+        ((usuario1_id = :userId1 AND usuario2_id = :userId2)
+         OR (usuario1_id = :userId2 AND usuario2_id = :userId1))
         AND status = 'BLOCKED'
     """, nativeQuery = true)
     boolean existsBlockedFriendshipByUserId(@Param("userId1") Long userId1,
