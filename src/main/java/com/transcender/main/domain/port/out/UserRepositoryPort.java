@@ -12,7 +12,6 @@ public interface UserRepositoryPort {
 
     List<UserCore> getUsers();
     List<UserCore> getUsersOnline();
-    List<UserCore> getFriends(Long userId);
 
     UserCore createUser(UserCore user);
     boolean deleteUser(Long userId);

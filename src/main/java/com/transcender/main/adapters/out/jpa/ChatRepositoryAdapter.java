@@ -7,6 +7,8 @@ import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.enuns.ChatType;
 import com.transcender.main.domain.enuns.PermitionChat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class ChatRepositoryAdapter implements com.transcender.main.domain.port.out.ChatRepository {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
+    private final Logger logger = LoggerFactory.getLogger(UserRepositoryAdapter.class);
 
     @Autowired
     ChatRepositoryAdapter(ChatRepository chatRepository, UserRepository userRepository) {
@@ -34,6 +37,8 @@ public class ChatRepositoryAdapter implements com.transcender.main.domain.port.o
 
     @Override
     public ChatCore createChat(ChatCore chat) {
+        logger.info("ChatRepositoryAdapter > createChat > exec");
+
         ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
         return toChatCore(chatJpa); // toChatCore que recebe diretamente o objeto, não Optional
     }
@@ -41,13 +46,16 @@ public class ChatRepositoryAdapter implements com.transcender.main.domain.port.o
 
     @Override
     public ChatCore updateChat(ChatCore chat) {
-        ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
+        logger.info("ChatRepositoryAdapter > updateChat > exec");
 
+        ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
         return toChatCore(chatJpa);
     }
 
     @Override
     public boolean deleteChat(Long chatId) {
+        logger.info("ChatRepositoryAdapter > deleteChat > exec");
+
         try {
             chatRepository.deleteById(chatId);
             return true;
@@ -58,6 +66,8 @@ public class ChatRepositoryAdapter implements com.transcender.main.domain.port.o
 
     @Override
     public List<ChatCore> getAllChats() {
+        logger.info("ChatRepositoryAdapter > getAllChats > exec");
+
         return chatRepository.findAll()
                 .stream()
                 .map(this::toChatCore)

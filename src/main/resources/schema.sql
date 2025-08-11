@@ -5,11 +5,12 @@ CREATE TABLE usuarios (
     senha_hash VARCHAR(512) NOT NULL COMMENT 'Hash da senha',
     nickname VARCHAR(255) UNIQUE COMMENT 'Apelido único (único se não for nulo)',
     telefone VARCHAR(20),
-    online BOOLEAN,
-    ative BOOLEAN,
+    online BOOLEAN NOT NULL DEFAULT FALSE,
+    ative BOOLEAN NOT NULL DEFAULT TRUE,
     criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
 
 -- Tabela de chats (ChatCoreJpa)
 CREATE TABLE Chat (
@@ -39,14 +40,14 @@ CREATE TABLE ChatUsuarios (
 -- Tabela de amigos
 CREATE TABLE amigos (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  usuario_1_id BIGINT NOT NULL,
-  usuario_2_id BIGINT NOT NULL,
-  status VARCHAR(50) NOT NULL COMMENT 'pendente, aceito, bloqueado',
+  usuario1_id BIGINT NOT NULL,
+  usuario2_id BIGINT NOT NULL,
+  status VARCHAR(50) NOT NULL COMMENT 'PENDING, ACCEPTED, DECLINED, BLOCKED, REMOVED',
   criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE (usuario_1_id, usuario_2_id),
-  FOREIGN KEY (usuario_1_id) REFERENCES usuarios(id),
-  FOREIGN KEY (usuario_2_id) REFERENCES usuarios(id)
+  UNIQUE (usuario1_id, usuario2_id),
+  FOREIGN KEY (usuario1_id) REFERENCES usuarios(id),
+  FOREIGN KEY (usuario2_id) REFERENCES usuarios(id)
 );
 
 

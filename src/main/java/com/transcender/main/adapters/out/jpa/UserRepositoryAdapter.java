@@ -1,9 +1,10 @@
 package com.transcender.main.adapters.out.jpa;
 
-import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
-import com.transcender.main.adapters.out.jpa.repository.AmizadeRepository;
 import com.transcender.main.adapters.out.jpa.repository.UserRepository;
+import com.transcender.main.adapters.out.jpa.mapper.MapperToJpaEntity;
 import com.transcender.main.domain.entity.UserCore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
@@ -14,61 +15,64 @@ import java.util.stream.Collectors;
 @Component
 public class UserRepositoryAdapter implements UserRepositoryPort {
     private final UserRepository userRepository;
-    private final AmizadeRepository amizadeRepository;
+    private final MapperToJpaEntity mapperToJpaEntity;
+    private final Logger logger = LoggerFactory.getLogger(UserRepositoryAdapter.class);
 
     @Autowired
-    UserRepositoryAdapter(UserRepository usuarioRepository,  AmizadeRepository amizadeRepository) {
+    public UserRepositoryAdapter(UserRepository usuarioRepository, MapperToJpaEntity mapperToJpaEntity) {
         this.userRepository = usuarioRepository;
-        this.amizadeRepository = amizadeRepository;
+        this.mapperToJpaEntity = mapperToJpaEntity;
     }
 
     @Override
     public Optional<UserCore> getUserById(Long userId) {
-        return userRepository.findById(userId).map((this::toUserCore));
+        logger.info("UserRepositoryAdapter > getUserById > exec");
+        return userRepository.findById(userId)
+                .map((user) -> (mapperToJpaEntity.toUserCore(user, false)));
     }
 
     @Override
     public Optional<UserCore> getUserByEmail(String email) {
-        return userRepository.findByEmail(email).map(this::toUserCore);
+        logger.info("UserRepositoryAdapter > getUserByEmail > exec");
+        return userRepository.findByEmail(email)
+                .map((user) -> mapperToJpaEntity.toUserCore(user, false));
     }
 
     @Override
     public Optional<UserCore> getUserByNickname(String nickname) {
-        return userRepository.findByNickname(nickname).map(this::toUserCore);
+        logger.info("UserRepositoryAdapter > getUserByNickname > exec");
+        return userRepository.findByNickname(nickname)
+                .map((user) -> mapperToJpaEntity.toUserCore(user, false));
     }
 
     @Override
     public List<UserCore> getUsers() {
+        logger.info("UserRepositoryAdapter > getUsers > exec");
         return userRepository.findAll()
                 .stream()
-                .map(this::toUserCore)
+                .map((user) -> mapperToJpaEntity.toUserCore(user, false))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<UserCore> getUsersOnline() {
+        logger.info("UserRepositoryAdapter > getUsersOnline > exec");
         return userRepository.findByOnlineTrueAndAtiveTrue()
                 .stream()
-                .map(this::toUserCore)
+                .map((user) -> mapperToJpaEntity.toUserCore(user, false))
                 .collect(Collectors.toList());
     }
-
-    @Override
-    public List<UserCore> getFriends(Long userId) {
-        return amizadeRepository.buscarAmigosAtivos(userId)
-                .stream()
-                .map(this::toUserCore)
-                .collect(Collectors.toList());
-    }
-
 
     @Override
     public UserCore createUser(UserCore user) {
-        return toUserCore(userRepository.save(toUserCoreJpa(user)));
+        logger.info("UserRepositoryAdapter > createUser > exec");
+        logger.info("User: {}", user);
+        return mapperToJpaEntity.toUserCore(userRepository.save(mapperToJpaEntity.toUserCoreJpa(user)), false);
     }
 
     @Override
     public boolean deleteUser(Long userId) {
+        logger.info("UserRepositoryAdapter > deleteUser > exec");
         try {
             return userRepository.findById(userId)
                     .map(user -> {
@@ -83,31 +87,8 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
 
     @Override
     public UserCore updateUser(UserCore user) {
-        return toUserCore(userRepository.save(toUserCoreJpa(user)));
+        logger.info("UserRepositoryAdapter > updateUser > exec");
+        return mapperToJpaEntity.toUserCore(userRepository.save(mapperToJpaEntity.toUserCoreJpa(user)), false);
     }
 
-    public UserCore toUserCore(UserCoreJpa user) {
-        return new UserCore(
-                user.getId(),
-                user.getEmail(),
-                user.getSenhaHash(),
-                user.getNickname(),
-                user.getTelefone(),
-                user.getOnline(),
-                user.getCriadoEm(),
-                user.getAtualizadoEm()
-        );
-    }
-
-    public UserCoreJpa toUserCoreJpa(UserCore user) {
-        UserCoreJpa userJpa = new UserCoreJpa();
-        userJpa.setId(user.getId());
-        userJpa.setEmail(user.getEmail());
-        userJpa.setSenhaHash(user.getSenha());
-        userJpa.setNickname(user.getNickname());
-        userJpa.setTelefone(user.getTelefone());
-        userJpa.setOnline(user.getOnline());
-        userJpa.setAtualizadoEm(user.getAtualizadoEm());
-        return userJpa;
-    }
 }

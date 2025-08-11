@@ -127,6 +127,19 @@ public class ChatCore {
         this.atualizadoEm = Instant.now();
     }
 
+    @Override
+    public String toString() {
+        return "ChatCore{" +
+                "id=" + id +
+                ", chatName='" + chatName + '\'' +
+                ", chatOwner=" + chatOwner +
+                ", adms=" + adms +
+                ", type=" + type +
+                ", descricao='" + descricao + '\'' +
+                ", criadoEm=" + criadoEm +
+                ", atualizadoEm=" + atualizadoEm +
+                '}';
+    }
 
     // Getters
     public Long getId() {
@@ -160,4 +173,5 @@ public class ChatCore {
     public Instant getAtualizadoEm() {
         return atualizadoEm;
     }
+
 }

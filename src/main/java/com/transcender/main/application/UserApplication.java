@@ -2,10 +2,9 @@ package com.transcender.main.application;
 
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.exceptions.*;
-import com.transcender.main.domain.exceptions.InternalError;
 import com.transcender.main.domain.port.in.UserPortIn;
-import com.transcender.main.domain.port.out.EncryptPortOut;
-import com.transcender.main.domain.port.out.JwtGeneratorPort;
+import com.transcender.main.domain.port.out.EncriptyService;
+import com.transcender.main.domain.port.out.JwtService;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
 import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
@@ -19,15 +18,15 @@ import java.util.stream.Collectors;
 @Service
 public class UserApplication implements UserPortIn {
     private final UserRepositoryPort userRepository;
-    private final EncryptPortOut encryptPortOut;
-    private final JwtGeneratorPort jwtPortOut;
+    private final EncriptyService encriptyService;
+    private final JwtService jwtService;
     private static final Logger logger = LoggerFactory.getLogger(UserApplication.class);
 
     @Autowired
-    UserApplication(UserRepositoryPort userRepository, EncryptPortOut encryptPortOut, JwtGeneratorPort jwtPortOut) {
+    UserApplication(UserRepositoryPort userRepository, EncriptyService encryptPortOut, JwtService jwtPortOut) {
         this.userRepository = userRepository;
-        this.encryptPortOut = encryptPortOut;
-        this.jwtPortOut = jwtPortOut;
+        this.encriptyService = encryptPortOut;
+        this.jwtService = jwtPortOut;
     }
 
     @Override
@@ -39,21 +38,12 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public List<Map<String, Object>> getUsers(Boolean online, Boolean friends, String jwt) {
+    public List<Map<String, Object>> getUsers(Boolean online, String jwt) {
         try {
-            Map<String, Object> claims = jwtPortOut.validateTokenAndGetClaims(jwt.substring(7));
+            Map<String, Object> claims = jwtService.validateTokenAndGetClaims(jwt.substring(7));
             List<UserCore> users;
 
-            if (Boolean.TRUE.equals(online) && Boolean.TRUE.equals(friends)) {
-                logger.info("Pegando todos os amigos online");
-                Long userId = ((Number) claims.get("id")).longValue();
-                //TODO: Corrigir aqui
-                users = userRepository.getUsersOnline();
-            } else if (Boolean.TRUE.equals(friends)) {
-                logger.info("Pegando todos os amigos");
-                Long userId = ((Number) claims.get("id")).longValue();
-                users = userRepository.getFriends(userId);
-            } else if (Boolean.TRUE.equals(online)) {
+            if (Boolean.TRUE.equals(online)) {
                 logger.info("Pegando todos os usuarios onlines");
                 users = userRepository.getUsersOnline();
             } else {
@@ -73,14 +63,14 @@ public class UserApplication implements UserPortIn {
                     .collect(Collectors.toList());
 
         } catch (JwtException ex) {
-            logger.warn("Token JWT inválido: {}", ex.getMessage());
+            logger.error("Token JWT inválido: {}", ex.getMessage());
             throw new Forbidden("Token inválido");
         }
     }
 
-
     @Override
     public String login(Optional<String> nickname, Optional<String> email, String senha) {
+        logger.info("UserApplication > login > exec");
         if (nickname.isPresent() && email.isPresent()) {
             throw new BadRequest("Envie apenas nickname ou email, não ambos.");
         }
@@ -90,44 +80,45 @@ public class UserApplication implements UserPortIn {
             throw new BadRequest("É necessário informar nickname ou email.");
         }
 
-        // Recupera o usuário
         logger.info("Consultando o usuario na base");
-        Optional<UserCore> user = nickname.isPresent()
-                ? userRepository.getUserByNickname(nickname.get())
-                : userRepository.getUserByEmail(email.get());
+        UserCore user = nickname
+                .map(nick -> userRepository.getUserByNickname(nick)
+                        .orElseThrow(() -> new Forbidden("credenciais inválidas")))
+                .orElseGet(() -> userRepository.getUserByEmail(email.get())
+                        .orElseThrow(() -> new Forbidden("credenciais inválidas")));
 
-        if (user.isEmpty()) {
-            throw new ResourceNotFound("Usuário", 0L);
-        }
-
-        logger.info("Check password");
-        if (!encryptPortOut.checkPassword(senha, user.get().getSenha())) {
+        logger.info("Verificando password");
+        if (!encriptyService.checkPassword(senha, user.getSenhaHash())) {
             throw new Forbidden("credenciais inválidas");
         }
 
+        user.setOnline(true);
+        logger.info("Atualizando o usuario na base: online=true");
+        userRepository.updateUser(user);
+
         // Monta o mapa com os dados do usuário
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("id", user.get().getId());
-        payload.put("email", user.get().getEmail());
-        payload.put("nickname", user.get().getNickname());
+        Map<String, Object> payload = Map.of(
+                "id", user.getId(),
+                "nickname", user.getNickname() != null ? user.getNickname() : "",
+                "email",  user.getEmail()!= null ? user.getEmail()  : ""
+        );
 
         // Retorna o JWT gerado com base nos dados
-        logger.info("Gerando token de auth");
-        return jwtPortOut.generateToken(payload);
+        logger.info("Gerando token JWT");
+        return jwtService.generateToken(payload);
     }
 
     @Override
     public void logout(String jwt) {
         try {
             logger.info("Validando token jwt");
-            Map<String, Object> userInfo = jwtPortOut.validateTokenAndGetClaims(jwt.substring(7));
+            Map<String, Object> userInfo = jwtService.validateTokenAndGetClaims(jwt.substring(7));
             Long id = ((Number) userInfo.get("id")).longValue();
 
             logger.info("Consultando o usuario na base");
             UserCore user = userRepository.getUserById(id)
                     .orElseThrow(() -> new ResourceNotFound("usuario", id));
 
-            System.out.println("passei");
             user.setOnline(false);
             logger.info("Atualizando o usuario na base");
             userRepository.updateUser(user);
@@ -143,31 +134,33 @@ public class UserApplication implements UserPortIn {
 
         try {
             String jwt = headerAuth.startsWith("Bearer ") ? headerAuth.substring(7) : headerAuth;
-            System.out.println("Decodificando o token");
-            Map<String, Object> infoJwt = jwtPortOut.validateTokenAndGetClaims(jwt);
+            Map<String, Object> infoJwt = jwtService.validateTokenAndGetClaims(jwt);
 
             Long id = ((Number) infoJwt.get("id")).longValue();
 
             UserCore user = userRepository.getUserById(id)
                     .orElseThrow(() -> new ResourceNotFound("Usuario", id));
 
-            Map<String, Object> jsonUser = new HashMap<>();
-            jsonUser.put("id", user.getId());
-            jsonUser.put("nickname", user.getNickname());
-            jsonUser.put("email", user.getEmail());
-            jsonUser.put("online", user.getOnline());
-            jsonUser.put("criando_em", user.getCriadoEm());
+            Map<String, Object> jsonUser = Map.of(
+                    "id", user.getId(),
+                    "nickname", user.getNickname() != null ? user.getNickname() : "",
+                    "email",  user.getEmail()!= null ? user.getEmail()  : "",
+                    "online", user.getOnline(),
+                    "criando_em", user.getCriadoEm()
+            );
+
             return jsonUser;
 
         } catch (JwtException ex) {
+            logger.error("Erro ao tentar decodificar o token", ex); // Loga com stack trace
             throw new Unauthorized("Token invalido");
         }
     }
 
-
     @Override
     public UserCore registerUser(UserCore user) {
-        logger.info("Register user");
+        logger.info("UserApplication > registerUser > exec");
+        if (user == null) throw new BadRequest("Usuario nulo");
         user.validateCreateUser();
         if (user.getEmail() != null && userRepository.getUserByEmail(user.getEmail()).isPresent()) {
             throw new Conflict("Esse email já esta sendo utilizado");
@@ -175,11 +168,8 @@ public class UserApplication implements UserPortIn {
         if (user.getNickname() != null && userRepository.getUserByNickname(user.getNickname()).isPresent()) {
             throw new Conflict("Esse nickname já esta sendo utilizado");
         }
-        user.setAtive(true);
-        user.setOnline(true);
         logger.info("Encripy password");
-        user.setSenha(this.encryptPortOut.encryptPassword(user.getSenha()));
-        logger.info("Criando Usuario");
+        user.setSenhaHash(this.encriptyService.encryptPassword(user.getSenhaHash()));
         return this.userRepository.createUser(user); // salva no banco
     }
 

@@ -1,6 +1,6 @@
 package com.transcender.main.adapters.out;
 
-import com.transcender.main.domain.port.out.JwtGeneratorPort;
+import com.transcender.main.domain.port.out.JwtService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Component
-public class JwtImplement implements JwtGeneratorPort {
+public class JwtImplement implements JwtService {
 
     private final Key secretKey;
     private final long expirationMillis;
