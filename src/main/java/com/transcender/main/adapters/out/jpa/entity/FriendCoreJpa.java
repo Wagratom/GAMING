@@ -2,7 +2,9 @@ package com.transcender.main.adapters.out.jpa.entity;
 
 import com.transcender.main.domain.enuns.FriendStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -10,6 +12,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "amigos", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"usuario1_id", "usuario2_id"})
 })

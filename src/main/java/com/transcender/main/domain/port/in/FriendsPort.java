@@ -11,6 +11,6 @@ public interface FriendsPort {
     boolean acceptFriend(String jwt, Long friendId);
     boolean recusetFriend(String jwt, Long friendId);
 
-    List<Map<String, Object>> removeFriend(String jwt, Long friendId);
-    List<Map<String, Object>> blockFriend(String jwt, Long friendId);
+    boolean removeFriend(String jwt, Long friendId);
+    boolean blockFriend(String jwt, Long friendId);
 }

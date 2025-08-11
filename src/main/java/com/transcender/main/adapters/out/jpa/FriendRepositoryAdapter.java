@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -61,17 +60,17 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
     }
 
     @Override
-    public List<UserCore> removeFriend(UserCore solicitante, UserCore friend) {
+    public boolean removeFriend(UserCore solicitante, UserCore friend) {
         logger.info("FriendRepositoryAdapter::removeFriend");
         updateFriendTable(solicitante, friend, FriendStatus.REMOVED);
-        return getFriends(solicitante.getId(), FriendStatus.ACCEPTED);
+        return true;
     }
 
     @Override
-    public List<UserCore> blockFriend(UserCore solicitante, UserCore friend) {
+    public boolean blockFriend(UserCore solicitante, UserCore friend) {
         logger.info("FriendRepositoryAdapter::blockFriend");
         updateFriendTable(solicitante, friend, FriendStatus.BLOCKED);
-        return getFriends(solicitante.getId(), FriendStatus.ACCEPTED);
+        return true;
     }
 
     @Override

@@ -58,23 +58,6 @@ public class FriendsController {
         return ResponseEntity.ok().body("Sucess");
     }
 
-    @PostMapping("{userId}/remove")
-    public ResponseEntity<List<Map<String, Object>>> removeFriend(
-            @RequestHeader("Authorization") String jwt,
-            @Valid @RequestBody @NotBlank String friendId
-    ) {
-        return ResponseEntity.ok().body(friendsApplication.removeFriend(jwt, Long.parseLong(friendId)));
-        //remove um amimgo
-    }
-
-    @PostMapping("{userId}/block")
-    public ResponseEntity<List<Map<String, Object>>> blockFriend(
-            @RequestHeader("Authorization") String jwt,
-            @Valid @RequestBody @NotBlank String friendId
-    ) {
-        return ResponseEntity.ok().body(friendsApplication.blockFriend(jwt, Long.parseLong(friendId)));
-    }
-
     @PostMapping("{friendId}/accept")
     public ResponseEntity<String> acceptFriend(
             @RequestHeader("Authorization") String jwt,
@@ -94,7 +77,7 @@ public class FriendsController {
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long friendId
     ) {
-        List<Map<String, Object>> updatedFriends = friendsApplication.removeFriend(jwt, friendId);
+        boolean updatedFriends = friendsApplication.removeFriend(jwt, friendId);
         // Você pode retornar uma mensagem simples ou a lista atualizada:
         return ResponseEntity.ok("Amigo removido com sucesso.");
     }
@@ -104,7 +87,7 @@ public class FriendsController {
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long friendId
     ) {
-        List<Map<String, Object>> updatedBlockedList = friendsApplication.blockFriend(jwt, friendId);
+        boolean updatedBlockedList = friendsApplication.blockFriend(jwt, friendId);
         return ResponseEntity.ok("Usuário bloqueado com sucesso.");
     }
 

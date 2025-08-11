@@ -119,20 +119,18 @@ public class FriendsApplication implements FriendsPort {
     }
 
     @Override
-    public List<Map<String, Object>> removeFriend(String jwt, Long friendId) {
+    public boolean removeFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Remover amizade: solicitante={} | amigo={}", requesterId, friendId);
         UsersPair users = validateAndGetUsers(requesterId, friendId);
-        List<UserCore> result = friendsRepository.removeFriend(users.user1(), users.user2());
-        return convertUsersToJson(result);
+        return friendsRepository.removeFriend(users.user1(), users.user2());
     }
 
     @Override
-    public List<Map<String, Object>> blockFriend(String jwt, Long friendId) {
+    public boolean blockFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Bloquear usuário: solicitante={} | amigo={}", requesterId, friendId);
         UsersPair users = validateAndGetUsers(requesterId, friendId);
-        List<UserCore> result = friendsRepository.blockFriend(users.user1(), users.user2());
-        return convertUsersToJson(result);
+        return friendsRepository.blockFriend(users.user1(), users.user2());
     }
 }
