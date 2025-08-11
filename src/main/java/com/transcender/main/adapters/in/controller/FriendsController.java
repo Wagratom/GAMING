@@ -48,8 +48,6 @@ public class FriendsController {
         return ResponseEntity.ok(friendsApplication.getFriends(jwt, friendStatus));
     }
 
-
-
     @PostMapping
     public ResponseEntity<String> addFriend(
             @RequestHeader("Authorization") String jwt,
@@ -76,5 +74,39 @@ public class FriendsController {
     ) {
         return ResponseEntity.ok().body(friendsApplication.blockFriend(jwt, Long.parseLong(friendId)));
     }
+
+    @PostMapping("{friendId}/accept")
+    public ResponseEntity<String> acceptFriend(
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long friendId
+    ) {
+        boolean accepted = friendsApplication.acceptFriend(jwt, friendId);
+        if (accepted) {
+            return ResponseEntity.ok("Solicitação de amizade aceita com sucesso.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Não foi possível aceitar a solicitação de amizade.");
+        }
+    }
+
+    @PostMapping("{friendId}/remove")
+    public ResponseEntity<String> removeFriend(
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long friendId
+    ) {
+        List<Map<String, Object>> updatedFriends = friendsApplication.removeFriend(jwt, friendId);
+        // Você pode retornar uma mensagem simples ou a lista atualizada:
+        return ResponseEntity.ok("Amigo removido com sucesso.");
+    }
+
+    @PostMapping("{friendId}/block")
+    public ResponseEntity<String> blockFriend(
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long friendId
+    ) {
+        List<Map<String, Object>> updatedBlockedList = friendsApplication.blockFriend(jwt, friendId);
+        return ResponseEntity.ok("Usuário bloqueado com sucesso.");
+    }
+
 
 }

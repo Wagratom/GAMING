@@ -6,7 +6,11 @@ import java.util.Map;
 
 public interface FriendsPort {
     List<Map<String, Object>> getFriends(String jwt, FriendStatus status);
+
     boolean addFriend(String jwt, Long friendId);
+    boolean acceptFriend(String jwt, Long friendId);
+    boolean recusetFriend(String jwt, Long friendId);
+
     List<Map<String, Object>> removeFriend(String jwt, Long friendId);
     List<Map<String, Object>> blockFriend(String jwt, Long friendId);
 }
