@@ -40,20 +40,20 @@ Abaixo, os serviços previstos para o servidor do jogo. A lista será marcada co
 ### 👤 Usuários
 
 - [ ] **Gerenciamento de Usuários**
-  - [ ] Criar usuário (registro/login)
+  - [X] Criar usuário (registro/login)
   - [ ] Atualizar perfil (auth + proprietário)
   - [ ] Deletar conta (auth + proprietário)
-  - [ ] Obter perfil do próprio usuário (auth)
+  - [X] Obter perfil do próprio usuário (auth)
   - [ ] Obter perfil por ID (auth)
-  - [ ] Listar todos os usuários (auth)
-  - [ ] Listar usuários online (auth)
-  - [ ] Listar amigos (auth)
+  - [X] Listar todos os usuários (auth)
+  - [X] Listar usuários online (auth)
+  - [X] Listar amigos (auth)
 
 - [ ] **Ações de Usuário**
-  - [ ] Adicionar amigo
-  - [ ] Recusar pedido de amizade
-  - [ ] Excluir amigo
-  - [ ] Bloquear usuário
+  - [X] Adicionar amigo
+  - [X] Recusar pedido de amizade
+  - [X] Remover amigo
+  - [X] Bloquear usuário
   - [ ] Denunciar usuário
   - [ ] Convidar para grupo
   - [ ] Convidar para partida
