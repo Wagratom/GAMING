@@ -8,7 +8,7 @@ export default function FormularioLogin(props: propsFormulario) {
 	// Component that renders the login form
 	// The HTML blocks are created in functions to facilitate code readability and are called within the form in the function's return
 
-	const Username_Password = () => {
+	const formLogin = () => {
 		return (
 			<>
 				<div className="form-group mb-3">
@@ -33,10 +33,12 @@ export default function FormularioLogin(props: propsFormulario) {
 	}
 
 
-	const Login_Register = () => {
+	const LoginButton = () => {
 		return (
 			<div className='buttonsForm d-flex flex-column align-items-center'>
+				{/* botão para enviar o formulario */}
 				<button type="submit" className="btn btn-primary w-75 d-block mb-2">Login</button>
+				{/* botão para trocar de logar para registrar */}
 				<span>Need an account?
 					<span className='singUp' onClick={() => props.handleForm('Register')}> Sign up </span>
 				</span>
@@ -47,9 +49,9 @@ export default function FormularioLogin(props: propsFormulario) {
 
 	return (
 		<form className='w-100'>
-			{Username_Password()}
+			{formLogin()}
 			{ForgetPassword()}
-			{Login_Register()}
+			{LoginButton()}
 		</form>
 	)
 }

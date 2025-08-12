@@ -2,13 +2,12 @@ import { useState } from 'react';
 
 import FormularioLogin from './FormularioLogin';
 import FormularioRegistration from './FormularioRegistration';
+import PhotoMobal from '../../assets/game/PhotoLoginPage.jpg'
 import './Login.css';
 
-import PhotoMobal from '../../assets/game/PhotoLoginPage.jpg'
 
 export function Login() {
 	const [handleForm, setHandleForm] = useState<string>('Login');
-
 
 	const HtmlToMobile = () => {
 		return (

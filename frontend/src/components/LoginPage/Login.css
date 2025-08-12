@@ -94,12 +94,14 @@ h1,
 
 .singIn {
   display: none;
+  cursor: pointer;
 }
 
 
 .singUp {
   text-decoration: dashed;
   color: #ec2c63;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 768px) {

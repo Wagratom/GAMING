@@ -32,12 +32,12 @@ export default function Formulario(props: propsFormulario) {
 	}
 
 
-	const FieldsForm = () => {
+	const FormRegister = () => {
 		return (
 			<>
 				<div className="form-group mb-3">
-					<label htmlFor="username">username</label>
-					<input type="text" className="form-control my-2" id="username" placeholder="Login Name" />
+					<label htmlFor="nickname">nickname</label>
+					<input type="text" className="form-control my-2" id="nickname" placeholder="Login Name" />
 				</div>
 				<div className="mb-3">
 					<label htmlFor="email" className="form-label">email address</label>
@@ -62,12 +62,32 @@ export default function Formulario(props: propsFormulario) {
 	}
 
 
+	function sendFormRegister(event: React.FormEvent) {
+		event.preventDefault();
+
+		const data = new FormData(event.target as HTMLFormElement);
+		console.log(`Data: ${data}`);
+		fetch(`${process.env.REACT_APP_API_URL}/register`, {
+			method: "POST",
+			body: data
+		})
+			.then((res) => res.json())
+			.then((response) => {
+				console.log("Usuário cadastrado:", response);
+			})
+			.catch((error) => {
+				console.error("Erro ao cadastrar:", error);
+			});
+	}
+
 	const Login_Register = () => {
 		return (
 			<div className='buttonsForm d-flex flex-column align-items-center'>
-				<button type="submit" className="btn btn-primary w-75 d-block mb-2">Register</button>
+				{/* botão para enviar o formulario */}
+				<button onClick={sendFormRegister} className="btn btn-primary w-75 d-block mb-2">Register</button>
+				{/* botão para trocar de registrar para logar */}
 				<span>Have an account?
-					<span className='singUp' onClick={() => props.handleForm('Login')}> Sign in </span>
+					<span className='singUp' onClick={() => props.handleForm('Login')}> Sign in </span> //
 				</span>
 			</div>
 		)
@@ -76,7 +96,7 @@ export default function Formulario(props: propsFormulario) {
 
 	return (
 		<form className='w-100'>
-			{FieldsForm()}
+			{FormRegister()}
 			{Login_Register()}
 		</form>
 	)
