@@ -1,23 +1,27 @@
 package com.transcender.main.adapters.in.controller;
+
 import com.transcender.main.adapters.in.controller.dto.AddUserDto;
 import com.transcender.main.application.FriendsApplication;
 import com.transcender.main.domain.enuns.FriendStatus;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("friends")
 public class FriendsController {
-    private final FriendsApplication friendsApplication;
 
-    public FriendsController(FriendsApplication friendsApplication) {
+    private final FriendsApplication friendsApplication;
+    private final SimpMessagingTemplate messagingTemplate;
+
+    public FriendsController(FriendsApplication friendsApplication,
+                             SimpMessagingTemplate messagingTemplate) {
         this.friendsApplication = friendsApplication;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping
@@ -25,7 +29,7 @@ public class FriendsController {
             @RequestHeader("Authorization") String jwt,
             @RequestParam(value = "status", required = false) String status
     ) {
-        FriendStatus friendStatus = null;
+        FriendStatus friendStatus;
 
         if (status != null && !status.isBlank()) {
             try {
@@ -53,9 +57,13 @@ public class FriendsController {
             @RequestHeader("Authorization") String jwt,
             @Valid @RequestBody AddUserDto friend
     ) {
-        //adiciona um amigo
         friendsApplication.addFriend(jwt, Long.parseLong(friend.friendId()));
-        return ResponseEntity.ok().body("Sucess");
+
+        // Notifica o destinatário
+        messagingTemplate.convertAndSend("/topic/user/" + friend.friendId(),
+                Map.of("type", "FRIEND_REQUEST", "message", "Você recebeu uma solicitação de amizade"));
+
+        return ResponseEntity.ok("Success");
     }
 
     @PostMapping("{friendId}/accept")
@@ -64,7 +72,11 @@ public class FriendsController {
             @PathVariable Long friendId
     ) {
         boolean accepted = friendsApplication.acceptFriend(jwt, friendId);
+
         if (accepted) {
+            // Notifica o solicitante original
+            messagingTemplate.convertAndSend("/topic/user/" + friendId,
+                    Map.of("type", "FRIEND_ACCEPTED", "message", "Sua solicitação de amizade foi aceita"));
             return ResponseEntity.ok("Solicitação de amizade aceita com sucesso.");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -77,8 +89,11 @@ public class FriendsController {
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long friendId
     ) {
-        boolean updatedFriends = friendsApplication.removeFriend(jwt, friendId);
-        // Você pode retornar uma mensagem simples ou a lista atualizada:
+        friendsApplication.removeFriend(jwt, friendId);
+
+        messagingTemplate.convertAndSend("/topic/user/" + friendId,
+                Map.of("type", "FRIEND_REMOVED", "message", "Você foi removido da lista de amigos"));
+
         return ResponseEntity.ok("Amigo removido com sucesso.");
     }
 
@@ -87,9 +102,11 @@ public class FriendsController {
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long friendId
     ) {
-        boolean updatedBlockedList = friendsApplication.blockFriend(jwt, friendId);
+        friendsApplication.blockFriend(jwt, friendId);
+
+        messagingTemplate.convertAndSend("/topic/user/" + friendId,
+                Map.of("type", "FRIEND_BLOCKED", "message", "Você foi bloqueado"));
+
         return ResponseEntity.ok("Usuário bloqueado com sucesso.");
     }
-
-
 }
