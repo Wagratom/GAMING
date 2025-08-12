@@ -1,0 +1,131 @@
+@font-face {
+  font-family: '8bits';
+  src: url('../../assets/fonts/Mario-Kart-DS.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+.loginPage {
+  height: 100vh;
+  width: 100vw;
+}
+
+
+.photoLoginBackground {
+  height: 100vh;
+  width: 100vw;
+  background-image: url('../../assets/game/PhotoLoginPage.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.8;
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+}
+
+
+.loginScreen {
+  padding: 3rem;
+  height: 100%;
+  display: flex;
+}
+
+
+.formulario {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  background-color: #171717;
+  border-radius: 10px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  color: white;
+  width: 25rem;
+  padding: 1.5rem;
+}
+
+
+.photoLoginInLoginScreen {
+  background-image: url('../../assets/game/PhotoLoginPage.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+  width: 100%;
+  border-radius: 10px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+
+.photoLoginInFormToMobile {
+  display: none;
+  height: 15rem;
+  margin: 3rem;
+}
+
+
+.photoLoginInFormToMobile>img {
+  height: 100%;
+  border-radius: 50% 50%;
+}
+
+
+h1,
+.formulario label {
+  font-family: '8bits';
+}
+
+
+.welcome {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+
+.singIn {
+  display: none;
+}
+
+
+.singUp {
+  text-decoration: dashed;
+  color: #ec2c63;
+}
+
+@media screen and (max-width: 768px) {
+  .photoLoginInLoginScreen {
+    display: none;
+  }
+
+  .singIn {
+    display: block;
+  }
+
+  .welcome {
+    display: none;
+  }
+
+  .photoLoginInFormToMobile {
+    display: block;
+  }
+
+
+  .formulario {
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  .loginScreen {
+    padding: 1rem;
+  }
+}

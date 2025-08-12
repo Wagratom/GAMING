@@ -1,0 +1,162 @@
+@import url('https:/fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap');
+.letter-pixel {
+	font-family: 'Pixelify Sans', cursive;
+}
+
+#MatchHistory img {
+	max-height: 4rem;
+}
+
+.faixa-amarela {
+	background-image: url('../../../assets/store/faixas/faixa1.png');
+	background-repeat: no-repeat;
+	background-size: contain ;
+}
+
+/*##############################################################*/
+/*							RANK 1								*/
+/*##############################################################*/
+
+.borderDivFotoRank1 {
+	background-image: url('../../../assets/bordaFoto/bordaFotoRank1.svg');
+	background-size: 100% 100%;
+}
+
+.borderDivFotoRank1 img {
+	padding: 1.4rem;
+}
+
+.borderWriteRank1 {
+	background-image: url('../../../assets/bordaWriteRank/bordaWriteRank1.png');
+	background-size: 100% 100%;
+	height: 100%;
+	width: 100%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/*##############################################################*/
+/*							RANK 2								*/
+/*##############################################################*/
+
+.borderDivFotoRank2 {
+	background-image: url('../../../assets/bordaFoto/bordaFotoRank2.svg');
+	background-size: 100% 100%;
+}
+
+
+.borderDivFotoRank2 img {
+	padding: 2.1rem;
+}
+
+.borderWriteRank2{
+	background-image: url('../../../assets/bordaWriteRank/bordaWriteRank2.png');
+	background-size: 100% 100%;
+	height: 100%;
+	width: 100%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-bottom: 2rem;
+}
+
+/*##############################################################*/
+/*							RANK 3								*/
+/*##############################################################*/
+
+.borderDivFotoRank3 {
+	background-image: url('../../../assets/bordaFoto/bordaFotoRank3.svg');
+	background-size: 100% 100%;
+}
+
+.borderDivFotoRank3 img {
+	padding: 10%;
+}
+
+.borderWriteRank3{
+	background-image: url('../../../assets/bordaWriteRank/bordaWriteRank3.png');
+	background-size: 100% 100%;
+	height: 100%;
+	width: 100%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/*##############################################################*/
+/*							RANK 4								*/
+/*##############################################################*/
+
+.borderDivFotoRank4 {
+	background-image: url('../../../assets/bordaFoto/bordaFotoRank4.svg');
+	background-size: 100% 100%;
+}
+
+.borderDivFotoRank4 img {
+	padding: 12%;
+}
+
+.borderWriteRank4 {
+	background-image: url('../../../assets/bordaWriteRank/bordaWriteRank4.png');
+	background-size: 100% 100%;
+	height: 100%;
+	width: 100%;
+
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+	padding: 2rem
+}
+
+/*##############################################################*/
+/*							RANK 5								*/
+/*##############################################################*/
+
+.borderDivFotoRank5 {
+	background-image: url('../../../assets/bordaFoto/bordaFotoRank5.svg');
+	background-size: 100% 100%;
+}
+
+.borderDivFotoRank5 img {
+	padding: 1.7rem;
+	padding-top: 2.3rem;
+}
+
+.borderWriteRank5 {
+	background-image: url('../../../assets/bordaWriteRank/bordaWriteRank4.png');
+	background-size: 100% 100%;
+	height: 100%;
+	width: 100%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/*##############################################################*/
+/*							RANK 6								*/
+/*##############################################################*/
+
+.borderDivFotoRank6 {
+	background-image: url('../../../assets/bordaFoto/bordaFotoRank6.svg');
+	background-size: 100% 100%;
+}
+
+.borderDivFotoRank6 img {
+	padding-top: 2rem;
+	padding-left: 2.4rem;
+	padding-right: 2.2rem;
+	padding-bottom: 2.6rem;
+
+}
+
+.borderWriteRank6 {
+	background-image: url('../../../assets/bordaWriteRank/bordaWriteRank4.png');
+	background-size: 100% 100%;
+	height: 100%;
+	width: 100%;
+}
