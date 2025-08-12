@@ -9,7 +9,7 @@ type propsFormulario = {
 export default function Formulario(props: propsFormulario) {
 	// Component that renders the register form
 	// The HTML blocks are created in functions to facilitate code readability and are called within the form in the function's return
-
+	
 	const passwordRef = useRef<HTMLInputElement>(null);
 	const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
@@ -29,75 +29,64 @@ export default function Formulario(props: propsFormulario) {
 				passwordRef.current.classList.remove('is-invalid');
 			}
 		}
-	}
+	};
 
-
-	const FormRegister = () => {
-		return (
-			<>
-				<div className="form-group mb-3">
-					<label htmlFor="nickname">nickname</label>
-					<input type="text" className="form-control my-2" id="nickname" placeholder="Login Name" />
-				</div>
-				<div className="mb-3">
-					<label htmlFor="email" className="form-label">email address</label>
-					<input type="email" className="form-control" id="email" placeholder="name@example.com"></input>
-				</div>
-				<div className="form-group mb-3">
-					<label htmlFor="password">password</label>
-					<input type="password" className="form-control my-2" placeholder="Password" ref={passwordRef} />
-				</div>
-				<div className="form-group mb-3">
-					<label htmlFor="password">confirm password</label>
-					<input
-						type="password"
-						className="form-control my-2"
-						placeholder="Confirm Password"
-						ref={confirmPasswordRef}
-						onChange={validateEqualPasswords}
-					/>
-				</div>
-			</>
-		)
-	}
-
-
-	function sendFormRegister(event: React.FormEvent) {
+	function sendFormRegister(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
+		
+		const formData = new FormData(event.currentTarget);
+		const jsonData = Object.fromEntries(formData.entries());
 
-		const data = new FormData(event.target as HTMLFormElement);
-		console.log(`Data: ${data}`);
 		fetch(`${process.env.REACT_APP_API_URL}/register`, {
 			method: "POST",
-			body: data
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(jsonData)
 		})
-			.then((res) => res.json())
-			.then((response) => {
-				console.log("Usuário cadastrado:", response);
-			})
-			.catch((error) => {
-				console.error("Erro ao cadastrar:", error);
-			});
+		.then(res => res.json())
+		.then(response => {
+			console.log("Usuário cadastrado:", response);
+			props.handleForm('Login');
+		})
+		.catch(error => {
+			console.error("Erro ao cadastrar:", error);
+		});
 	}
-
-	const Login_Register = () => {
-		return (
-			<div className='buttonsForm d-flex flex-column align-items-center'>
-				{/* botão para enviar o formulario */}
-				<button onClick={sendFormRegister} className="btn btn-primary w-75 d-block mb-2">Register</button>
-				{/* botão para trocar de registrar para logar */}
-				<span>Have an account?
-					<span className='singUp' onClick={() => props.handleForm('Login')}> Sign in </span> //
-				</span>
-			</div>
-		)
-	}
-
 
 	return (
-		<form className='w-100'>
-			{FormRegister()}
-			{Login_Register()}
+		<form className='w-100' onSubmit={sendFormRegister}>
+			<div className="form-group mb-3">
+				<label htmlFor="nickname">nickname</label>
+				<input name="nickname" type="text" className="form-control my-2" placeholder="Login Name" />
+			</div>
+			<div className="mb-3">
+				<label htmlFor="email" className="form-label">email address</label>
+				<input name="email" type="email" className="form-control" placeholder="name@example.com" />
+			</div>
+			<div className="form-group mb-3">
+				<label htmlFor="password">password</label>
+				<input name="password" type="password" className="form-control my-2" placeholder="Password" ref={passwordRef} />
+			</div>
+			<div className="form-group mb-3">
+				<label htmlFor="confirmPassword">confirm password</label>
+				<input
+					name="confirmPassword"
+					type="password"
+					className="form-control my-2"
+					placeholder="Confirm Password"
+					ref={confirmPasswordRef}
+					onChange={validateEqualPasswords}
+				/>
+			</div>
+
+			<div className='buttonsForm d-flex flex-column align-items-center'>
+				<button type="submit" className="btn btn-primary w-75 d-block mb-2">Register</button>
+				<span>
+					Have an account?
+					<span className='singUp' onClick={() => props.handleForm('Login')}> Sign in </span>
+				</span>
+			</div>
 		</form>
-	)
+	);
 }

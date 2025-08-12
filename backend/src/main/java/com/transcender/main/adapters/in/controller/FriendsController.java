@@ -13,6 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("friends")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class FriendsController {
 
     private final FriendsApplication friendsApplication;

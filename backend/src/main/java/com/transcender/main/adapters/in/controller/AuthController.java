@@ -6,16 +6,17 @@ import com.transcender.main.application.UserApplication;
 import com.transcender.main.domain.entity.UserCore;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthController {
     final private UserApplication userApplication;
 
@@ -26,9 +27,18 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDto body) {
-        return ResponseEntity.ok().body(Map.of(
-                "token", userApplication.login(body.nickname(), body.email(), body.password()))
-        );
+        ResponseCookie cookie = ResponseCookie.from("token", userApplication.login(body.nickname(), body.email(), body.password()))
+                .httpOnly(true)
+                .secure(true) // se usar HTTPS
+                .path("/")
+                .maxAge(Duration.ofHours(1))
+                .sameSite("Strict")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(Map.of("message", "Login successful"));
+
     }
 
     @PostMapping("/register")
