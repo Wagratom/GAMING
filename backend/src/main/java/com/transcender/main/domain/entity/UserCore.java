@@ -12,6 +12,7 @@ public class UserCore {
     private String senhaHash;
     private String nickname;
     private String telefone;
+    private String avatar;
     private boolean online;
     private boolean ative;
     private Instant criadoEm;
@@ -32,6 +33,8 @@ public class UserCore {
         this.senhaHash = senha;
         this.nickname = nickname;
         this.telefone = telefone;
+        this.avatar = "https://carddesigner.s3.us-east-2.amazonaws.com/public/avatars/" + id;
+
         this.online = online;
         this.ative = ative;
 
@@ -48,6 +51,7 @@ public class UserCore {
         this.senhaHash = senha;
         this.nickname = nickname;
         this.telefone = telefone;
+        this.avatar = "https://carddesigner.s3.us-east-2.amazonaws.com/public/avatars/" + id;
         this.online = false;
         this.ative = true;
         this.criadoEm = Instant.now();
@@ -104,6 +108,7 @@ public class UserCore {
     public String getSenhaHash() { return senhaHash; }
     public String getNickname() { return nickname; }
     public String getTelefone() { return telefone; }
+    public String getAvatar() { return avatar; }
     public boolean getOnline() { return online; }
     public boolean getAtive() { return ative; }
     public Instant getCriadoEm() { return criadoEm; }

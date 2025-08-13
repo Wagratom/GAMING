@@ -57,6 +57,7 @@ public class UserApplication implements UserPortIn {
                         map.put("id", user.getId());
                         map.put("nickname", user.getNickname());
                         map.put("online", user.getOnline());
+                        map.put("avatar", user.getAvatar());
                         map.put("criando_em", user.getCriadoEm());
                         return map;
                     })

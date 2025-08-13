@@ -5,6 +5,7 @@ CREATE TABLE usuarios (
     senha_hash VARCHAR(512) NOT NULL COMMENT 'Hash da senha',
     nickname VARCHAR(255) UNIQUE COMMENT 'Apelido único (único se não for nulo)',
     telefone VARCHAR(20),
+    avatar VARCHAR(50),
     online BOOLEAN NOT NULL DEFAULT FALSE,
     ative BOOLEAN NOT NULL DEFAULT TRUE,
     criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
