@@ -27,7 +27,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDto body) {
-        ResponseCookie cookie = ResponseCookie.from("token", userApplication.login(body.nickname(), body.email(), body.password()))
+        String token = userApplication.login(body.nickname(), body.email(), body.password());
+        ResponseCookie cookie = ResponseCookie.from("token", token)
                 .httpOnly(true)
                 .secure(true) // se usar HTTPS
                 .path("/")
@@ -37,7 +38,7 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(Map.of("message", "Login successful"));
+                .body(Map.of("token", token));
 
     }
 
@@ -61,7 +62,7 @@ public class AuthController {
         return ResponseEntity.ok().body("Success");
     }
 
-    @PostMapping("/profile")
+    @GetMapping("/profile")
     public ResponseEntity<Map<String, Object>> profile(@RequestHeader("Authorization") String authorizationHeader) {
         return ResponseEntity.ok().body(
                 userApplication.getProfile(authorizationHeader)

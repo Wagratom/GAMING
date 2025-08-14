@@ -1,3 +1,4 @@
+import axios from 'axios';
 import './Login.css';
 import React, { useRef } from 'react';
 
@@ -37,16 +38,9 @@ export default function Formulario(props: propsFormulario) {
 		const formData = new FormData(event.currentTarget);
 		const jsonData = Object.fromEntries(formData.entries());
 
-		fetch(`${process.env.REACT_APP_API_URL}/register`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(jsonData)
-		})
-		.then(res => res.json())
+		axios.post(`${process.env.REACT_APP_API_URL}/register`, jsonData)
 		.then(response => {
-			console.log("Usuário cadastrado:", response);
+			console.log("Usuário cadastrado:", response.data);
 			props.handleForm('Login');
 		})
 		.catch(error => {

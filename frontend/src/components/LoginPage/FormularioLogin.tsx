@@ -1,6 +1,7 @@
 import React from 'react';
 import './Login.css';
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 type propsFormulario = {
 	handleForm: React.Dispatch<React.SetStateAction<string>>
@@ -18,16 +19,14 @@ export default function FormularioLogin(props: propsFormulario) {
 		const formData = new FormData(event.currentTarget);
 		const jsonData = Object.fromEntries(formData.entries());
 
-		fetch(`${process.env.REACT_APP_API_URL}/login`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(jsonData)
-		})
-			.then(res => navidate("/game"))
+		axios.post(`${process.env.REACT_APP_API_URL}/login`, jsonData)
+			.then(response => {
+				console.log("Usuário logado:", response.data);
+				localStorage.setItem("token", response.data.token);
+				navidate("/game");
+			})
 			.catch(error => {
-				console.error("Erro ao cadastrar:", error);
+				console.error("Erro ao logar:", error);
 			});
 	}
 

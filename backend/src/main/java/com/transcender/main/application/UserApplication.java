@@ -146,6 +146,7 @@ public class UserApplication implements UserPortIn {
                     "id", user.getId(),
                     "nickname", user.getNickname() != null ? user.getNickname() : "",
                     "email",  user.getEmail()!= null ? user.getEmail()  : "",
+                    "avatar", user.getAvatar(),
                     "online", user.getOnline(),
                     "criando_em", user.getCriadoEm()
             );

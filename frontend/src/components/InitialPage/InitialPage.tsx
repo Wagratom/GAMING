@@ -1,19 +1,27 @@
 import { useEffect, useState, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
-import { UserData, t_dataUser } from './Contexts/Contexts';
+import { UserData, UserDto } from './Contexts/Contexts';
 import { io, Socket } from 'socket.io-client';
+import axios from 'axios';
 
 export default function InicialPage() {
 
-	const [infoUser, setGetInfoUser] = useState<t_dataUser>({
-		nickname: '',
+	// Estado para armazenar as informações do usuário
+	const [user, setUser] = useState<UserDto>({
+		id: "",
+		nickname: "",
+		avatar: "",
+		token: "",
 		coins: 0,
-		avatar: '',
-		id: '',
 		twoFA: false,
-		avatar_name: '',
 		socket: undefined,
+		criando_em: ""
 	});
+
+	// Função para atualizar qualquer campo do usuário
+	const updateDataUser = (data: Partial<UserDto>) => {
+		setUser((prev) => ({ ...prev, ...data }));
+	};
 
 	const retryCount = useRef(0);
 	const timeoutId = useRef<NodeJS.Timeout | null>(null);
@@ -33,21 +41,23 @@ export default function InicialPage() {
 	}
 
 	// Função para buscar dados do usuário com retry e timeout
-	function getInfoUser(timeForNewRequestAxios: number) {
-		fetch(`${process.env.REACT_APP_API_URL}/profile`, {
-			method: 'GET',
-			credentials: 'include',
-		})
+		function getInfoUser(timeForNewRequestAxios: number) {
+			axios.get(`${process.env.REACT_APP_API_URL}/profile`, {
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("token")}`
+				},
+				withCredentials: true
+			})
 			.then(async (res) => {
-				if (!res.ok) throw new Error('Erro na resposta do servidor');
-
-				const data: t_dataUser = await res.json();
-
+				if (res.status !== 200) {
+					throw new Error('Erro ao buscar dados do usuário');
+				}
+				
+				const data: UserDto = await res.data;
+				updateDataUser(data);
 				// Cria socket para o usuário
 				const socket = createSocketConnection(data.id);
 				data.socket = socket;
-
-				setGetInfoUser(data);
 
 
 				//reiniciando variaveis de controle
@@ -72,6 +82,13 @@ export default function InicialPage() {
 	}
 
 	useEffect(() => {
+		const token: string | null = localStorage.getItem("token");
+		if (!token) {
+			alert("Você precisa estar logado para acessar esta página.");
+			window.location.href = "/";
+			return;
+		}
+
 		getInfoUser(10000);
 
 		// Cleanup quando componente desmonta: limpa timeout e desconecta socket
@@ -81,8 +98,9 @@ export default function InicialPage() {
 		};
 	}, []);
 
+	console.log("User: ", user)
 	return (
-		<UserData.Provider value={{ user: infoUser, updateDataUser: getInfoUser }}>
+		<UserData.Provider value={{ user: user, updateDataUser: updateDataUser }}>
 			<Outlet />
 		</UserData.Provider>
 	);

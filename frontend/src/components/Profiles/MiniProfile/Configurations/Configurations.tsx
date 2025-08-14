@@ -1,18 +1,20 @@
-import { UserData } from '../../../InitialPage/Contexts/Contexts';
 import { FormEvent, useContext, useState } from 'react';
 import IdentifyInputName from "./IdentifyInputName";
 import InputEditName from "./InputEditName";
 import FolderSettingsGame from "./Folder";
 import AudioRanger from "./AudioRanger";
 import ButtonsConf from "./ButtonsConf";
-import './animationEditInputName.css';
 import Cookies from "js-cookie";
 import axios from "axios";
 import ButtonEdit from './ButtonsEdit';
-import { IoIosClose } from "react-icons/io";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+
+import { UserData } from '../../../InitialPage/Contexts/Contexts';
+import { IoIosClose } from "react-icons/io";
 import { useEffect } from 'react';
+
+import './animationEditInputName.css';
 
 type propsConfigurationGame = {
 	closed: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,7 +30,7 @@ export default function ConfigurationGame(props: propsConfigurationGame): JSX.El
 	const [handleOption, setHandleOption] = useState<boolean>(false);
 	const [QRCODE, setQRCODE] = useState<string>('');
 	const [show, setShow] = useState(false);
-	const userData = useContext(UserData);
+	const { user, updateDataUser } = useContext(UserData);
 
 	const handleShow = () => {
 		const checkbox = document.querySelector('#flexSwitchCheckDefault') as HTMLInputElement;
@@ -39,7 +41,7 @@ export default function ConfigurationGame(props: propsConfigurationGame): JSX.El
 					"ngrok-skip-browser-warning": "69420"
 				},
 			}).then((res) => {
-				setTfaEnabled(false);
+				// setTfaEnabled(false);
 			})
 		}
 		getQRCODE();
@@ -59,7 +61,7 @@ export default function ConfigurationGame(props: propsConfigurationGame): JSX.El
 			}
 		}).then((res) => {
 			setHandleOption(!handleOption);
-			userData.updateDataUser();
+			// userData.updateDataUser();
 		}).catch(() => {})
 	}
 
@@ -80,7 +82,7 @@ export default function ConfigurationGame(props: propsConfigurationGame): JSX.El
 					'Content-Type': 'multipart/form-data'
 				}
 			}).then(() => {
-				userData.updateDataUser();
+				// userData.updateDataUser();
 			}).catch((error) => {
 			});
 		}
@@ -93,8 +95,8 @@ export default function ConfigurationGame(props: propsConfigurationGame): JSX.El
 		if (isEditing) return <InputEditName />
 		return (
 			<IdentifyInputName
-				_avatar={userData.user.avatar}
-				_nickname={userData.user.avatar_name}
+				_avatar={"userData.user.avatar"}
+				_nickname={"userData.user.avatar_name"}
 			/>
 		)
 	}
@@ -137,13 +139,12 @@ export default function ConfigurationGame(props: propsConfigurationGame): JSX.El
 			timeout: 10000,
 		}).then((res) => {
 			if (res.data === true) {
-				setTfaEnabled(true);
+				// setTfaEnabled(true);
 				setShow(false);
 			}
 		}).catch(() => {});
 	}
 
-	const [tfaEnabled, setTfaEnabled] = useState<boolean>(userData.user.twoFA);
 	const verifyEnabled = () => {
 		axios.get(`${process.env.REACT_APP_HOST_URL}/2FA/verifyStatus`, {
 			headers: {
@@ -151,7 +152,7 @@ export default function ConfigurationGame(props: propsConfigurationGame): JSX.El
 				"ngrok-skip-browser-warning": "69420"
 			},
 		}).then((res) => {
-			setTfaEnabled(res.data);
+			// setTfaEnabled(res.data);
 		}).catch(() => {})
 	}
 
@@ -181,7 +182,6 @@ export default function ConfigurationGame(props: propsConfigurationGame): JSX.El
 							type="checkbox"
 							id="flexSwitchCheckDefault"
 							onClick={handleShow}
-							checked={tfaEnabled}
 						/>
 						<label className="ms-4 form-check-label text-black" htmlFor="flexSwitchCheckDefault">Habilitar a atutenticação de 2 fatores?</label>
 					</div>

@@ -3,7 +3,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { FaUserFriends } from 'react-icons/fa';
 import { MdPersonRemoveAlt1, MdPersonAddAlt1 } from "react-icons/md";
 import { MdBlock } from "react-icons/md";
-import {get_user_by_avatar_name} from '../../InitialPage/Contexts/Contexts';
+// import {get_user_by_avatar_name} from '../../InitialPage/Contexts/Contexts';
 
 import React, { useContext, useState } from 'react';
 import axios from 'axios';
@@ -26,10 +26,10 @@ function Options({ getPlayers }: { getPlayers: (route: string) => void }) {
 	async function addNewFriend(event: React.KeyboardEvent<HTMLInputElement>) {
 		if (event.key !== 'Enter') return
 
-		let user_nickname = await get_user_by_avatar_name(event.currentTarget.value);
+		// let user_nickname = await get_user_by_avatar_name(event.currentTarget.value);
 
 		axios.post(`${process.env.REACT_APP_HOST_URL}/users/add_friend`, {
-			nick_name: user_nickname,
+			nick_name: "",
 		}, {
 			headers: {
 				Authorization: Cookies.get('jwtToken'),
@@ -44,10 +44,10 @@ function Options({ getPlayers }: { getPlayers: (route: string) => void }) {
 	async function DeleteFriend(event: React.KeyboardEvent<HTMLInputElement>) {
 		if (event.key !== 'Enter') return
 
-		let user_nickname = await get_user_by_avatar_name(event.currentTarget.value);
+		// let user_nickname = await get_user_by_avatar_name(event.currentTarget.value);
 
 		axios.post(`${process.env.REACT_APP_HOST_URL}/users/delete_friend`, {
-			nick_name: user_nickname,
+			nick_name: '',
 		}, {
 			headers: {
 				Authorization: Cookies.get('jwtToken'),
@@ -62,11 +62,11 @@ function Options({ getPlayers }: { getPlayers: (route: string) => void }) {
 	async function BlockUser(event: React.KeyboardEvent<HTMLInputElement>) {
 		if (event.key !== 'Enter') return
 
-		let other_nickname = await get_user_by_avatar_name(event.currentTarget.value);
+		// let other_nickname = await get_user_by_avatar_name(event.currentTarget.value);
 
 		let obj = {
 			my_nickname: userData.nickname,
-			other_nickname: other_nickname
+			other_nickname: ''
 		}
 
 		userData.socket?.emit("direct-block", obj)
