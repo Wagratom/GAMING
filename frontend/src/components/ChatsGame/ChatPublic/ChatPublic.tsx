@@ -1,4 +1,4 @@
-import ListFriends, { Players } from "../../Profiles/MiniProfile/ListFriends";
+import ListFriends, { Players } from "../../Profiles/MineProfile/ListFriends";
 import DinamicProfile from "../../Profiles/DinamicProfile/DinamicProfile";
 
 import { createContext, useContext, useEffect } from "react";

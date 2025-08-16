@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
 import axios from 'axios';
 import MiniPerfilUser from './MiniPerfilUser';
 import Options from './options';
 import ListFriends from './ListFriends';
 import { Players } from './ListFriends';
 import { UserData } from '../../InitialPage/Contexts/Contexts';
+import './MineProfile.css';
 
 type propsMiniProfile = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
@@ -18,11 +18,11 @@ export default function MiniProfile(props: propsMiniProfile) {
 	function getPlayers(route: string) {
 		axios.get(route, {
 			headers: {
-				Authorization:`Bearer ${localStorage.getItem("token")}`,
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
 			}
 		}).then((res) => {
 			setPlayers(res.data);
-		}).catch(() => {})
+		}).catch(() => { })
 	}
 
 	useEffect(() => {
@@ -57,6 +57,7 @@ export default function MiniProfile(props: propsMiniProfile) {
 				<hr className='m-0 w-100 text-white'></hr>
 				<Options getPlayers={getPlayers} />
 				<ListFriends players={players} getPlayers={getPlayers} />
+				<Options getPlayers={getPlayers} />
 			</div>
 		</>
 	);

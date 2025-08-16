@@ -4,7 +4,6 @@ import ChatPrivate from '../../ChatsGame/ChatPrivate/ChatPrivate';
 import DinamicProfile from '../DinamicProfile/DinamicProfile';
 import { UserData } from '../../InitialPage/Contexts/Contexts';
 import PhotoWithOnlineStatus from './PhotoWithOnlineStatus';
-import { FaTableTennisPaddleBall } from "react-icons/fa6";
 import { TbPingPong } from 'react-icons/tb';
 
 const mockPlayers: Players[] = [
@@ -39,7 +38,111 @@ const mockPlayers: Players[] = [
 		avatar_name: "MageAvatar",
 		online: true,
 		match_status: "waiting"
-	}
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
+{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	},
 ];
 
 export type Players = {

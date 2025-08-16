@@ -1,5 +1,4 @@
 import { IoLogoGameControllerA, IoMdPeople } from "react-icons/io";
-import { IoPersonOutline } from "react-icons/io5";
 import { MdOutlinePersonOutline } from "react-icons/md";
 
 const URLS_MiniPerfilPlayers = {
@@ -27,21 +26,23 @@ function Options({ getPlayers }: { getPlayers: (route: string) => void }) {
 		cursor: 'pointer',
 	}
 	return (
-			<div className='d-flex align-items-center px-2' style={{color: "#808287"}}>
-				<p className='fw-bold'>Social</p>
-				<div className='d-flex justify-content-end w-100 options'>
-					{/* visualizar os amigos */}
-					<MdOutlinePersonOutline
-						style={styleButton}
-						size={30} onClick={() => getPlayers(URLS_MiniPerfilPlayers.personal)}
-					/>
-					{/* visualizar todos os usuarios */}
-					<IoLogoGameControllerA
-						style={styleButton}
-						size={30} onClick={() => getPlayers(URLS_MiniPerfilPlayers.Global)}
-					/>
-				</div>
+		<div className='d-flex align-items-center px-2' style={{ color: "#808287" }}>
+			<p className='fw-bold'>Social</p>
+			<div className='d-flex justify-content-end w-100 options'>
+				{/* visualizar os amigos */}
+				<MdOutlinePersonOutline
+					title="Friends"
+					style={styleButton}
+					size={30} onClick={() => getPlayers(URLS_MiniPerfilPlayers.personal)}
+				/>
+				{/* visualizar todos os usuarios */}
+				<IoLogoGameControllerA
+					style={styleButton}
+					title="All Players"
+					size={30} onClick={() => getPlayers(URLS_MiniPerfilPlayers.Global)}
+				/>
 			</div>
+		</div>
 	)
 }
 

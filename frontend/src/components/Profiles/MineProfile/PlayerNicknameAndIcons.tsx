@@ -73,7 +73,7 @@ export default function PlayerNicknameAndIcons(props: PropsStatus): JSX.Element 
 
 	return (
 		<div className="p-1">
-			<div className="d-flex align-items-end position-relative z-2">
+			<div className="d-flex align-items-end position-relative z-2 justify-content-end">
 				<p>{props.name}</p>
 				{getIcons()}
 			</div>
