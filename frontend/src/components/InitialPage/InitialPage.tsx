@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { UserData, UserDto } from './Contexts/Contexts';
 import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function InicialPage() {
 
@@ -28,6 +29,7 @@ export default function InicialPage() {
 	const timeoutId = useRef<NodeJS.Timeout | null>(null);
 	const socketRef = useRef<Socket | null>(null);
 
+	const navigate = useNavigate();
 	// Cria a conexão socket e retorna a instância
 	function createSocketConnection(id: string): Socket {
 		if (socketRef.current) {
@@ -71,7 +73,7 @@ export default function InicialPage() {
 			.catch((err) => {
 				if (err.response.status === 401 || err.response.status === 403) {
 					alert("Sessão expirada ou não autorizada. Por favor, faça login novamente.");
-					window.location.href = "/";
+					navigate('/')
 					return;
 				}
 				retryCount.current++;
@@ -91,7 +93,7 @@ export default function InicialPage() {
 		const token: string | null = localStorage.getItem("token");
 		if (!token) {
 			alert("Você precisa estar logado para acessar esta página.");
-			window.location.href = "/";
+			navigate('/')
 			return;
 		}
 

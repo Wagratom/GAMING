@@ -1,4 +1,4 @@
-import { IoLogoGameControllerA, IoMdPeople } from "react-icons/io";
+import { IoLogoGameControllerA } from "react-icons/io";
 import { MdOutlinePersonOutline } from "react-icons/md";
 
 const URLS_MiniPerfilPlayers = {

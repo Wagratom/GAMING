@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import MiniPerfilUser from './MiniPerfilUser';
 import Options from './options';
+import OptionsEndBar from './OptionsEndBar';
 import ListFriends from './ListFriends';
 import { Players } from './ListFriends';
 import { UserData } from '../../InitialPage/Contexts/Contexts';
@@ -57,7 +58,8 @@ export default function MiniProfile(props: propsMiniProfile) {
 				<hr className='m-0 w-100 text-white'></hr>
 				<Options getPlayers={getPlayers} />
 				<ListFriends players={players} getPlayers={getPlayers} />
-				<Options getPlayers={getPlayers} />
+				<hr className='m-0 w-100 text-white'></hr>
+				<OptionsEndBar />
 			</div>
 		</>
 	);

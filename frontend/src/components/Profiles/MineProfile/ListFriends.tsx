@@ -225,7 +225,7 @@ export default function ListFriends(props: PropsListFriends) {
 									photoHeight='2.5rem'
 									photoWidth='2.5rem'
 									positionTop='70%'
-									positionEnd='50%'
+									positionEnd='47%'
 								/>
 								<PlayerNicknameAndIcons
 									online={play.online}
