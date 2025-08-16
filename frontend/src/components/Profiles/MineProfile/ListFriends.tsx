@@ -127,7 +127,7 @@ const mockPlayers: Players[] = [
 		online: true,
 		match_status: "waiting"
 	},
-{
+	{
 		avatar: "https://i.pravatar.cc/150?img=4",
 		id: "4",
 		nickname: "Hikari",
@@ -163,16 +163,15 @@ type PropsListFriends = {
 
 export default function ListFriends(props: PropsListFriends) {
 	const { user } = useContext(UserData);
-	const [chatPrivate, setChatPrivate] = useState(false);
-	const [dataOpenDirect, setDataOpenDirect] = useState({ nickname: '', avatart: '' });
+	const [dataOpenDirect, setDataOpenDirect] = useState({ nickname: '', avatar: '' });
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>(
 		{ id: '', nickname: '' }
 	);
 
 	function handleOpenChatPrivate(nickname: string, avatar: string) {
-		setChatPrivate(!chatPrivate)
-		setDataOpenDirect({ nickname: nickname, avatart: avatar })
+		if (dataOpenDirect.nickname === nickname) setDataOpenDirect({ nickname: '', avatar: '' });
+		else  setDataOpenDirect({ nickname: nickname, avatar: avatar })
 	}
 
 	function clickPhoto(id: string, nickName: string) {
@@ -202,7 +201,7 @@ export default function ListFriends(props: PropsListFriends) {
 	}
 	return (
 		<div className='p-2 text-white overflow-auto'>
-			{!chatPrivate ? null : <ChatPrivate nick_name={dataOpenDirect.nickname} avatar={dataOpenDirect.avatart} />}
+			{dataOpenDirect.nickname !== '' && <ChatPrivate nicknameTitle={dataOpenDirect.nickname} avatar={dataOpenDirect.avatar} />}
 			{!dinamicProfile ? null :
 				<DinamicProfile
 					openDinamicProfile={setDinamicProfile}
@@ -228,19 +227,19 @@ export default function ListFriends(props: PropsListFriends) {
 									positionEnd='47%'
 								/>
 								<PlayerNicknameAndIcons
-									online={play.online}
-									name={play.avatar_name}
 									my_id={user.id}
+									player_id={play.id}
+									online={play.online}
+									name={play.nickname}
 									mute={props.mute ? props.mute : []}
 									admin={props.admin ? props.admin : []}
 									match_status={play.match_status}
-									player_id={play.id}
 								/>
 							</div>
 							<div className='d-flex align-items-center me-1'>
 								<TbPingPong
 									size={25}
-									style={{color: "#808287"}}
+									style={{ color: "#808287" }}
 									title='Invite to play'
 									onClick={() => createMatch(play.id)}
 								/>
@@ -248,7 +247,6 @@ export default function ListFriends(props: PropsListFriends) {
 						</div>
 					)
 				})}
-
 		</div>
 	);
 }

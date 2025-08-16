@@ -10,23 +10,23 @@ import TitleChatPrivate from './Title';
 import { Socket } from 'socket.io-client';
 
 type propsChatPrivate = {
-	nick_name: string,
+	nicknameTitle: string,
 	avatar: string,
 }
 
 export default function ChatPrivate(props: propsChatPrivate) {
+	console.log("ChatPrivate", props);
 	const [messages, setMessages] = useState<Messages[]>([]);
 	const [messageErr, setMessageErr] = useState<String>("");
 	const userData = useContext(UserData).user;
 
 	const OpenDirectChat = () => {
 		axios.post(`${process.env.REACT_APP_HOST_URL}/chatroom/open-direct`, {
-			my_nickname: userData.nickname,
-			other_nickname: props.nick_name
+			myNickname: userData.nickname,
+			otherNicknam: props.nicknameTitle
 		}, {
 			headers: {
 				Authorization: Cookies.get('jwtToken'),
-				"ngrok-skip-browser-warning": "69420",
 			}
 		}).then((res) => {
 			setMessages(res.data);
@@ -55,14 +55,14 @@ export default function ChatPrivate(props: propsChatPrivate) {
 
 	let obj = {
 		my_nickname: userData.nickname,
-		other_nickname: props.nick_name,
+		nicknameTitle: props.nicknameTitle,
 		content: '',
 		route: 'direct-message',
 	}
 
 	return (
 		<div className='text-white chat d-flex flex-column bg-degrader rounded' style={{zIndex: 2000}}>
-			<TitleChatPrivate nickname={props.nick_name} avatar={props.avatar} />
+			<TitleChatPrivate nicknameFriend={props.nicknameTitle} avatar={props.avatar} />
 			<div className='p-2 overflow-auto mt-auto text-black' id='messagens-chat'>
 				<FormatMessages messagens={messages} user={userData} messageErr={messageErr}/>
 			</div>
