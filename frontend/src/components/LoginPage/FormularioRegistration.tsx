@@ -40,7 +40,6 @@ export default function Formulario(props: propsFormulario) {
 
 		axios.post(`${process.env.REACT_APP_API_URL}/register`, jsonData)
 		.then(response => {
-			console.log("Usuário cadastrado:", response.data);
 			props.handleForm('Login');
 		})
 		.catch(error => {

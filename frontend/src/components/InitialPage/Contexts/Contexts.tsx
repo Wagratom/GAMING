@@ -6,6 +6,7 @@ export type UserDto = {
   id: string;
   nickname: string;
   avatar: string;
+  online: boolean;
   token: string | null;
   coins: number;
   twoFA: boolean;
@@ -24,5 +25,5 @@ type UserContextType = {
 // Contexto
 export const UserData = createContext<UserContextType>({
   user: {} as UserDto,
-  updateDataUser: () => {},
+  updateDataUser: () => { },
 });

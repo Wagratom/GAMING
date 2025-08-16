@@ -12,6 +12,7 @@ export default function InicialPage() {
 		nickname: "",
 		avatar: "",
 		token: "",
+		online: false,
 		coins: 0,
 		twoFA: false,
 		socket: undefined,

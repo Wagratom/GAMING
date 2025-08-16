@@ -7,30 +7,20 @@ import { UserData } from '../../InitialPage/Contexts/Contexts';
 import { GoMute } from "react-icons/go";
 import { Players } from "./ListFriends";
 
-const cssOnlineBorder: React.CSSProperties = {
-	backgroundColor: 'rgb(10, 235, 10)',
+const CSSOfflineBorder: React.CSSProperties = {
+	backgroundColor: '#d3d3d3',
 	borderRadius: '50%',
 	height: '12px',
 	width: '12px',
 };
 
-const cssOnline: React.CSSProperties = {
-	backgroundColor: '#009000',
+const CSSOffline: React.CSSProperties = {
+	backgroundColor: '#666',
 	borderRadius: '50%',
 	height: '8px',
 	width: '8px',
 };
 
-const CSSOfflineBorder: React.CSSProperties = {
-	...cssOnlineBorder,
-	backgroundColor: '#d3d3d3',
-};
-
-const CSSOffline: React.CSSProperties = {
-	...cssOnline,
-	backgroundColor: '#666',
-
-};
 
 type PropsStatus = {
 	name: string,
@@ -43,7 +33,7 @@ type PropsStatus = {
 }
 
 export default function Status(props: PropsStatus): JSX.Element {
-	const userData = useContext(UserData).user;
+	const { user } = useContext(UserData);
 
 	const handleWatchPath = (e: React.MouseEvent<SVGElement, MouseEvent>): void => {
 		e.stopPropagation();
@@ -51,7 +41,7 @@ export default function Status(props: PropsStatus): JSX.Element {
 			playerId: props.my_id,
 			watcherId: props.player_id
 		}
-		userData.socket?.emit('watch-match', obj);
+		user.socket?.emit('watch-match', obj);
 	}
 
 	const getIcons = (): JSX.Element => {

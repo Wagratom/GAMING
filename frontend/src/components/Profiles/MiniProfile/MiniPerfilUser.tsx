@@ -10,11 +10,11 @@ type propsMiniProfile = {
 }
 
 export default function MiniPerfilUser(props: propsMiniProfile) {
-	const userData = useContext(UserData).user;
+	const { user } = useContext(UserData);
 	const [optionsConf, setOptionsConf] = useState<boolean>(false);
 	const [showConfigurations, setShowConfigurations] = useState<boolean>(false);
 
-	if (userData.nickname === '' || userData.avatar === '') {
+	if (user.nickname === '' || user.avatar === '') {
 		return (
 			<div className='d-flex p-3' style={{ height: '15vh' }}>
 				<div className="spinner-border text-primary m-auto h-75" role="status">
@@ -24,7 +24,6 @@ export default function MiniPerfilUser(props: propsMiniProfile) {
 		);
 	}
 
-	console.log(`userData.avatar: ${userData.avatar}`)
 	return (
 		<div className='d-flex p-3 text-white'>
 			{/* toggle to open configuration profile */}
@@ -34,21 +33,17 @@ export default function MiniPerfilUser(props: propsMiniProfile) {
 
 				{/* avatar photo and status online */}
 				<div className='position-relative'>
-					<img className="rounded-circle me-3 p-6 w-6" src={userData.avatar} alt='foto' />
+					<img className="rounded-circle me-3 p-6 w-6" src={user.avatar} alt='foto' />
 					<div className='borda-online'>
 						<div className='circle-online'></div>
 					</div>
 				</div>
 
-				<Status
-					is_active={true}
-					name={userData.nickname}
-					my_id={userData.id}
-					admin={[]}
-					mute={[]}
-					match_status={''}
-					player_id={''}
-				/>
+				{/* nickName and online */}
+				<div>
+					<p>{user.nickname}</p>
+					<p>{user.online ? 'Online' : "Offline"}</p>
+				</div>
 			</div>
 
 			{/* icon to open options settings */}
@@ -65,7 +60,7 @@ export default function MiniPerfilUser(props: propsMiniProfile) {
 					{optionsConf && (
 						<OptionsMiniProfile
 							showMiniPerfil={props.showMiniPerfil}
-							id={userData.id}
+							id={user.id}
 							setShowConfigurations={setShowConfigurations}
 						/>
 					)}
