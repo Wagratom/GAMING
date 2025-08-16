@@ -67,7 +67,12 @@ export default function InicialPage() {
 					timeoutId.current = null;
 				}
 			})
-			.catch(() => {
+			.catch((err) => {
+				if (err.response.status === 401 || err.response.status === 403) {
+					alert("Sessão expirada ou não autorizada. Por favor, faça login novamente.");
+					window.location.href = "/";
+					return;
+				}
 				retryCount.current++;
 				if (retryCount.current >= 5) {
 					alert('O servidor está indisponível no momento, tente novamente mais tarde.');

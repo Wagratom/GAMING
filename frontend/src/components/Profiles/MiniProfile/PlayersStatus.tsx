@@ -12,7 +12,6 @@ const cssOnlineBorder: React.CSSProperties = {
 	borderRadius: '50%',
 	height: '12px',
 	width: '12px',
-	marginRight: '5px',
 };
 
 const cssOnline: React.CSSProperties = {
@@ -80,7 +79,7 @@ export default function Status(props: PropsStatus): JSX.Element {
 					<MdOutlineAdminPanelSettings key={props.player_id} style={cssSecond} />
 				}
 				{!(props.match_status === "WATCHING") ? null :
-					<FaEye style={cssWatch}/>
+					<FaEye style={cssWatch} />
 				}
 				{!(props.match_status === "PLAYING") ? null :
 					<FaTableTennisPaddleBall style={cssWatch} onClick={handleWatchPath}
@@ -94,33 +93,28 @@ export default function Status(props: PropsStatus): JSX.Element {
 		if (status) {
 			return (
 				<div className='d-flex align-items-center'>
-					<div style={cssOnlineBorder}
-						className='d-flex justify-content-center align-items-center'>
-						<div style={cssOnline}></div>
-					</div>
-					<p>Online</p>
+					<p className="pe-1">Online</p>
 				</div>
 			)
 		}
 		return (
 			<div className='d-flex align-items-center'>
+				<p>Offline</p>
 				<div style={CSSOfflineBorder}
 					className='d-flex justify-content-center align-items-center'>
 					<div style={CSSOffline}></div>
 				</div>
-				<p>Offline</p>
 			</div>
 		)
 	}
 
 	return (
-		<div className="p-1">
+		<div>
+			<p>{props.name}</p>
 			<div className="d-flex align-items-end">
-				<p>{props.name}</p>
 				{getIcons()}
+				{getStatusONorOFF(props.is_active)}
 			</div>
-			{getStatusONorOFF(props.is_active)}
-
 		</div>
 	);
 }

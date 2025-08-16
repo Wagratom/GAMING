@@ -32,7 +32,7 @@ export default function OptionsMiniProfile(props: propsSelectConfiuration): JSX.
 	}
 
 	return (
-		<div className='bg-light text-black p-3 rounded z-2 position-relative'>
+		<div className='bg-light text-black p-3 pb-0 rounded z-2'>
 			<div className='border-bottom'
 				style={cursoPointer}
 				onClick={() => props.setShowConfigurations(true)}

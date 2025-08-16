@@ -33,7 +33,7 @@ public class UserCore {
         this.senhaHash = senha;
         this.nickname = nickname;
         this.telefone = telefone;
-        this.avatar = "https://carddesigner.s3.us-east-2.amazonaws.com/public/avatars/" + id;
+        this.avatar = String.format("https://carddesigner.s3.us-east-2.amazonaws.com/public/avatars/%s.png", id);
 
         this.online = online;
         this.ative = ative;

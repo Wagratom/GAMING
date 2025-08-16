@@ -298,6 +298,7 @@ export default function Game(): JSX.Element {
 			{collisionPnt === 'Lua' ? <DinamicProfile openDinamicProfile={setCollisionPnt}
 				nickName={userData.nickname} id={userData.id} /> : null}
 			{openModalConvite ? <ModalConvite setOpenChat={setOpenModalConvite} dataConvite={dataConvite} /> : null}
+			<MiniProfile showMiniPerfil={setCollisionPnt} />
 		</div>
 	)
 }

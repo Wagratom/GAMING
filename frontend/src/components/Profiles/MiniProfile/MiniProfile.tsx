@@ -18,8 +18,7 @@ export default function MiniProfile(props: propsMiniProfile) {
 	function getPlayers(route: string) {
 		axios.get(route, {
 			headers: {
-				Authorization: Cookies.get('jwtToken'),
-				"ngrok-skip-browser-warning": "69420"
+				Authorization:`Bearer ${localStorage.getItem("token")}`,
 			}
 		}).then((res) => {
 			setPlayers(res.data);
