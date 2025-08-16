@@ -1,8 +1,8 @@
-import { FaEye } from "react-icons/fa";
 import React, { useContext } from "react";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
-import { FaTableTennisPaddleBall } from "react-icons/fa6";
 import { UserData } from '../../InitialPage/Contexts/Contexts';
+import { VscEye } from "react-icons/vsc";
+import { TbEyeClosed } from "react-icons/tb";
 
 import { GoMute } from "react-icons/go";
 import { Players } from "./ListFriends";
@@ -48,23 +48,24 @@ export default function PlayerNicknameAndIcons(props: PropsStatus): JSX.Element 
 		return (
 			<>
 				{/* verify if the player muted*/}
-				{!props.mute.find((item) => item.id === props.player_id) && (
+				{props.mute.find((item) => item.id === props.player_id) && (
 					<GoMute key={props.player_id + '1'} style={cssIcons} />
 				)}
 
 				{/* verify if the player is admin */}
-				{!props.admin.find((item) => item.id === props.player_id) && (
+				{props.admin.find((item) => item.id === props.player_id) && (
 					<MdOutlineAdminPanelSettings key={props.player_id} style={cssSecond} />
 				)}
 				
 				{/* // verify if the player is watching a game */}
 				{props.match_status === "WATCHING" && (
-					<FaEye style={cssWatch} title="In gaming" />
+					<TbEyeClosed style={cssWatch} title="watching a game" />
 				)}
+
 
 				{/* //verify if the player is playing a game */}
 				{props.match_status === "PLAYING" && (
-					<FaTableTennisPaddleBall style={cssWatch} onClick={handleWatchPath} title="Watch game" />
+					<VscEye style={cssWatch} onClick={handleWatchPath} title="Watch game" />
 				)}
 			</>
 		)
@@ -72,7 +73,7 @@ export default function PlayerNicknameAndIcons(props: PropsStatus): JSX.Element 
 
 	return (
 		<div className="p-1">
-			<div className="d-flex align-items-end">
+			<div className="d-flex align-items-end position-relative z-2">
 				<p>{props.name}</p>
 				{getIcons()}
 			</div>

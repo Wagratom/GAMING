@@ -1,4 +1,6 @@
 import { IoLogoGameControllerA, IoMdPeople } from "react-icons/io";
+import { IoPersonOutline } from "react-icons/io5";
+import { MdOutlinePersonOutline } from "react-icons/md";
 
 const URLS_MiniPerfilPlayers = {
 	'personal': `${process.env.REACT_APP_HOST_URL}/users/friends`,
@@ -29,7 +31,7 @@ function Options({ getPlayers }: { getPlayers: (route: string) => void }) {
 				<p className='fw-bold'>Social</p>
 				<div className='d-flex justify-content-end w-100 options'>
 					{/* visualizar os amigos */}
-					<IoMdPeople
+					<MdOutlinePersonOutline
 						style={styleButton}
 						size={30} onClick={() => getPlayers(URLS_MiniPerfilPlayers.personal)}
 					/>

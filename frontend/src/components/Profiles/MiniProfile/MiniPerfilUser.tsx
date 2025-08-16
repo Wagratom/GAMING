@@ -1,7 +1,6 @@
 import { IoMdSettings } from "react-icons/io";
 import { UserData } from '../../InitialPage/Contexts/Contexts';
 import React, { useContext, useState } from 'react';
-import PlayerNicknameAndIcons from './PlayerNicknameAndIcons';
 import ConfigurationGame from './Configurations/Configurations';
 import OptionsMiniProfile from './OptionsMiniProfile';
 import PhotoWithOnlineStatus from "./PhotoWithOnlineStatus";

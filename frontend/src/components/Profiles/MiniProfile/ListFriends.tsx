@@ -2,9 +2,10 @@ import PlayerNicknameAndIcons from './PlayerNicknameAndIcons';
 import { useContext, useState } from 'react';
 import ChatPrivate from '../../ChatsGame/ChatPrivate/ChatPrivate';
 import DinamicProfile from '../DinamicProfile/DinamicProfile';
-import { IoGameControllerOutline } from "react-icons/io5";
 import { UserData } from '../../InitialPage/Contexts/Contexts';
 import PhotoWithOnlineStatus from './PhotoWithOnlineStatus';
+import { FaTableTennisPaddleBall } from "react-icons/fa6";
+import { TbPingPong } from 'react-icons/tb';
 
 const mockPlayers: Players[] = [
 	{
@@ -106,12 +107,14 @@ export default function ListFriends(props: PropsListFriends) {
 					id={profileData.id}
 				/>
 			}
+
+			{/* Map for show players list */}
 			{
 				// props.players.map((play: Players) => {
 				mockPlayers.map((play: Players) => {
 					if (play.id === user.id) return null
 					return (
-						<div className='d-flex hover' key={play.id}>
+						<div className='d-flex hover p-1 position relative z-1' key={play.id}>
 							<div className='d-flex w-100' onClick={() => handleOpenChatPrivate(play.nickname, play.avatar)}>
 								<PhotoWithOnlineStatus
 									online={play.online}
@@ -132,9 +135,10 @@ export default function ListFriends(props: PropsListFriends) {
 								/>
 							</div>
 							<div className='d-flex align-items-center me-1'>
-								<IoGameControllerOutline
-									size={30}
-									className='text-warning'
+								<TbPingPong
+									size={25}
+									style={{color: "#808287"}}
+									title='Invite to play'
 									onClick={() => createMatch(play.id)}
 								/>
 							</div>
