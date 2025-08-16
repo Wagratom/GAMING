@@ -33,13 +33,6 @@ body p {
 	color: #000;
 }
 
-.foto-list-friends {
-	height: 50px;
-	width: 50px;
-	border-radius: 50%;
-	padding: 5px;
-}
-
 ::-webkit-scrollbar {
 	width: 5px;
 }
@@ -58,21 +51,10 @@ body p {
 	background: #555;
 }
 
-.p-6 {
-	height: 5rem;
-}
-
-.w-6 {
-	width: 5rem;
-}
-
-
 /* Online css */
-.borda-online {
+/* base do círculo maior (borda) */
+.borda {
 	position: absolute;
-	left: 61%;
-	top: 78%;
-	background-color: rgb(10, 235, 10);
 	border-radius: 50%;
 	width: 16px;
 	height: 16px;
@@ -82,9 +64,27 @@ body p {
 	align-items: center;
 }
 
-.circle-online {
-	background-color: #009000;
+/* variações */
+.borda-online {
+	background-color: rgb(10, 235, 10);
+}
+
+.borda-offline {
+	background-color: #d3d3d3;
+}
+
+/* base do círculo interno */
+.circle {
 	border-radius: 50%;
 	width: 8px;
 	height: 8px;
+}
+
+/* variações */
+.circle-online {
+	background-color: #009000;
+}
+
+.circle-offline {
+	background-color: #666;
 }

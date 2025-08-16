@@ -1,9 +1,10 @@
 import { IoMdSettings } from "react-icons/io";
 import { UserData } from '../../InitialPage/Contexts/Contexts';
 import React, { useContext, useState } from 'react';
-import Status from './PlayersStatus';
+import PlayerNicknameAndIcons from './PlayerNicknameAndIcons';
 import ConfigurationGame from './Configurations/Configurations';
 import OptionsMiniProfile from './OptionsMiniProfile';
+import PhotoWithOnlineStatus from "./PhotoWithOnlineStatus";
 
 type propsMiniProfile = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
@@ -32,13 +33,14 @@ export default function MiniPerfilUser(props: propsMiniProfile) {
 			<div className='h-100 d-flex align-items-center'>
 
 				{/* avatar photo and status online */}
-				<div className='position-relative'>
-					<img className="rounded-circle me-3 p-6 w-6" src={user.avatar} alt='foto' />
-					<div className='borda-online'>
-						<div className='circle-online'></div>
-					</div>
-				</div>
-
+				<PhotoWithOnlineStatus
+					online={user.online}
+					imgSrc={user.avatar}
+					photoHeight='5rem'
+					photoWidth='5rem'
+					positionTop='78%'
+					positionEnd='61%'
+				/>
 				{/* nickName and online */}
 				<div>
 					<p>{user.nickname}</p>

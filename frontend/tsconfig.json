@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-  ]
+, "add_friends.tsx"  ]
 }

@@ -1,16 +1,52 @@
-import Status from './PlayersStatus';
+import PlayerNicknameAndIcons from './PlayerNicknameAndIcons';
 import { useContext, useState } from 'react';
 import ChatPrivate from '../../ChatsGame/ChatPrivate/ChatPrivate';
 import DinamicProfile from '../DinamicProfile/DinamicProfile';
 import { IoGameControllerOutline } from "react-icons/io5";
 import { UserData } from '../../InitialPage/Contexts/Contexts';
+import PhotoWithOnlineStatus from './PhotoWithOnlineStatus';
+
+const mockPlayers: Players[] = [
+	{
+		avatar: "https://i.pravatar.cc/150?img=1",
+		id: "1",
+		nickname: "Bankai",
+		avatar_name: "SamuraiAvatar",
+		online: true,
+		match_status: "PLAYING"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=2",
+		id: "2",
+		nickname: "Kitsune",
+		avatar_name: "FoxAvatar",
+		online: false,
+		match_status: "WATCHING"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=3",
+		id: "3",
+		nickname: "Akira",
+		avatar_name: "NinjaAvatar",
+		online: true,
+		match_status: "in_game"
+	},
+	{
+		avatar: "https://i.pravatar.cc/150?img=4",
+		id: "4",
+		nickname: "Hikari",
+		avatar_name: "MageAvatar",
+		online: true,
+		match_status: "waiting"
+	}
+];
 
 export type Players = {
 	avatar: string,
 	id: string,
 	nickname: string,
 	avatar_name: string,
-	is_active: boolean,
+	online: boolean,
 	match_status: string
 }
 
@@ -22,7 +58,7 @@ type PropsListFriends = {
 }
 
 export default function ListFriends(props: PropsListFriends) {
-	const userData = useContext(UserData).user;
+	const { user } = useContext(UserData);
 	const [chatPrivate, setChatPrivate] = useState(false);
 	const [dataOpenDirect, setDataOpenDirect] = useState({ nickname: '', avatart: '' });
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
@@ -42,12 +78,12 @@ export default function ListFriends(props: PropsListFriends) {
 
 	function createMatch(idFriend: string) {
 		const obj = {
-			myId: userData.id,
-			myNickname: userData.nickname,
+			myId: user.id,
+			myNickname: user.nickname,
 			otherId: idFriend,
 			msg: "convite"
 		}
-		userData.socket?.emit("sendInvite", obj)
+		user.socket?.emit("sendInvite", obj)
 	}
 
 	let type = typeof props.players;
@@ -71,21 +107,24 @@ export default function ListFriends(props: PropsListFriends) {
 				/>
 			}
 			{
-				props.players.map((play: Players) => {
-					if (play.id === userData.id) return null
+				// props.players.map((play: Players) => {
+				mockPlayers.map((play: Players) => {
+					if (play.id === user.id) return null
 					return (
 						<div className='d-flex hover' key={play.id}>
-							<img
-								className="foto-list-friends"
-								src={`data:image/png;base64, ${play.avatar}`}
-								alt='foto'
-								onClick={() => clickPhoto(play.id, play.nickname)}
-							/>
 							<div className='d-flex w-100' onClick={() => handleOpenChatPrivate(play.nickname, play.avatar)}>
-								<Status
-									is_active={play.is_active}
+								<PhotoWithOnlineStatus
+									online={play.online}
+									imgSrc={play.avatar}
+									photoHeight='2.5rem'
+									photoWidth='2.5rem'
+									positionTop='70%'
+									positionEnd='50%'
+								/>
+								<PlayerNicknameAndIcons
+									online={play.online}
 									name={play.avatar_name}
-									my_id={userData.id}
+									my_id={user.id}
 									mute={props.mute ? props.mute : []}
 									admin={props.admin ? props.admin : []}
 									match_status={play.match_status}
