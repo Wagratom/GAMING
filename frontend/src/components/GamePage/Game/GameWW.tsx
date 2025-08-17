@@ -55,23 +55,23 @@ export default function GameWW(): JSX.Element {
 	}
 
 
-	useEffect(() => {
-		userData.socket?.on('updateGame', (data: GamePongProps) => {
-			setFakeGame(data)
-		})
-	}, [])
+	// useEffect(() => {
+	// 	userData.socket?.on('updateGame', (data: GamePongProps) => {
+	// 		setFakeGame(data)
+	// 	})
+	// }, [])
 
 
-	useEffect(() => {
-		const intervalId = setInterval(() => {
-			userData.socket?.emit('updateGame', room)
-		},30);
+	// useEffect(() => {
+	// 	const intervalId = setInterval(() => {
+	// 		userData.socket?.emit('updateGame', room)
+	// 	},30);
 
-		return () => {
-			clearInterval(intervalId);
-			userData.socket?.emit('disconnect-user', {room: room, id: userData.id});
-		}
-	}, [room])
+	// 	return () => {
+	// 		clearInterval(intervalId);
+	// 		userData.socket?.emit('disconnect-user', {room: room, id: userData.id});
+	// 	}
+	// }, [room])
 
 
 	const paddleLeft: React.CSSProperties = {
@@ -110,7 +110,7 @@ export default function GameWW(): JSX.Element {
 
 		let isLeft = fakeGame.player_left.id === userData.id ? true : false
 		let isUp = key === 'w' ? true : false
-		userData.socket?.emit('updatePaddle', { roomID: room, isLeft: isLeft, isUp: isUp, pause: false })
+		// userData.socket?.emit('updatePaddle', { roomID: room, isLeft: isLeft, isUp: isUp, pause: false })
 	}
 
 
@@ -119,10 +119,10 @@ export default function GameWW(): JSX.Element {
 		if (fakeGame.watchs.find(id => id === userData.id)) return null
 
 		if (e.key === 'p') {
-			userData.socket?.emit('updatePaddle', { roomID: room, isLeft: false, isUp: false, pause: true })
+			// userData.socket?.emit('updatePaddle', { roomID: room, isLeft: false, isUp: false, pause: true })
 		}
 		else if (e.key === 'l') {
-			userData.socket?.emit('updatePaddle', { roomID: room, isLeft: false, isUp: false, pause: false })
+			// userData.socket?.emit('updatePaddle', { roomID: room, isLeft: false, isUp: false, pause: false })
 		}
 		else {
 			hadleMovie(e.key)

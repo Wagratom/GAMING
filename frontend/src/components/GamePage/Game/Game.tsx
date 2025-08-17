@@ -23,7 +23,6 @@ import DinamicProfile from "../../Profiles/DinamicProfile/DinamicProfile";
 import MiniProfile from "../../Profiles/MineProfile/MineProfile";
 import { UserData } from "../../InitialPage/Contexts/Contexts";
 import { ModalConvite } from "./ModalConvite";
-import { useNavigate } from "react-router-dom";
 
 export type dataConvite = {
 	otherId: string,
@@ -38,13 +37,13 @@ export default function Game(): JSX.Element {
 	const [openModalConvite, setOpenModalConvite] = useState<boolean>(false);
 	const [dataConvite, setDataConvite] = useState<dataConvite>({} as dataConvite);
 
-	useEffect(() => {
-		userData.socket?.on("receiveConvite", (data: dataConvite) => {
-			if (data.otherId === userData.id)
-				setOpenModalConvite(true);
-			setDataConvite(data);
-		})
-	});
+	// useEffect(() => {
+	// 	userData.socket?.on("receiveConvite", (data: dataConvite) => {
+	// 		if (data.otherId === userData.id)
+	// 			setOpenModalConvite(true);
+	// 		setDataConvite(data);
+	// 	})
+	// });
 
 	useEffect(() => {
 		if (!gameContainerRef.current) return
@@ -249,7 +248,7 @@ export default function Game(): JSX.Element {
 			physics: {
 				default: 'arcade',
 				arcade: {
-					gravity: { y: 0 },
+					gravity: {x: 0, y: 0 },
 					debug: false,
 				}
 			},
@@ -261,9 +260,6 @@ export default function Game(): JSX.Element {
 		};
 
 		const game = new Phaser.Game(gameConfig);
-
-
-
 
 		// Limpeza quando o componente for desmontado
 		return () => {
@@ -277,15 +273,14 @@ export default function Game(): JSX.Element {
 	}
 
 	//Ativando o scoket para iniciar uma partipa
-	const navigate = useNavigate()
-	useEffect(() => {
-		userData.socket?.on('startGame', (data: any) => {
-			navigate(`/game/pong/${data.roomID}`)
-		})
-		return () => {
-			userData.socket?.off('starGame')
-		}
-	}, [userData.socket])
+	// useEffect(() => {
+	// 	userData.socket?.on('startGame', (data: any) => {
+	// 		navigate(`/game/pong/${data.roomID}`)
+	// 	})
+	// 	return () => {
+	// 		userData.socket?.off('starGame')
+	// 	}
+	// }, [userData.socket])
 
 
 	return (

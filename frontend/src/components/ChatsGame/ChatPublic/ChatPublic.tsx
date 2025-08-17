@@ -1,11 +1,11 @@
 import { Players } from '../../InitialPage/Contexts/Contexts'
-import DinamicProfile from '../../Profiles/DinamicProfile/DinamicProfile';
-
 import { createContext, useContext, useEffect } from 'react';
+import { UserData } from '../../InitialPage/Contexts/Contexts';
+
 import React, { useState } from 'react';
+import DinamicProfile from '../../Profiles/DinamicProfile/DinamicProfile';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { UserData } from '../../InitialPage/Contexts/Contexts';
 import bgChatPublic from '../../../assets/game/bgChatPublic.png';
 import RightSide from './RightSide';
 import ModalIsBanned from './ModalIsBanned';
@@ -78,13 +78,7 @@ export default function ChatPublic(props: propsPageChats) {
 			return
 		}
 
-		let obj = {
-			my_id: userData.id,
-			other_id: userData.id,
-			chat_name: props.chatName,
-			chat_id: chat_id,
-		}
-		userData.socket?.emit("add-member-group", obj);
+		// userData.socket?.emit("add-member-group", obj);
 	}
 
 	//TODO: Show modal when delete chat
@@ -99,7 +93,7 @@ export default function ChatPublic(props: propsPageChats) {
 		}).then((response) => {
 			setDataChat(response.data)
 			addNewMember(response.data.id, response.data)
-			userData.socket?.emit("open-group", { chatId: response.data.id });
+			// userData.socket?.emit("open-group", { chatId: response.data.id });
 		}).catch(() => { })
 	}
 
@@ -121,34 +115,34 @@ export default function ChatPublic(props: propsPageChats) {
 
 	//TODO: verificar se o usuario foi banido e manda ele sair
 	//Sockets
-	useEffect(() => {
-		userData.socket?.on('checkStatus', (data: any) => {
-			getDataChat();
-		})
-		userData.socket?.on('updateChat', (data: any) => {
-			getDataChat();
-		})
+	// useEffect(() => {
+	// 	userData.socket?.on('checkStatus', (data: any) => {
+	// 		getDataChat();
+	// 	})
+	// 	userData.socket?.on('updateChat', (data: any) => {
+	// 		getDataChat();
+	// 	})
 
-		userData.socket?.on('deleteChat', (message: any) => {
-			props.openPageChats("")
-			setShowModal({ show: true, msg: message });
-		})
+	// 	userData.socket?.on('deleteChat', (message: any) => {
+	// 		props.openPageChats("")
+	// 		setShowModal({ show: true, msg: message });
+	// 	})
 
-		userData.socket?.on('banMember', (obj: any) => {
-			getIsMyId(obj.id, obj.msg)
-		})
+	// 	userData.socket?.on('banMember', (obj: any) => {
+	// 		getIsMyId(obj.id, obj.msg)
+	// 	})
 
-		userData.socket?.on('kickMember', (obj: any) => {
-			getIsMyId(obj.id, obj.msg)
-		})
-		return () => {
-			userData.socket?.off('checkStatus')
-			userData.socket?.off('updateChat')
-			userData.socket?.off('deleteChat')
-			userData.socket?.off('banMember')
-			userData.socket?.off('kickMember')
-		}
-	}, [userData.socket])
+	// 	userData.socket?.on('kickMember', (obj: any) => {
+	// 		getIsMyId(obj.id, obj.msg)
+	// 	})
+	// 	return () => {
+	// 		userData.socket?.off('checkStatus')
+	// 		userData.socket?.off('updateChat')
+	// 		userData.socket?.off('deleteChat')
+	// 		userData.socket?.off('banMember')
+	// 		userData.socket?.off('kickMember')
+	// 	}
+	// }, [userData.socket])
 	//##############################################################
 
 	if (!chatData.name) return <div>Não ha chats</div>

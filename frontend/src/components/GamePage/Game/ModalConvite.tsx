@@ -23,7 +23,7 @@ export function ModalConvite(props: propsModalConvite): JSX.Element {
 			idOther: "idOther",
 			msg: "response"
 		}
-		userData.socket?.emit("sendInvite", obj)
+		// userData.socket?.emit("sendInvite", obj)
 		props.setOpenChat(false);
 	}
 

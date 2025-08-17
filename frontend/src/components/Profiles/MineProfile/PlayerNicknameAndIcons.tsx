@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
+import React from "react";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
-import { UserData } from '../../InitialPage/Contexts/Contexts';
 import { VscEye } from "react-icons/vsc";
 import { TbEyeClosed } from "react-icons/tb";
 
@@ -18,7 +17,6 @@ type PropsStatus = {
 }
 
 export default function PlayerNicknameAndIcons(props: PropsStatus): JSX.Element {
-	const userData = useContext(UserData).user;
 
 	const handleWatchPath = (e: React.MouseEvent<SVGElement, MouseEvent>): void => {
 		e.stopPropagation();
@@ -26,7 +24,6 @@ export default function PlayerNicknameAndIcons(props: PropsStatus): JSX.Element 
 			playerId: props.my_id,
 			watcherId: props.player_id
 		}
-		userData.socket?.emit('watch-match', obj);
 	}
 
 	const getIcons = (): JSX.Element => {

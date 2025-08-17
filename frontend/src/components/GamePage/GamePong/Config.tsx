@@ -1,10 +1,7 @@
 import Phaser from 'phaser';
 import barInitial from '../../../assets/game/bar/barInitial.png';
 import ball from '../../../assets/game/ball2.png';
-import { Socket } from 'socket.io-client';
-import { useContext } from 'react';
-import { UserData } from '../../InitialPage/Contexts/Contexts';
-const userData = useContext(UserData).user;
+
 interface DataRoom {
 	Player1: string,
 	Player2: string,
@@ -33,7 +30,7 @@ export class CustomScene extends Phaser.Scene {
 	ball: Phaser.Physics.Arcade.Sprite = {} as Phaser.Physics.Arcade.Sprite;
 	dataBallGame: { x: number, y: number, lastpaddle: string };
 	isLider: boolean;
-	socket: Socket;
+	// socket: Socket;
 	onePercenteY: number;
 	onePercenteX: number;
 
@@ -48,7 +45,6 @@ export class CustomScene extends Phaser.Scene {
 	constructor(data: DataRoom, isLider: boolean) {
 		super('CustomScene');
 		this.ball = {} as Phaser.Physics.Arcade.Sprite;
-		this.socket = userData.socket as Socket;
 		this.isLider = isLider;
 		this.dataBallGame = { x: 0, y: 0, lastpaddle: '' };
 		this.onePercenteX = 0;
@@ -81,7 +77,7 @@ export class CustomScene extends Phaser.Scene {
 			paddlePlayer: 0,
 			room: this.dataGame.room
 		}
-		this.socket.emit('rooms', this.dataGame);
+		// this.socket.emit('rooms', this.dataGame);
 	}
 
 	notLiderEmitPaddle() {
@@ -92,20 +88,20 @@ export class CustomScene extends Phaser.Scene {
 			paddlePlayer: this.paddle1.y,
 			room: this.dataGame.room
 		}
-		this.socket.emit('rooms', this.dataGame);
+		// this.socket.emit('rooms', this.dataGame);
 	}
 
 	listenSocket() {
-		this.socket.on('startGame', (data: DataGame) => {
-			if (!this.isLider && data.isLider) {
-				this.paddle2.y = data.paddleLider;
-				const [x, y] = this.mirrorShowBallX(data.positionBall[0], data.positionBall[1]);
-				this.ball.x = x;
-				this.ball.y = y;
-			} else if (this.isLider && !data.isLider) {
-				this.paddle2.y = data.paddlePlayer;
-			}
-		});
+		// this.socket.on('startGame', (data: DataGame) => {
+		// 	if (!this.isLider && data.isLider) {
+		// 		this.paddle2.y = data.paddleLider;
+		// 		const [x, y] = this.mirrorShowBallX(data.positionBall[0], data.positionBall[1]);
+		// 		this.ball.x = x;
+		// 		this.ball.y = y;
+		// 	} else if (this.isLider && !data.isLider) {
+		// 		this.paddle2.y = data.paddlePlayer;
+		// 	}
+		// });
 	}
 
 

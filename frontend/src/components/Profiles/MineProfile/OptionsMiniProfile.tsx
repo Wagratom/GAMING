@@ -26,7 +26,6 @@ export default function OptionsMiniProfile(props: propsSelectConfiuration): JSX.
 			is_active: false,
 			msg: "entrei/sai"
 		}
-		userData.socket?.emit('check-status', aux);
 		Cookies.remove('jwtToken');
 		navitaion('/');
 	}

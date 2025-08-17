@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
 import { UserData, UserDto } from './Contexts/Contexts';
-import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +15,6 @@ export default function InicialPage() {
 		online: false,
 		coins: 0,
 		twoFA: false,
-		socket: undefined,
 		criando_em: ""
 	});
 
@@ -27,41 +25,25 @@ export default function InicialPage() {
 
 	const retryCount = useRef(0);
 	const timeoutId = useRef<NodeJS.Timeout | null>(null);
-	const socketRef = useRef<Socket | null>(null);
 
 	const navigate = useNavigate();
 	// Cria a conexão socket e retorna a instância
-	function createSocketConnection(id: string): Socket {
-		if (socketRef.current) {
-			socketRef.current.disconnect();
-		}
-		const socket = io(process.env.REACT_APP_SOCKET_URL || '', {
-			query: { userId: id },
-			transports: ['websocket'],
-		});
-		socketRef.current = socket;
-		return socket;
-	}
 
 	// Função para buscar dados do usuário com retry e timeout
-		function getInfoUser(timeForNewRequestAxios: number) {
-			axios.get(`${process.env.REACT_APP_API_URL}/profile`, {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("token")}`
-				},
-				withCredentials: true
-			})
+	function getInfoUser(timeForNewRequestAxios: number) {
+		axios.get(`${process.env.REACT_APP_API_URL}/profile`, {
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem("token")}`
+			},
+			withCredentials: true
+		})
 			.then(async (res) => {
 				if (res.status !== 200) {
 					throw new Error('Erro ao buscar dados do usuário');
 				}
-				
+
 				const data: UserDto = await res.data;
 				updateDataUser(data);
-				// Cria socket para o usuário
-				const socket = createSocketConnection(data.id);
-				data.socket = socket;
-
 
 				//reiniciando variaveis de controle
 				retryCount.current = 0;
@@ -102,7 +84,6 @@ export default function InicialPage() {
 		// Cleanup quando componente desmonta: limpa timeout e desconecta socket
 		return () => {
 			if (timeoutId.current) clearTimeout(timeoutId.current);
-			if (socketRef.current) socketRef.current.disconnect();
 		};
 	}, []);
 

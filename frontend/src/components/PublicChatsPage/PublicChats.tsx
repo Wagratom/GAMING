@@ -39,7 +39,7 @@ export default function PageChats(props: propsPageChats) {
 			}
 		}).then((res) => {
 			setChatList(res.data.chatrooms)
-		}).catch(() => {})
+		}).catch(() => { })
 	}
 
 	const getListPrivateChats = () => {
@@ -50,7 +50,7 @@ export default function PageChats(props: propsPageChats) {
 			}
 		}).then((res) => {
 			setChatList(res.data.chatrooms)
-		}).catch(() => {})
+		}).catch(() => { })
 	}
 
 
@@ -78,7 +78,7 @@ export default function PageChats(props: propsPageChats) {
 		const name = nameChatValue?.toString() || '';
 
 		if (name.length <= 0) {
-			return ;
+			return;
 		}
 		const obj = {
 			my_id: userData.id,
@@ -90,22 +90,11 @@ export default function PageChats(props: propsPageChats) {
 
 		if (form.get('privateChat') === 'private') obj.type = 'private'
 		else if (form.get('protectChat') === 'protected') obj.type = 'protected'
-
-		userData.socket?.emit('create-group', obj);
 	}
 
 	useEffect(() => {
 		getListPublicChats()
 	}, [])
-
-	useEffect(() => {
-		userData.socket?.on("creatChat", (data: any) => {
-			getListPublicChats()
-		})
-		return () => {
-			userData.socket?.off("creatChat")
-		}
-	}, [userData.socket])
 
 	const cssDivChats: React.CSSProperties = {
 		backgroundImage: `url(${bgChats})`,

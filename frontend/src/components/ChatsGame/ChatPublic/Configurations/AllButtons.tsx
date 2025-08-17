@@ -1,15 +1,16 @@
 import Button from "./Button";
+import Cookies from "js-cookie";
+import axios from "axios";
+import AlterPassword from "./AlterPassword";
+import ButtonTime from "./KickMember";
+
 import { MdOutlinePersonAddDisabled, MdDeleteSweep } from 'react-icons/md';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { GiBroadDagger } from 'react-icons/gi';
 import { MdBlock } from "react-icons/md";
-import axios from "axios";
-import { FormEvent, useContext, useEffect, useState } from "react";
-import Cookies from "js-cookie";
+import { FormEvent, useContext } from "react";
 import { ChatContext } from "../ChatPublic";
-import AlterPassword from "./AlterPassword";
 import { UserData } from "../../../InitialPage/Contexts/Contexts";
-import ButtonTime from "./KickMember";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import { BiMessageRoundedX } from "react-icons/bi";
 
@@ -45,7 +46,7 @@ export default function AllButtons(): JSX.Element {
 				chat_name: name,
 				chat_id: id,
 			}
-			userData.socket?.emit('add-member-group', obj);
+			// userData.socket?.emit('add-member-group', obj);
 		}
 	}
 
@@ -60,7 +61,7 @@ export default function AllButtons(): JSX.Element {
 					chat_name: name,
 					chat_id: id,
 				}
-				userData.socket?.emit('add-adm-group', obj);
+				// userData.socket?.emit('add-adm-group', obj);
 			}
 		}
 	}
@@ -75,7 +76,7 @@ export default function AllButtons(): JSX.Element {
 				chat_name: name,
 				chat_id: id,
 			}
-			userData.socket?.emit('remove-adm-group', obj);
+			// userData.socket?.emit('remove-adm-group', obj);
 		}
 	}
 
@@ -90,7 +91,7 @@ export default function AllButtons(): JSX.Element {
 				chat_name: name,
 				chat_id: id,
 			}
-			userData.socket?.emit('ban-member-group', obj);
+			// userData.socket?.emit('ban-member-group', obj);
 		}
 	}
 
@@ -103,7 +104,7 @@ export default function AllButtons(): JSX.Element {
 			password: event.currentTarget.value,
 			chatId: id,
 		}
-		userData.socket?.emit('delete-group', obj);
+		// userData.socket?.emit('delete-group', obj);
 	}
 
 	const removePassword = async (event: React.KeyboardEvent<HTMLInputElement>) => {

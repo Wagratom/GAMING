@@ -37,7 +37,6 @@ export default function ListFriends({ players, openChat }: { players: Players[],
 			otherId: idFriend,
 			msg: "convite"
 		}
-		user.socket?.emit("sendInvite", obj)
 	}
 
 	if (players.length === 0) {

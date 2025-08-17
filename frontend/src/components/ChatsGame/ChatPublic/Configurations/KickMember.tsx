@@ -31,7 +31,7 @@ export default function ButtonTime(props: KickMemberProps): JSX.Element {
 			chat_id: props.chat_id,
 			time: kickHour.current?.checked ? 1 : 24,
 		}
-		userData.socket?.emit(props.route, obj);
+		// userData.socket?.emit(props.route, obj);
 	}
 
 	return (

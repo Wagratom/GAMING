@@ -1,9 +1,7 @@
 import { useRef } from 'react';
 import { AiOutlineSend } from 'react-icons/ai';
-import { Socket } from 'socket.io-client';
 
 type PropsInputChats = {
-	socket: Socket,
 	obj: any,
 	disable: boolean
 }
@@ -13,7 +11,6 @@ export default function InputChats(props: PropsInputChats) {
 
 	const sendMessageClick = (event: React.MouseEvent<SVGElement, MouseEvent>) => {
 		props.obj.content = inputChat.current?.value as string;
-		props.socket.emit(props.obj.route, props.obj);
 		if (inputChat.current?.value) {
 			inputChat.current.value = '';
 		}
@@ -22,7 +19,6 @@ export default function InputChats(props: PropsInputChats) {
 	const sendMessageEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === 'Enter') {
 			props.obj.content = event.currentTarget.value;
-			props.socket.emit(props.obj.route, props.obj);
 			event.currentTarget.value = '';
 		}
 		event.stopPropagation();

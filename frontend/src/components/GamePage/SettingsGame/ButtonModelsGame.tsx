@@ -46,7 +46,6 @@ export default function ButtonModelsGame(props: propsButtonPlay): JSX.Element {
 			id: userData.id,
 			isRanking: props.isRanking ? true : false,
 		}
-		userData.socket?.emit('joinRoom', objectQueue)
 	}
 
 	return (
