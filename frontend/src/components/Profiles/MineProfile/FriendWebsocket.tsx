@@ -1,10 +1,11 @@
 // websocket.ts
 import { Client, IMessage } from "@stomp/stompjs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import SockJS from "sockjs-client";
 
-export default function FriendWebsocket(userId: string) {
+export default function FriendWebsocket(userId: string, maxReconnects = 5) {
     const [stompClient, setStompClient] = useState<Client | null>(null);
+    const reconnectAttempts = useRef(0);
 
     useEffect(() => {
         const stomp = new Client({
@@ -12,10 +13,11 @@ export default function FriendWebsocket(userId: string) {
             connectHeaders: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-            debug: (str) => console.log("🛰️", str),
+            reconnectDelay: 5000, // tempo entre tentativas
             onConnect: () => {
                 console.log("✅ Conectado ao WebSocket");
-                stomp.subscribe(`/topic/user/${userId}`, (msg: IMessage) => {
+                reconnectAttempts.current = 0; // reset no sucesso
+                stomp.subscribe(`/topic/friends/${userId}`, (msg: IMessage) => {
                     if (msg.body) {
                         const payload = JSON.parse(msg.body);
                         console.log("📩 Nova mensagem:", payload);
@@ -26,6 +28,15 @@ export default function FriendWebsocket(userId: string) {
                 console.error("❌ STOMP error:", frame.headers["message"]);
                 console.error("Detalhes:", frame.body);
             },
+            onWebSocketClose: () => {
+                // Bloqueia reconexão se atingir o limite
+                if (reconnectAttempts.current >= maxReconnects) {
+                    console.warn("⚠️ Limite de reconexões atingido, não reconectando.");
+                    stomp.deactivate();
+                } else {
+                    reconnectAttempts.current += 1;
+                }
+            },
         });
 
         stomp.activate();
@@ -34,7 +45,7 @@ export default function FriendWebsocket(userId: string) {
         return () => {
             stomp.deactivate();
         };
-    }, [userId]);
+    }, [userId, maxReconnects]);
 
     return stompClient;
 }

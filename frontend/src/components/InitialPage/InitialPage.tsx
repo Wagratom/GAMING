@@ -53,6 +53,7 @@ export default function InicialPage() {
 				}
 			})
 			.catch((err) => {
+				console.error("Erro ao buscar dados do usuário:", err.response);
 				if (err.response.status === 401 || err.response.status === 403) {
 					alert("Sessão expirada ou não autorizada. Por favor, faça login novamente.");
 					navigate('/')

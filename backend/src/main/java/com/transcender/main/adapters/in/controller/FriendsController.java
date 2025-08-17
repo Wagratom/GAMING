@@ -60,7 +60,7 @@ public class FriendsController {
         friendsApplication.addFriend(jwt, Long.parseLong(friend.friendId()));
 
         // Notifica o destinatário
-        messagingTemplate.convertAndSend("/topic/user/" + friend.friendId(),
+        messagingTemplate.convertAndSend("/topic/friends/" + friend.friendId(),
                 Map.of("type", "FRIEND_REQUEST", "message", "Você recebeu uma solicitação de amizade"));
 
         return ResponseEntity.ok("Success");

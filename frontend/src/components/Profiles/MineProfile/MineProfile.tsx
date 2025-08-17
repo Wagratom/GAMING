@@ -6,7 +6,7 @@ import ListFriends from './ListFriends';
 import './MineProfile.css';
 import axios from 'axios';
 import { Players, UserData } from '../../InitialPage/Contexts/Contexts';
-import FriendWebsocket from './FriendWebsocket'; // ✅ importa o hook
+import FriendWebsocket from './FriendWebsocket'; 
 
 type propsMiniProfile = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
