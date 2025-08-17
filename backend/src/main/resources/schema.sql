@@ -1,9 +1,9 @@
 -- Tabela de usuários (UserCoreJpa)
 CREATE TABLE usuarios (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID único do usuário',
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) UNIQUE COMMENT 'E-mail do usuário (único se não for nulo)',
     senha_hash VARCHAR(512) NOT NULL COMMENT 'Hash da senha',
-    nickname VARCHAR(255) UNIQUE COMMENT 'Apelido único (único se não for nulo)',
+    nickname VARCHAR(255) NOT NULL UNIQUE COMMENT 'Apelido único (único se não for nulo)',
     telefone VARCHAR(20),
     avatar VARCHAR(50),
     online BOOLEAN NOT NULL DEFAULT FALSE,
@@ -11,7 +11,6 @@ CREATE TABLE usuarios (
     criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
 
 -- Tabela de chats (ChatCoreJpa)
 CREATE TABLE Chat (
@@ -51,7 +50,6 @@ CREATE TABLE amigos (
   FOREIGN KEY (usuario2_id) REFERENCES usuarios(id)
 );
 
-
 -- Tabela de partidas
 CREATE TABLE Partidas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -65,3 +63,20 @@ CREATE TABLE Partidas (
     FOREIGN KEY (usuario_1) REFERENCES Usuarios(id),
     FOREIGN KEY (usuario_2) REFERENCES Usuarios(id)
 );
+
+-- Inserts de usuários (4 apenas)
+INSERT INTO usuarios (email, senha_hash, nickname, telefone, avatar, online, ative) VALUES
+('user1@email.com', 'hash_senha1', 'UserOne',   '111111111', 'avatar1.png', FALSE, TRUE),
+('user2@email.com', 'hash_senha2', 'UserTwo',   '222222222', 'avatar2.png', TRUE,  TRUE),  -- online
+('user3@email.com', 'hash_senha3', 'UserThree', '333333333', 'avatar3.png', FALSE, TRUE),  -- offline
+('user4@email.com', 'hash_senha4', 'UserFour',  '444444444', 'avatar4.png', FALSE, TRUE);  -- offline
+
+-- Amizades conforme regras
+-- user1 amigo de user2
+INSERT INTO amigos (usuario1_id, usuario2_id, status) VALUES (1, 2, 'ACCEPTED');
+
+-- user1 amigo de user3
+INSERT INTO amigos (usuario1_id, usuario2_id, status) VALUES (1, 3, 'ACCEPTED');
+
+-- user1 enviou pedido para user4 (pendente)
+INSERT INTO amigos (usuario1_id, usuario2_id, status) VALUES (1, 4, 'PENDING');
