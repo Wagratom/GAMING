@@ -1,11 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import MiniPerfilUser from './MiniPerfilUser';
-import Options from './options';
+import Social from './Social';
 import OptionsEndBar from './OptionsEndBar';
 import ListFriends from './ListFriends';
-import { Players } from './ListFriends';
-import { UserData } from '../../InitialPage/Contexts/Contexts';
 import './MineProfile.css';
 
 type propsMiniProfile = {
@@ -13,31 +10,7 @@ type propsMiniProfile = {
 }
 
 export default function MiniProfile(props: propsMiniProfile) {
-	const [players, setPlayers] = useState<Players[]>([]);
-	const userData = useContext(UserData).user;
-
-	function getPlayers(route: string) {
-		axios.get(route, {
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem("token")}`,
-			}
-		}).then((res) => {
-			setPlayers(res.data);
-		}).catch(() => { })
-	}
-
-	useEffect(() => {
-		getPlayers(`${process.env.REACT_APP_HOST_URL}/users/friends`);
-	}, []);
-
-	useEffect(() => {
-		userData.socket?.on('checkStatus', (data: any) => {
-			getPlayers(`${process.env.REACT_APP_HOST_URL}/users/friends`);
-		})
-		// return () => {
-		// 	socket.off('checkStatus');
-		// }
-	}, [userData.socket])
+	const [resoucePlayer, setResourcePlayer] = useState<string>("/friends?status=ACCEPTED");
 
 	const cssMiniprfile: React.CSSProperties = {
 		display: 'flex',
@@ -52,16 +25,14 @@ export default function MiniProfile(props: propsMiniProfile) {
 	}
 
 	return (
-		<>
-			<div className='position-absolute top-0 end-0 h-100' style={cssMiniprfile}>
-				<MiniPerfilUser showMiniPerfil={props.showMiniPerfil} />
-				<hr className='m-0 w-100 text-white'></hr>
-				<Options getPlayers={getPlayers} />
-				<ListFriends players={players} getPlayers={getPlayers} />
-				<hr className='m-0 w-100 text-white'></hr>
-				<OptionsEndBar />
-			</div>
-		</>
+		<div className='position-absolute top-0 end-0 h-100' style={cssMiniprfile}>
+			<MiniPerfilUser showMiniPerfil={props.showMiniPerfil} />
+			<hr className='m-0 w-100 text-white'></hr>
+			<Social setResourcePlayer={setResourcePlayer} />
+			<ListFriends resource={resoucePlayer} />
+			<hr className='m-0 w-100 text-white'></hr>
+			<OptionsEndBar />
+		</div>
 	);
 }
 
