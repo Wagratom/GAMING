@@ -1,33 +1,25 @@
 import PlayerNicknameAndIcons from './PlayerNicknameAndIcons';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import ChatPrivate from '../../ChatsGame/ChatPrivate/ChatPrivate';
 import DinamicProfile from '../DinamicProfile/DinamicProfile';
-import { UserData } from '../../InitialPage/Contexts/Contexts';
+import { UserData, Players } from '../../InitialPage/Contexts/Contexts';
 import PhotoWithOnlineStatus from './PhotoWithOnlineStatus';
 import { TbPingPong } from 'react-icons/tb';
-import axios from 'axios';
 
-export type Players = {
-	avatar: string,
-	id: string,
-	nickname: string,
-	avatar_name: string,
-	online: boolean,
-	match_status: string
-}
-
-export default function ListFriends({ resource }: { resource: string }) {
+export default function ListFriends({ players }: { players: Players[] }) {
 	const { user } = useContext(UserData);
-	const [players, setPlayers] = useState<Players[]>([]);
-	const [dataOpenDirect, setDataOpenDirect] = useState({ nickname: '', avatar: '' });
+	const [userSelectedForDirect, setUserSelectedForDirect] = useState<Players>({} as Players);
+
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>(
 		{ id: '', nickname: '' }
 	);
 
-	function handleOpenChatPrivate(nickname: string, avatar: string) {
-		if (dataOpenDirect.nickname === nickname) setDataOpenDirect({ nickname: '', avatar: '' });
-		else setDataOpenDirect({ nickname: nickname, avatar: avatar })
+	function handleOpenChatPrivate(player: Players) {
+		if (player.nickname === userSelectedForDirect.nickname) {
+			setUserSelectedForDirect({} as Players);
+		}
+		else setUserSelectedForDirect(player)
 	}
 
 	function clickPhoto(id: string, nickName: string) {
@@ -35,20 +27,6 @@ export default function ListFriends({ resource }: { resource: string }) {
 		setProfileData({ id: id, nickname: nickName })
 	}
 
-	function getPlayers() {
-		const route = process.env.REACT_APP_API_URL + resource
-		axios.get(route, {
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem("token")}`,
-			}
-		}).then((res) => {
-			if (res.data.length === 0) {
-				setPlayers([]);
-				return;
-			}
-			setPlayers(res.data);
-		}).catch(() => { })
-	}
 
 	function createMatch(idFriend: string) {
 		const obj = {
@@ -60,10 +38,6 @@ export default function ListFriends({ resource }: { resource: string }) {
 		user.socket?.emit("sendInvite", obj)
 	}
 
-	useEffect(() => {
-		getPlayers();
-	}, [resource]);
-
 	if (players.length === 0) {
 		return (
 			<div className='d-flex flex-column justify-content-center align-items-center h-100'>
@@ -73,9 +47,10 @@ export default function ListFriends({ resource }: { resource: string }) {
 			</div>
 		)
 	}
+
 	return (
 		<div className='p-2 text-white overflow-auto h-100'>
-			{dataOpenDirect.nickname !== '' && <ChatPrivate nicknameTitle={dataOpenDirect.nickname} avatar={dataOpenDirect.avatar} />}
+			{userSelectedForDirect.nickname && <ChatPrivate player={userSelectedForDirect} />}
 			{!dinamicProfile ? null :
 				<DinamicProfile
 					openDinamicProfile={setDinamicProfile}
@@ -90,7 +65,7 @@ export default function ListFriends({ resource }: { resource: string }) {
 					if (play.id === user.id) return null
 					return (
 						<div className='d-flex hover p-1 position relative z-1 ' key={play.id}>
-							<div className='d-flex w-100' onClick={() => handleOpenChatPrivate(play.nickname, play.avatar)}>
+							<div className='d-flex w-100' onClick={() => handleOpenChatPrivate(play)}>
 								<PhotoWithOnlineStatus
 									online={play.online}
 									imgSrc={play.avatar}

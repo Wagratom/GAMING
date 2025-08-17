@@ -5,7 +5,7 @@ import { VscEye } from "react-icons/vsc";
 import { TbEyeClosed } from "react-icons/tb";
 
 import { GoMute } from "react-icons/go";
-import { Players } from "./ListFriends";
+import { Players } from "../../InitialPage/Contexts/Contexts";
 
 type PropsStatus = {
 	name: string,

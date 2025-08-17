@@ -17,13 +17,15 @@ function Social({ setResourcePlayer }: Props) {
 				<MdOutlinePersonOutline
 					title="Friends"
 					style={styleButton}
-					size={30} onClick={() => setResourcePlayer("/friends?status=ACCEPTED")}
+					size={30}
+					onClick={() => setResourcePlayer("/friends?status=ACCEPTED")}
 				/>
 				{/* visualizar todos os usuarios */}
 				<IoLogoGameControllerA
 					style={styleButton}
 					title="All Players"
-					size={30} onClick={() => setResourcePlayer("/users")}
+					size={30}
+					onClick={() => setResourcePlayer("/users")}
 				/>
 			</div>
 		</div>

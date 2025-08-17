@@ -14,6 +14,15 @@ export type UserDto = {
   criando_em: string | null;
 };
 
+export type Players = {
+  id: string,
+  avatar: string,
+  nickname: string,
+  avatar_name: string,
+  online: boolean,
+  match_status: string
+}
+
 // Tipo do contexto
 type UserContextType = {
   user: UserDto;

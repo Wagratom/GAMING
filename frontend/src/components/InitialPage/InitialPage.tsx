@@ -106,7 +106,6 @@ export default function InicialPage() {
 		};
 	}, []);
 
-	console.log("User: ", user)
 	return (
 		<UserData.Provider value={{ user: user, updateDataUser: updateDataUser }}>
 			<Outlet />

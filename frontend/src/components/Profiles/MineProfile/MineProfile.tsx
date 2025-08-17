@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MiniPerfilUser from './MiniPerfilUser';
 import Social from './Social';
 import OptionsEndBar from './OptionsEndBar';
 import ListFriends from './ListFriends';
 import './MineProfile.css';
+import axios from 'axios';
+import { Players } from '../../InitialPage/Contexts/Contexts';
+
 
 type propsMiniProfile = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
@@ -11,6 +14,7 @@ type propsMiniProfile = {
 
 export default function MiniProfile(props: propsMiniProfile) {
 	const [resoucePlayer, setResourcePlayer] = useState<string>("/friends?status=ACCEPTED");
+	const [players, setPlayers] = useState<Players[]>([]);
 
 	const cssMiniprfile: React.CSSProperties = {
 		display: 'flex',
@@ -24,14 +28,33 @@ export default function MiniProfile(props: propsMiniProfile) {
 		width: '25vw',
 	}
 
+	function getPlayers() {
+		const route = process.env.REACT_APP_API_URL + resoucePlayer
+		axios.get(route, {
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			}
+		}).then((res) => {
+			const data = res.data as Players[];
+			setPlayers(data);
+		}).catch(() => { })
+	}
+
+	useEffect(() => {
+		getPlayers();
+	}, [resoucePlayer]);
+
 	return (
 		<div className='position-absolute top-0 end-0 h-100' style={cssMiniprfile}>
 			<MiniPerfilUser showMiniPerfil={props.showMiniPerfil} />
 			<hr className='m-0 w-100 text-white'></hr>
 			<Social setResourcePlayer={setResourcePlayer} />
-			<ListFriends resource={resoucePlayer} />
+			<ListFriends players={players} />
 			<hr className='m-0 w-100 text-white'></hr>
-			<OptionsEndBar />
+			<OptionsEndBar
+				setResourcePlayer={setResourcePlayer}
+				setPlayersList={setPlayers}
+			/>
 		</div>
 	);
 }

@@ -57,7 +57,8 @@ export default function InputChats(props: PropsInputChats) {
 			{getInput()}
 			<button
 				className='remove-format-button'>
-				<AiOutlineSend size={30}
+				<AiOutlineSend size={22}
+					style={{ color: "#808287" }}
 					onClick={sendMessageClick}
 				/>
 			</button>

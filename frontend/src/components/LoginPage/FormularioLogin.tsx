@@ -21,7 +21,6 @@ export default function FormularioLogin(props: propsFormulario) {
 
 		axios.post(`${process.env.REACT_APP_API_URL}/login`, jsonData)
 			.then(response => {
-				console.log("Usuário logado:", response.data);
 				localStorage.setItem("token", response.data.token);
 				navidate("/game");
 			})

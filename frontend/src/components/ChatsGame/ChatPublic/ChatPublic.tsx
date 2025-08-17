@@ -1,14 +1,14 @@
-import ListFriends, { Players } from "../../Profiles/MineProfile/ListFriends";
-import DinamicProfile from "../../Profiles/DinamicProfile/DinamicProfile";
+import { Players } from '../../InitialPage/Contexts/Contexts'
+import DinamicProfile from '../../Profiles/DinamicProfile/DinamicProfile';
 
-import { createContext, useContext, useEffect } from "react";
-import React, { useState } from "react";
-import axios from "axios";
-import Cookies from "js-cookie";
-import { UserData } from "../../InitialPage/Contexts/Contexts";
-import bgChatPublic from "../../../assets/game/bgChatPublic.png";
-import RightSide from "./RightSide";
-import ModalIsBanned from "./ModalIsBanned";
+import { createContext, useContext, useEffect } from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { UserData } from '../../InitialPage/Contexts/Contexts';
+import bgChatPublic from '../../../assets/game/bgChatPublic.png';
+import RightSide from './RightSide';
+import ModalIsBanned from './ModalIsBanned';
 
 type User = {
 	nickname: string,
@@ -32,7 +32,7 @@ export type ChatData = {
 	banned: Players[],
 	kicked: Players[],
 	admin: Players[],
-	mutted: {id: string}[],
+	mutted: { id: string }[],
 	message: Messages[],
 }
 
@@ -100,7 +100,7 @@ export default function ChatPublic(props: propsPageChats) {
 			setDataChat(response.data)
 			addNewMember(response.data.id, response.data)
 			userData.socket?.emit("open-group", { chatId: response.data.id });
-		}).catch(() => {})
+		}).catch(() => { })
 	}
 
 	useEffect(() => {
@@ -163,12 +163,12 @@ export default function ChatPublic(props: propsPageChats) {
 			<div className="row g-0 h-100 p-2">
 				<ChatContext.Provider value={{ chatData: chatData, setDataChat, setDinamicProfile }}>
 					<div className="col-3 border-end h-100">
-						<ListFriends
+						{/* <ListFriends
 							players={chatData.members}
 							getPlayers={() => { }}
 							admin={chatData.admin}
 							mute={chatData.mutted}
-						/>
+						/> */}
 					</div>
 
 					<div className="col-9 d-flex flex-column h-100 position-relative">

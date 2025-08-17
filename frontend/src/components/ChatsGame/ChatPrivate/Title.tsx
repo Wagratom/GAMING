@@ -1,14 +1,20 @@
-type propsTitleChatPrivate = {
-	nicknameFriend: string,
-	avatar: string,
-}
+import { Players } from '../../InitialPage/Contexts/Contexts'
+import PhotoWithOnlineStatus from '../../Profiles/MineProfile/PhotoWithOnlineStatus'
 
-export default function TitleChatPrivate(props: propsTitleChatPrivate): JSX.Element {
+export default function TitleChatPrivate({ player }: { player: Players }): JSX.Element {
 	return (
-		<div className="p-2 border-bottom" style={{height: '4rem'}}>
-			<img className="h-100 rounded-circle" src={props.avatar} alt={`Foto de pefil do user ${props.nicknameFriend}`}></img>
-			<span className='ms-3 fs-5'>{props.nicknameFriend}</span>
+		<div className="p-2 border-bottom d-flex align-items-center" style={{ height: '4rem' }}>
+			<PhotoWithOnlineStatus
+				online={player.online}
+				imgSrc={player.avatar}
+				photoHeight='2rem'
+				photoWidth='2rem'
+				positionTop='62%'
+				positionEnd='41%'
+			/>
+			<span className='ms-1 fs-5'>{player.nickname}</span>
 		</div>
 
 	)
 }
+
