@@ -19,8 +19,7 @@ public class FriendsController {
     private final FriendsApplication friendsApplication;
     private final SimpMessagingTemplate messagingTemplate;
 
-    public FriendsController(FriendsApplication friendsApplication,
-                             SimpMessagingTemplate messagingTemplate) {
+    public FriendsController(FriendsApplication friendsApplication, SimpMessagingTemplate messagingTemplate) {
         this.friendsApplication = friendsApplication;
         this.messagingTemplate = messagingTemplate;
     }

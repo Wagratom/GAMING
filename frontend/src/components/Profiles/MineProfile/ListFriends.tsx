@@ -6,7 +6,7 @@ import { UserData, Players } from '../../InitialPage/Contexts/Contexts';
 import PhotoWithOnlineStatus from './PhotoWithOnlineStatus';
 import { TbPingPong } from 'react-icons/tb';
 
-export default function ListFriends({ players }: { players: Players[] }) {
+export default function ListFriends({ players, openChat }: { players: Players[], openChat: boolean }) {
 	const { user } = useContext(UserData);
 	const [userSelectedForDirect, setUserSelectedForDirect] = useState<Players>({} as Players);
 
@@ -16,6 +16,8 @@ export default function ListFriends({ players }: { players: Players[] }) {
 	);
 
 	function handleOpenChatPrivate(player: Players) {
+		if (!openChat) return 
+
 		if (player.nickname === userSelectedForDirect.nickname) {
 			setUserSelectedForDirect({} as Players);
 		}

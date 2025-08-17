@@ -1,11 +1,10 @@
 import { PiEnvelopeSimpleThin } from "react-icons/pi";
 import { MdOutlinePersonAddAlt1, MdOutlinePersonRemove } from "react-icons/md";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Players } from "../../InitialPage/Contexts/Contexts";
 
 type Props = {
-    setResourcePlayer: React.Dispatch<React.SetStateAction<string>>;
     setPlayersList: React.Dispatch<React.SetStateAction<Players[]>>;
 };
 
@@ -14,7 +13,7 @@ type OpenState = {
     method: "POST" | "DELETE" | "";
 };
 
-export default function OptionsEndBar({ setResourcePlayer, setPlayersList }: Props) {
+export default function OptionsEndBar({ setPlayersList }: Props) {
     const [openInputSearch, setOpenInputSearch] = useState<OpenState>({
         openSearch: false,
         method: "",
@@ -57,6 +56,10 @@ export default function OptionsEndBar({ setResourcePlayer, setPlayersList }: Pro
         }
     }
 
+    useEffect(() => {
+        getPlayers()
+    }, [])
+
     // Filtra jogadores por nome
     function filterPlayersByName(value: string) {
         setSearchValue(value);
@@ -81,13 +84,14 @@ export default function OptionsEndBar({ setResourcePlayer, setPlayersList }: Pro
 
     // Renderiza campo de input
     function renderSearchInput(method: "POST" | "DELETE") {
+        const placeholderText = method === "POST" ? "Add Friend" : "Remove Friend";
         return (
             <div className="rounded w-100">
                 <input
                     style={{ height: "30px", width: "100%" }}
                     type="text"
                     className="remove-format-input"
-                    placeholder="Search Friend"
+                    placeholder={placeholderText}
                     value={searchValue}
                     onChange={(e) => filterPlayersByName(e.target.value)}
                     onKeyDown={(e) => {
@@ -100,20 +104,18 @@ export default function OptionsEndBar({ setResourcePlayer, setPlayersList }: Pro
 
     // Handlers dos ícones (controlam abertura e método)
     function onClickOpen(method: "POST" | "DELETE") {
+
         setOpenInputSearch((prev) => {
             const isSame = prev.openSearch && prev.method === method;
-            const next: OpenState = { // <-- força o tipo aqui
+            const next: OpenState = {
                 openSearch: !isSame,
                 method: isSame ? "" : method,
             };
 
-            if (!isSame) {
-                setResourcePlayer("/users");
-                getPlayers();
+            if (isSame) {
+                setSearchValue("");
             }
-
-            setSearchValue("");
-            setPlayersList([]);
+            setPlayersList(players);
             return next;
         });
     }
@@ -125,13 +127,13 @@ export default function OptionsEndBar({ setResourcePlayer, setPlayersList }: Pro
             <MdOutlinePersonAddAlt1
                 style={styleButton}
                 title="Add Friend"
-                size={30}
+                size={25}
                 onClick={() => onClickOpen("POST")}
             />
             <MdOutlinePersonRemove
                 style={styleButton}
                 title="Remove Friend"
-                size={30}
+                size={25}
                 onClick={() => onClickOpen("DELETE")}
             />
 
@@ -139,7 +141,7 @@ export default function OptionsEndBar({ setResourcePlayer, setPlayersList }: Pro
                 openInputSearch.method &&
                 renderSearchInput(openInputSearch.method)}
 
-            <div className="d-flex justify-content-end w-100 options">
+            <div className="d-flex justify-content-end options ms-auto">
                 <PiEnvelopeSimpleThin
                     title="Notifications"
                     className="me-2"

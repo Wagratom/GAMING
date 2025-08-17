@@ -35,8 +35,7 @@ export default function MiniProfile(props: propsMiniProfile) {
 				Authorization: `Bearer ${localStorage.getItem("token")}`,
 			}
 		}).then((res) => {
-			const data = res.data as Players[];
-			setPlayers(data);
+			setPlayers(res.data);
 		}).catch(() => { })
 	}
 
@@ -49,12 +48,9 @@ export default function MiniProfile(props: propsMiniProfile) {
 			<MiniPerfilUser showMiniPerfil={props.showMiniPerfil} />
 			<hr className='m-0 w-100 text-white'></hr>
 			<Social setResourcePlayer={setResourcePlayer} />
-			<ListFriends players={players} />
+			<ListFriends players={players} openChat={resoucePlayer === "/friends?status=ACCEPTED"} />
 			<hr className='m-0 w-100 text-white'></hr>
-			<OptionsEndBar
-				setResourcePlayer={setResourcePlayer}
-				setPlayersList={setPlayers}
-			/>
+			<OptionsEndBar setPlayersList={setPlayers} />
 		</div>
 	);
 }
