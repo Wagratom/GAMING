@@ -1,0 +1,35 @@
+.chat {
+	width: 30vw;
+	right: calc((100vw / 12) * 3);
+	bottom: 0px;
+	height: 45vh;
+	position: absolute;
+	font-size: 12px;
+}
+
+.bg-degrader {
+	background-image: linear-gradient(to right, #0e0036, #4c264b); /* Degrade de vermelho para verde */
+}
+
+.input-chat {
+	border: 1px gold solid;
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: #f1f1f1;
+	border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: gray;
+	border-radius: 20px;
+}
+
+  /* Mudança de cor quando você passa o mouse sobre a barra de rolagem */
+::-webkit-scrollbar-thumb:hover {
+	background-color: gold;
+}

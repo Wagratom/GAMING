@@ -1,0 +1,63 @@
+import { useRef } from 'react';
+import { AiOutlineSend } from 'react-icons/ai';
+
+type PropsInputChats = {
+	obj: any,
+	disable: boolean
+}
+
+export default function InputChats(props: PropsInputChats) {
+	const inputChat = useRef<HTMLInputElement>(null);
+
+	const sendMessageClick = (event: React.MouseEvent<SVGElement, MouseEvent>) => {
+		props.obj.content = inputChat.current?.value as string;
+		if (inputChat.current?.value) {
+			inputChat.current.value = '';
+		}
+	}
+
+	const sendMessageEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			props.obj.content = event.currentTarget.value;
+			event.currentTarget.value = '';
+		}
+		event.stopPropagation();
+	}
+
+	const getInput = (): JSX.Element => {
+		if (props.disable) {
+			return (
+				<input
+					className='remove-format-input'
+					type='text'
+					ref={inputChat}
+					placeholder='Digite sua mensagem'
+					onKeyDown={sendMessageEnter}
+					disabled
+				/>
+			)
+		}
+		return (
+			<input
+				className='remove-format-input'
+				type='text'
+				ref={inputChat}
+				placeholder='Digite sua mensagem'
+				onKeyDown={sendMessageEnter}
+			/>
+		)
+	}
+
+	return (
+		<div className='d-flex align-items-center'>
+			{getInput()}
+			<button
+				className='remove-format-button'>
+				<AiOutlineSend size={22}
+					style={{ color: "#808287" }}
+					onClick={sendMessageClick}
+				/>
+			</button>
+		</div>
+	)
+}

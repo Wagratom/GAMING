@@ -1,0 +1,38 @@
+
+.login {
+	font-size: 14px;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background-color: darkslategrey;
+}
+
+.sign_up {
+	font-size: 14px;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background-color: darkslategrey;
+}
+
+.form_container {
+	width: 30%;
+	padding: 5vh;
+	border-radius: 5%;
+	background-color: azure;
+	align-self: center;
+}
+
+@media screen and (max-width: 1000x) {
+	.form_container {
+		width: 45%;
+	}
+}
+
+@media screen and (max-width: 700x) {
+	.form_container {
+		width: 65%;
+	}
+}

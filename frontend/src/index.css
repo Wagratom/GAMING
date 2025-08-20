@@ -1,0 +1,73 @@
+body {
+	box-sizing: border-box !important;
+	overflow: hidden !important;
+}
+
+body p {
+	padding: 0;
+	margin: 0;
+}
+
+.bg-custon-roxo {
+	background-color: #0e0036 !important;
+}
+
+.remove-format-input {
+	width: 100%;
+	border: none ;
+	padding: 10px;
+	background-color: transparent !important;
+	outline: none !important;
+	color: white;
+}
+
+.remove-format-button {
+	background-color: transparent;
+	border: none;
+	color: white;
+}
+
+.hover:hover {
+	background-color: #f2f2f2;
+	cursor: pointer;
+	color: #000;
+}
+
+
+/* Online css */
+/* base do círculo maior (borda) */
+.borda {
+	position: absolute;
+	border-radius: 50%;
+	width: 16px;
+	height: 16px;
+	border: 2px solid #0e0036;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/* variações */
+.borda-online {
+	background-color: rgb(10, 235, 10);
+}
+
+.borda-offline {
+	background-color: #d3d3d3;
+}
+
+/* base do círculo interno */
+.circle {
+	border-radius: 50%;
+	width: 8px;
+	height: 8px;
+}
+
+/* variações */
+.circle-online {
+	background-color: #009000;
+}
+
+.circle-offline {
+	background-color: #666;
+}
