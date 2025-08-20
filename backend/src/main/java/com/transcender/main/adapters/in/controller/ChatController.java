@@ -53,7 +53,7 @@ public class ChatController {
             @RequestHeader("Authorization") String jwt,
             @Valid String friendId
     ) {
-
+        return ResponseEntity.ok(chatService.getDirectChat(jwt, Long.valueOf(friendId)));
     }
 
     @GetMapping

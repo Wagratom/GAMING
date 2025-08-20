@@ -18,17 +18,16 @@ public class ChatCoreJpa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "chatname", nullable = false, length = 20)
+    @Column(name = "chatname", nullable = true, length = 20)
     private String chatName;
 
     @ManyToOne
-    @JoinColumn(name = "onwer", nullable = false)
+    @JoinColumn(name = "onwer", nullable = true)
     private UserCoreJpa onwer;
-
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
-    private ChatType type; //tenho que criar uma entidade no banco de dados aqui ou apenas criar um enum no domain?
+    private ChatType type;
 
     @Column(columnDefinition = "text")
     private String descricao;
@@ -44,4 +43,12 @@ public class ChatCoreJpa {
 
     @OneToMany(mappedBy = "chat")
     private List<ChatUserCoreJpa> usuarios;
+
+    public static ChatCoreJpa newPrivateChat() {
+        ChatCoreJpa chat = new ChatCoreJpa();
+        chat.setType(ChatType.PRIVATE);
+        chat.setCriadoEm(Instant.now());
+        chat.setAtualizadoEm(Instant.now());
+        return chat;
+    }
 }

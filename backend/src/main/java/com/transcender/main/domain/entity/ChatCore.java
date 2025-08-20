@@ -6,6 +6,7 @@ import com.transcender.main.domain.exceptions.ChatArgumentInvalid;
 
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ChatCore {
@@ -16,9 +17,10 @@ public class ChatCore {
     private ChatType type;
     private String descricao;
     private Set<Long> adms;
-    private MessageCore messages;
+    private List<MessageCore> messages;
     private Instant criadoEm;
     private Instant atualizadoEm;
+
 
     // Construtor de criação com validações e inicialização de admins
     public ChatCore(String chatName, Long chatOwner, ChatType type, String descricao, Set<Long> adms) {
@@ -33,8 +35,7 @@ public class ChatCore {
 
     // Construtor restrito para reconstrução a partir do banco de dados
     public ChatCore(Long id, String chatName, Long chatOwner, ChatType type, String descricao,
-                   Set<Long> adms, MessageCore messages,  Instant criadoEm, Instant atualizadoEm) {
-
+                    Set<Long> adms, List<MessageCore> messages, Instant criadoEm, Instant atualizadoEm) {
         if (id == null || id <= 0) {
             throw new ChatArgumentInvalid("Id inválido");
         }
@@ -49,6 +50,7 @@ public class ChatCore {
         this.atualizadoEm = atualizadoEm;
         this.adms = adms != null ? adms : new HashSet<>();
     }
+
 
     public void validateCreateChat() {
         if (chatName == null || chatName.trim().isEmpty()) {
@@ -177,4 +179,5 @@ public class ChatCore {
         return atualizadoEm;
     }
 
+    public List<MessageCore> getMessagens() {return messages;}
 }

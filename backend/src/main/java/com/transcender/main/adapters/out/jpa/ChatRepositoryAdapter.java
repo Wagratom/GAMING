@@ -1,12 +1,20 @@
 package com.transcender.main.adapters.out.jpa;
 
 import com.transcender.main.adapters.out.jpa.entity.ChatCoreJpa;
+import com.transcender.main.adapters.out.jpa.entity.ChatUserCoreJpa;
+import com.transcender.main.adapters.out.jpa.entity.MessageCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
+import com.transcender.main.adapters.out.jpa.mapper.MapperToJpaEntity;
 import com.transcender.main.adapters.out.jpa.repository.ChatRepository;
+import com.transcender.main.adapters.out.jpa.repository.ChatUserRepository;
 import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.domain.entity.ChatCore;
+import com.transcender.main.domain.entity.MessageCore;
+import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.ChatType;
+import com.transcender.main.domain.enuns.MessageType;
 import com.transcender.main.domain.enuns.PermitionChat;
+import com.transcender.main.domain.enuns.StatusChat;
 import com.transcender.main.domain.port.out.ChatRepositoryPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +31,48 @@ import java.util.stream.Collectors;
 public class ChatRepositoryAdapter implements ChatRepositoryPort {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
+    private final ChatUserRepository chatUserRepository;
+    private final MapperToJpaEntity mapperToJpaEntity;
     private final Logger logger = LoggerFactory.getLogger(UserRepositoryAdapter.class);
 
     @Autowired
-    ChatRepositoryAdapter(ChatRepository chatRepository, UserRepository userRepository) {
+    public ChatRepositoryAdapter(ChatRepository chatRepository,
+                                 UserRepository userRepository,
+                                 ChatUserRepository chatUserRepository,
+                                 MapperToJpaEntity mapperToJpaEntit) {
         this.chatRepository = chatRepository;
         this.userRepository = userRepository;
+        this.chatUserRepository = chatUserRepository;
+        this.mapperToJpaEntity = mapperToJpaEntit;
+    }
+
+    @Override
+    public Optional<ChatCore> findDirectChatByUsers(Long userId, Long friendId) {
+        return chatRepository.findPrivateChatBetweenUsers(List.of(userId, friendId)).map(this::toChatCore);
+    }
+
+    @Override
+    public ChatCore createDirectChat(UserCore user, UserCore friend) {
+        ChatCoreJpa newChat = chatRepository.save(ChatCoreJpa.newPrivateChat());
+        chatUserRepository.save(new ChatUserCoreJpa(
+                newChat,
+                mapperToJpaEntity.toUserCoreJpa(user),
+                StatusChat.ATIVE,
+                PermitionChat.MEMBER,
+                Instant.now(),
+                Instant.now()
+        ));
+
+        chatUserRepository.save(new ChatUserCoreJpa(
+                newChat,
+                mapperToJpaEntity.toUserCoreJpa(friend),
+                StatusChat.ATIVE,
+                PermitionChat.MEMBER,
+                Instant.now(),
+                Instant.now()
+        ));
+
+        return toChatCore(newChat);
     }
 
     @Override
@@ -103,13 +147,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     public ChatCore toChatCore(ChatCoreJpa chatJpa) {
-        Long id = chatJpa.getId();
-        String chatName = chatJpa.getChatName();
-        Long chatOwnerId = chatJpa.getOnwer().getId(); // conversão de entidade para ID
-        ChatType type = chatJpa.getType(); // enum → string
-        String descricao = chatJpa.getDescricao();
-        Instant criadoEm = chatJpa.getCriadoEm();
-        Instant atualizadoEm = chatJpa.getAtualizadoEm();
+        List<MessageCoreJpa> messages = chatJpa.getMensagens();
 
         // Filtra usuários com permissão de ADMIN
         Set<Long> adms = chatJpa.getUsuarios().stream()
@@ -118,14 +156,31 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
                 .collect(Collectors.toSet());
 
         return new ChatCore(
-                id,
-                chatName,
-                chatOwnerId,
-                type,
-                descricao,
-                criadoEm,
-                atualizadoEm,
-                adms
+                chatJpa.getId(),
+                chatJpa.getChatName(),
+                chatJpa.getOnwer().getId(),
+                chatJpa.getType(),
+                chatJpa.getDescricao(),
+                adms,
+                chatJpa.getMensagens().stream().map(this::toChatCore).collect(Collectors.toList()),
+                chatJpa.getCriadoEm(),
+                chatJpa.getAtualizadoEm()
+        );
+    }
+
+
+    public MessageCore toChatCore(MessageCoreJpa messagesJpa) {
+        return new MessageCore(
+                messagesJpa.getId(),
+                messagesJpa.getChat().getId(),
+                messagesJpa.getSender().getId(),
+                messagesJpa.getConteudo(),
+                messagesJpa.getTipo(),
+                messagesJpa.getSender().getNickname(),
+                messagesJpa.getCriadoEm(),
+                messagesJpa.getAtualizadoEm(),
+                messagesJpa.isEditado(),
+                messagesJpa.isDeletado()
         );
     }
 

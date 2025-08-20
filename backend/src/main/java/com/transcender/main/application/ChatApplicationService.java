@@ -1,6 +1,7 @@
 package com.transcender.main.application;
 
 import com.transcender.main.domain.entity.ChatCore;
+import com.transcender.main.domain.entity.MessageCore;
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.exceptions.Forbidden;
@@ -12,8 +13,11 @@ import com.transcender.main.domain.port.out.UserRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatApplicationService implements ChatPort {
@@ -36,15 +40,33 @@ public class ChatApplicationService implements ChatPort {
         Map<String, Object> userInfo =  jwtService.validateTokenAndGetClaims(jwt);
         Long userId = ((Number) userInfo.get("id")).longValue();
 
+        UserCore user1 = userRepository.getUserById(userId)
+                .orElseThrow(() ->  new ResourceNotFound("Usuario", userId));
+
+        UserCore user2 = userRepository.getUserById(friendId)
+                .orElseThrow(() ->  new ResourceNotFound("friendId", userId));
+
         ChatCore chatCore = chatRepository.findDirectChatByUsers(userId, friendId)
-                .orElse(chatRepository.createDirectChat(userId, friendId));
+                .orElse(chatRepository.createDirectChat(user1, user2));
+
+        List<Map<String, Object>> messagens = chatCore.getMessagens()
+                .stream()
+                .sorted(Comparator.comparing(MessageCore::getAtualizadoEm)) // ordena pela data
+                .map(msg -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", msg.getId());
+                    map.put("nickname", msg.getNickname());
+                    map.put("content", msg.getConteudo());
+                    return map;
+                })
+                .collect(Collectors.toList());
 
         Map<String, Object> chatJson = Map.of(
                 "chatId", chatCore.getId(),
                 "chatName", chatCore.getChatName(),
                 "userId", userId,
                 "friendId", friendId,
-                "messages", List.of([]).isEmpty()
+                "messages", messagens
         );
         return chatJson;
     }

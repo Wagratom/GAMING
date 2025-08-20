@@ -3,6 +3,7 @@ package com.transcender.main.adapters.out.jpa.entity;
 import com.transcender.main.domain.enuns.PermitionChat;
 import com.transcender.main.domain.enuns.StatusChat;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "chat_usuarios")
 @IdClass(ChatUserIdJpa.class)
+@AllArgsConstructor
 public class ChatUserCoreJpa {
 
     @Id

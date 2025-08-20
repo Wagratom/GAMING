@@ -1,5 +1,6 @@
 package com.transcender.main.adapters.out.jpa.entity;
 
+import com.transcender.main.domain.enuns.MessageType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,8 +30,9 @@ public class MessageCoreJpa {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String conteudo;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private String tipo = "TEXT"; // ou você pode usar enum igual ao ChatType
+    private MessageType tipo;
 
     @Column(name = "criado_em", nullable = false)
     private Instant criadoEm = Instant.now();
