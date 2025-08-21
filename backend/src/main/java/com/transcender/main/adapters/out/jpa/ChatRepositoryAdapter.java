@@ -88,7 +88,6 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         return toChatCore(chatJpa); // toChatCore que recebe diretamente o objeto, não Optional
     }
 
-
     @Override
     public ChatCore updateChat(ChatCore chat) {
         logger.info("ChatRepositoryAdapter > updateChat > exec");
@@ -168,12 +167,11 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         );
     }
 
-
     public MessageCore toChatCore(MessageCoreJpa messagesJpa) {
         return new MessageCore(
                 messagesJpa.getId(),
                 messagesJpa.getChat().getId(),
-                messagesJpa.getSender().getId(),
+                mapperToJpaEntity.toUserCore(messagesJpa.getSender(), false),
                 messagesJpa.getConteudo(),
                 messagesJpa.getTipo(),
                 messagesJpa.getSender().getNickname(),

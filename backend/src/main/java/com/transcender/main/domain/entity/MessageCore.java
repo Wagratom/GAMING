@@ -9,7 +9,7 @@ public class MessageCore {
 
     private Long id;
     private Long chatId;       // referência ao Chat
-    private Long senderId;     // usuário que enviou
+    private UserCore sender;     // usuário que enviou
     private String nickname;   // nickname de quem enviou
     private String conteudo;   // texto da mensagem
     private MessageType tipo;  // TEXT, IMAGE, FILE, SYSTEM...
@@ -19,11 +19,11 @@ public class MessageCore {
     private boolean deletado;
 
     // Construtor de criação
-    public MessageCore(Long chatId, Long senderId, String conteudo, MessageType tipo) {
+    public MessageCore(Long chatId, UserCore sender, String conteudo, MessageType tipo) {
         if (chatId == null || chatId <= 0) {
             throw new ChatArgumentInvalid("ChatId inválido");
         }
-        if (senderId == null || senderId <= 0) {
+        if (sender == null || sender.getId() <= 0) {
             throw new ChatArgumentInvalid("SenderId inválido");
         }
         if (conteudo == null || conteudo.trim().isEmpty()) {
@@ -31,7 +31,7 @@ public class MessageCore {
         }
 
         this.chatId = chatId;
-        this.senderId = senderId;
+        this.sender = sender;
         this.conteudo = conteudo;
         this.tipo = tipo != null ? tipo : MessageType.TEXT;
         this.criadoEm = Instant.now();
@@ -41,13 +41,13 @@ public class MessageCore {
     }
 
     // Construtor de reconstrução (ex: banco de dados)
-    public MessageCore(Long id, Long chatId, Long senderId, String conteudo,
+    public MessageCore(Long id, Long chatId, UserCore senderId, String conteudo,
                        MessageType tipo, String nickname, Instant criadoEm, Instant atualizadoEm,
                        boolean editado, boolean deletado) {
         if (id == null || id <= 0) throw new ChatArgumentInvalid("Id inválido");
         this.id = id;
         this.chatId = chatId;
-        this.senderId = senderId;
+        this.sender = senderId;
         this.conteudo = conteudo;
         this.tipo = tipo;
         this.criadoEm = criadoEm;
@@ -81,8 +81,8 @@ public class MessageCore {
         return chatId;
     }
 
-    public Long getSenderId() {
-        return senderId;
+    public UserCore getSender() {
+        return sender;
     }
 
     public String getConteudo() {
@@ -117,7 +117,7 @@ public class MessageCore {
         return "MessageCore{" +
                 "id=" + id +
                 ", chatId=" + chatId +
-                ", senderId=" + senderId +
+                ", sender" + sender.getNickname() +
                 ", conteudo='" + conteudo + '\'' +
                 ", tipo=" + tipo +
                 ", criadoEm=" + criadoEm +

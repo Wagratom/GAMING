@@ -15,6 +15,6 @@ public interface FriendsRepositoryPort {
     boolean removeFriend(UserCore solicitante, UserCore friend);
     boolean blockFriend(UserCore solicitante, UserCore friend);
 
-
+    boolean existsFriends(Long userId1, Long userId2);
     boolean existsBlock(Long userId1, Long userId2);
 }

@@ -7,7 +7,9 @@ import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.exceptions.Forbidden;
 import com.transcender.main.domain.exceptions.ResourceNotFound;
 import com.transcender.main.domain.port.in.ChatPort;
+import com.transcender.main.domain.port.in.FriendsPort;
 import com.transcender.main.domain.port.out.ChatRepositoryPort;
+import com.transcender.main.domain.port.out.FriendsRepositoryPort;
 import com.transcender.main.domain.port.out.JwtService;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +27,16 @@ public class ChatApplicationService implements ChatPort {
     private final ChatRepositoryPort chatRepository;
     private final UserRepositoryPort userRepository;
     private final JwtService jwtService;
+    private final FriendsRepositoryPort friendRepository;
 
     @Autowired
     public ChatApplicationService(ChatRepositoryPort chatRepository,
                                   UserRepositoryPort userRepository,
+                                  FriendsRepositoryPort friendRepository,
                                   JwtService jwtService) {
         this.chatRepository = chatRepository;
         this.userRepository = userRepository;
+        this.friendRepository = friendRepository;
         this.jwtService = jwtService;
     }
 
@@ -46,26 +51,33 @@ public class ChatApplicationService implements ChatPort {
         UserCore user2 = userRepository.getUserById(friendId)
                 .orElseThrow(() ->  new ResourceNotFound("friendId", userId));
 
+
+        if (!friendRepository.existsFriends(user1.getId(), user2.getId())) new BadRequest("Os 2 usuarios não são amigos");
+
         ChatCore chatCore = chatRepository.findDirectChatByUsers(userId, friendId)
                 .orElse(chatRepository.createDirectChat(user1, user2));
 
         List<Map<String, Object>> messagens = chatCore.getMessagens()
                 .stream()
-                .sorted(Comparator.comparing(MessageCore::getAtualizadoEm)) // ordena pela data
                 .map(msg -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("id", msg.getId());
-                    map.put("nickname", msg.getNickname());
-                    map.put("content", msg.getConteudo());
-                    return map;
+                    Map<String, Object> messageJson = new HashMap<>();
+                    messageJson.put("id", msg.getId());
+                    messageJson.put("content", msg.getConteudo());
+                    messageJson.put("date", msg.getAtualizadoEm());
+
+                    Map<String, Object> userJpa = new HashMap<>();
+                    userJpa.put("id", msg.getSender().getId());
+                    userJpa.put("nickname", msg.getSender().getNickname());
+                    userJpa.put("avatar", msg.getSender().getAvatar());
+
+                    messageJson.put("user", userJpa);
+                    return messageJson;
                 })
                 .collect(Collectors.toList());
 
         Map<String, Object> chatJson = Map.of(
                 "chatId", chatCore.getId(),
                 "chatName", chatCore.getChatName(),
-                "userId", userId,
-                "friendId", friendId,
                 "messages", messagens
         );
         return chatJson;

@@ -33,6 +33,7 @@ public class ChatCoreJpa {
     private String descricao;
 
     @OneToMany(mappedBy = "chat", fetch = FetchType.LAZY)
+    @OrderBy("atualizadoEm ASC") // ou DESC se quiser mais recentes primeiro
     private List<MessageCoreJpa> mensagens;
 
     @Column(name = "criado_em", nullable = false)
