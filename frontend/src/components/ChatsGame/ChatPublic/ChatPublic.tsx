@@ -1,4 +1,4 @@
-import { Players } from '../../InitialPage/Contexts/Contexts'
+import { Player } from '../../InitialPage/Contexts/Contexts'
 import { createContext, useContext, useEffect } from 'react';
 import { UserData } from '../../InitialPage/Contexts/Contexts';
 
@@ -11,13 +11,12 @@ import RightSide from './RightSide';
 import ModalIsBanned from './ModalIsBanned';
 
 type User = {
+	id: string,
 	nickname: string,
 	avatar: string,
-	id: string,
-	avatar_name: string,
 }
 
-export type Messages = {
+export type Message = {
 	id: string,
 	content: string,
 	date: Date,
@@ -28,12 +27,12 @@ export type ChatData = {
 	id: string,
 	name: string,
 	photo: string,
-	members: Players[],
-	banned: Players[],
-	kicked: Players[],
-	admin: Players[],
+	members: Player[],
+	banned: Player[],
+	kicked: Player[],
+	admin: Player[],
 	mutted: { id: string }[],
-	message: Messages[],
+	message: Message[],
 }
 
 type DinamicProfile = {
@@ -108,7 +107,7 @@ export default function ChatPublic(props: propsPageChats) {
 	}, [dinamicProfile])
 
 	const getIsMyId = (id: String, msg: String) => {
-		if (userData.id == id)
+		if (userData.id === id)
 			setShowModal({ show: true, msg: msg });
 		getDataChat();
 	}

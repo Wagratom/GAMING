@@ -4,12 +4,12 @@ import { VscEye } from "react-icons/vsc";
 import { TbEyeClosed } from "react-icons/tb";
 
 import { GoMute } from "react-icons/go";
-import { Players } from "../../InitialPage/Contexts/Contexts";
+import { Player } from "../../InitialPage/Contexts/Contexts";
 
 type PropsStatus = {
 	name: string,
 	my_id: string,
-	admin: Players[],
+	admin: Player[],
 	mute: { id: string }[]
 	online: boolean,
 	match_status: string

@@ -5,8 +5,8 @@ import OptionsEndBar from './OptionsEndBar';
 import ListFriends from './ListFriends';
 import './MineProfile.css';
 import axios from 'axios';
-import { Players, UserData } from '../../InitialPage/Contexts/Contexts';
-import FriendWebsocket from './FriendWebsocket'; 
+import { Player, UserData } from '../../InitialPage/Contexts/Contexts';
+import ConnectWebsocket from './FriendWebsocket'; 
 
 type propsMiniProfile = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
@@ -15,10 +15,13 @@ type propsMiniProfile = {
 export default function MiniProfile(props: propsMiniProfile) {
 	const { user } = useContext(UserData);
 	const [resoucePlayer, setResourcePlayer] = useState<string>("/friends?status=ACCEPTED");
-	const [players, setPlayers] = useState<Players[]>([]);
+	const [players, setPlayers] = useState<Player[]>([]);
 
+	function newNotificationFriends(msg: string) {
+		console.log("🔔 Nova notificação de amigos recebida ", msg)
+	}
 	// 🔌 Conecta WebSocket passando user.id
-	const stompClient = FriendWebsocket(user.id);
+	const stompClient = ConnectWebsocket(`/topic/friends/${user.id}`, newNotificationFriends);
 
 	const cssMiniprfile: React.CSSProperties = {
 		display: 'flex',

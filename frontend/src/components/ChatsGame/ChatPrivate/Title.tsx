@@ -1,7 +1,7 @@
-import { Players } from '../../InitialPage/Contexts/Contexts'
+import { Player } from '../../InitialPage/Contexts/Contexts'
 import PhotoWithOnlineStatus from '../../Profiles/MineProfile/PhotoWithOnlineStatus'
 
-export default function TitleChatPrivate({ player }: { player: Players }): JSX.Element {
+export default function TitleChatPrivate({ player }: { player: Player }): JSX.Element {
 	return (
 		<div className="p-2 border-bottom d-flex align-items-center" style={{ height: '4rem' }}>
 			<PhotoWithOnlineStatus

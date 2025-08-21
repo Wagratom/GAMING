@@ -1,13 +1,9 @@
-import  { useContext, useState } from "react";
-import { ChatContext, Messages } from "./ChatPublic";
+import { useContext } from "react";
 import InputChats from "../InputChats";
 import { UserData } from '../../InitialPage/Contexts/Contexts';
 import FormatMessages from "../FormatMessagens/FormatMessagens";
 
 export default function MessagensArea(): JSX.Element {
-	const { chatData: {id, message, name} } = useContext(ChatContext);
-
-	const [messages, setMessages] = useState<Messages[]>(message);
 	const userData = useContext(UserData).user;
 
 	// useEffect(() => {
@@ -24,22 +20,13 @@ export default function MessagensArea(): JSX.Element {
 	// 	}
 	// }, [userData.socket]);
 
-	let obj = {
-		chatId: id,
-		user_id: userData.id,
-		content: '',
-		route: 'group-message',
-		chat_name: name,
-	}
+
 	//TODO: adicionar logica de mostrar o erro
 	return (
 		<>
-			<FormatMessages messagens={messages}
-				user={userData}
-				messageErr={""}
-			/>
+			<FormatMessages />
 			<InputChats
-				obj={obj}
+				obj={{}}
 				disable={false}
 			/>
 		</>

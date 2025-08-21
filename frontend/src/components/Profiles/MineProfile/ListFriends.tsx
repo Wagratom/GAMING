@@ -2,41 +2,26 @@ import PlayerNicknameAndIcons from './PlayerNicknameAndIcons';
 import { useContext, useState } from 'react';
 import ChatPrivate from '../../ChatsGame/ChatPrivate/ChatPrivate';
 import DinamicProfile from '../DinamicProfile/DinamicProfile';
-import { UserData, Players } from '../../InitialPage/Contexts/Contexts';
+import { UserData, Player } from '../../InitialPage/Contexts/Contexts';
 import PhotoWithOnlineStatus from './PhotoWithOnlineStatus';
 import { TbPingPong } from 'react-icons/tb';
 
-export default function ListFriends({ players, openChat }: { players: Players[], openChat: boolean }) {
+export default function ListFriends({ players, openChat }: { players: Player[], openChat: boolean }) {
 	const { user } = useContext(UserData);
-	const [userSelectedForDirect, setUserSelectedForDirect] = useState<Players>({} as Players);
+	const [userSelectedForDirect, setUserSelectedForDirect] = useState<Player>({} as Player);
 
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>(
 		{ id: '', nickname: '' }
 	);
 
-	function handleOpenChatPrivate(player: Players) {
-		if (!openChat) return 
+	function handleOpenChatPrivate(player: Player) {
+		// if (!openChat) return 
 
 		if (player.nickname === userSelectedForDirect.nickname) {
-			setUserSelectedForDirect({} as Players);
+			setUserSelectedForDirect({} as Player);
 		}
 		else setUserSelectedForDirect(player)
-	}
-
-	function clickPhoto(id: string, nickName: string) {
-		setDinamicProfile("open")
-		setProfileData({ id: id, nickname: nickName })
-	}
-
-
-	function createMatch(idFriend: string) {
-		const obj = {
-			myId: user.id,
-			myNickname: user.nickname,
-			otherId: idFriend,
-			msg: "convite"
-		}
 	}
 
 	if (players.length === 0) {
@@ -62,7 +47,7 @@ export default function ListFriends({ players, openChat }: { players: Players[],
 
 			{/* Map for show players list */}
 			{
-				players.map((play: Players) => {
+				players.map((play: Player) => {
 					if (play.id === user.id) return null
 					return (
 						<div className='d-flex hover p-1 position relative z-1 ' key={play.id}>
@@ -90,7 +75,7 @@ export default function ListFriends({ players, openChat }: { players: Players[],
 									size={25}
 									style={{ color: "#808287" }}
 									title='Invite to play'
-									onClick={() => createMatch(play.id)}
+									onClick={() => {}}
 								/>
 							</div>
 						</div>

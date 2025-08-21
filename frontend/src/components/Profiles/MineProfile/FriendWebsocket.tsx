@@ -3,7 +3,7 @@ import { Client, IMessage } from "@stomp/stompjs";
 import { useEffect, useState, useRef } from "react";
 import SockJS from "sockjs-client";
 
-export default function FriendWebsocket(userId: string, maxReconnects = 5) {
+export default function ConnectWebsocket(topic: string, callback: (msg: string ) => void, maxReconnects = 5) {
     const [stompClient, setStompClient] = useState<Client | null>(null);
     const reconnectAttempts = useRef(0);
 
@@ -17,10 +17,9 @@ export default function FriendWebsocket(userId: string, maxReconnects = 5) {
             onConnect: () => {
                 console.log("✅ Conectado ao WebSocket");
                 reconnectAttempts.current = 0; // reset no sucesso
-                stomp.subscribe(`/topic/friends/${userId}`, (msg: IMessage) => {
+                stomp.subscribe(topic, (msg: IMessage) => {
                     if (msg.body) {
-                        const payload = JSON.parse(msg.body);
-                        console.log("📩 Nova mensagem:", payload);
+                        callback(JSON.parse(msg.body));
                     }
                 });
             },
@@ -45,7 +44,7 @@ export default function FriendWebsocket(userId: string, maxReconnects = 5) {
         return () => {
             stomp.deactivate();
         };
-    }, [userId, maxReconnects]);
+    }, [maxReconnects]);
 
     return stompClient;
 }

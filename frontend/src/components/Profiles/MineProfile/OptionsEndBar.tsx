@@ -2,10 +2,10 @@ import { PiEnvelopeSimpleThin } from "react-icons/pi";
 import { MdOutlinePersonAddAlt1, MdOutlinePersonRemove } from "react-icons/md";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Players } from "../../InitialPage/Contexts/Contexts";
+import { Player } from "../../InitialPage/Contexts/Contexts";
 
 type Props = {
-    setPlayersList: React.Dispatch<React.SetStateAction<Players[]>>;
+    setPlayersList: React.Dispatch<React.SetStateAction<Player[]>>;
 };
 
 type OpenState = {
@@ -18,14 +18,14 @@ export default function OptionsEndBar({ setPlayersList }: Props) {
         openSearch: false,
         method: "",
     });
-    const [players, setPlayers] = useState<Players[]>([]);
+    const [players, setPlayers] = useState<Player[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
 
     // Busca todos os jogadores
     async function getPlayers() {
         try {
             const route = `${process.env.REACT_APP_API_URL}/users`;
-            const res = await axios.get<Players[]>(route, {
+            const res = await axios.get<Player[]>(route, {
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             });
             setPlayers(res.data);
