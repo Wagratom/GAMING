@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import InputChats from "../InputChats";
-import { UserData } from '../../InitialPage/Contexts/Contexts';
+import { Player, UserData } from '../../InitialPage/Contexts/Contexts';
 import FormatMessages from "../FormatMessagens/FormatMessagens";
 
-export default function MessagensArea(): JSX.Element {
+export default function MessagensArea({ friend }: { friend: Player }): JSX.Element {
 	const userData = useContext(UserData).user;
 
 	// useEffect(() => {
@@ -24,7 +24,7 @@ export default function MessagensArea(): JSX.Element {
 	//TODO: adicionar logica de mostrar o erro
 	return (
 		<>
-			<FormatMessages />
+			<FormatMessages friend={friend}/>
 			<InputChats
 				obj={{}}
 				disable={false}

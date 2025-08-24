@@ -48,10 +48,10 @@ public class ChatController {
         return ResponseEntity.ok().body("Sucesso");
     }
 
-    @GetMapping("/directChats")
+    @GetMapping("/directChats/{friendId}")
     public ResponseEntity<Map<String, Object>> getDirectChat(
             @RequestHeader("Authorization") String jwt,
-            @Valid String friendId
+            @PathVariable("friendId") @Valid String friendId
     ) {
         return ResponseEntity.ok(chatService.getDirectChat(jwt, Long.valueOf(friendId)));
     }

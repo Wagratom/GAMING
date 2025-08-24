@@ -2,8 +2,10 @@ import Configurations from "./Configurations/Configurations";
 import BarConfigurations from "./barConfigurations";
 import MessagensArea from "./MessagensArea";
 import { useState } from "react";
+import { Player } from "../../InitialPage/Contexts/Contexts";
 
 type propsRightSide = {
+	friend: Player;
 	chatName: string;
 	openPageChats: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -30,7 +32,7 @@ export default function RightSide(props: propsRightSide): JSX.Element {
 					/>
 				}
 			</div>
-			<MessagensArea />
+			<MessagensArea friend={props.friend} />
 
 		</>
 	)

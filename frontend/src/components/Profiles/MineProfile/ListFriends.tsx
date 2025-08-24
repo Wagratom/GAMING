@@ -8,7 +8,7 @@ import { TbPingPong } from 'react-icons/tb';
 
 export default function ListFriends({ players, openChat }: { players: Player[], openChat: boolean }) {
 	const { user } = useContext(UserData);
-	const [userSelectedForDirect, setUserSelectedForDirect] = useState<Player>({} as Player);
+	const [friendSelectedForDirect, setFriendSelectedForDirect] = useState<Player>({} as Player);
 
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>(
@@ -18,10 +18,10 @@ export default function ListFriends({ players, openChat }: { players: Player[], 
 	function handleOpenChatPrivate(player: Player) {
 		// if (!openChat) return 
 
-		if (player.nickname === userSelectedForDirect.nickname) {
-			setUserSelectedForDirect({} as Player);
+		if (player.nickname === friendSelectedForDirect.nickname) {
+			setFriendSelectedForDirect({} as Player);
 		}
-		else setUserSelectedForDirect(player)
+		else setFriendSelectedForDirect(player)
 	}
 
 	if (players.length === 0) {
@@ -36,7 +36,7 @@ export default function ListFriends({ players, openChat }: { players: Player[], 
 
 	return (
 		<div className='p-2 text-white overflow-auto h-100'>
-			{userSelectedForDirect.nickname && <ChatPrivate player={userSelectedForDirect} />}
+			{friendSelectedForDirect.nickname && <ChatPrivate friend={friendSelectedForDirect} />}
 			{!dinamicProfile ? null :
 				<DinamicProfile
 					openDinamicProfile={setDinamicProfile}

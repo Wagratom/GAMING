@@ -2,11 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import { ChatContext, Message } from "../ChatPublic/ChatPublic";
 import MessageUser from "./MessageUser";
 import MessagePeople from "./MessagePeople";
-import { UserData } from "../../InitialPage/Contexts/Contexts";
+import { Player, UserData } from "../../InitialPage/Contexts/Contexts";
 import ConnectWebsocket from "../../Profiles/MineProfile/FriendWebsocket";
 import axios from "axios";
 
-export default function FormatMessages(): JSX.Element {
+export default function FormatMessages({ friend }: { friend: Player }): JSX.Element {
 	const [messages, setMessages] = useState<Message[]>([]);
 	const { setDinamicProfile } = useContext(ChatContext);
 	const { user } = useContext(UserData);
@@ -19,16 +19,19 @@ export default function FormatMessages(): JSX.Element {
 		console.log("🔔 Nova notificação de mensagem recebida ", msg)
 	}
 	// 🔌 Conecta WebSocket passando user.id
-	const stompClient = ConnectWebsocket(`/topic/friends/${user.id}{}`, newNotificationMessages);
+	const stompClient = ConnectWebsocket(`/topic/friends/${friend.id}${user.id}{}`, newNotificationMessages);
 
 	useEffect(() => {
-		axios.get(`${process.env.REACT_APP_API_URL}/profile`, {
+		console.log("🔔 Conectando ao WebSocket para mensagens diretas");
+		axios.get(`${process.env.REACT_APP_API_URL}/directChats/${friend.id}`, {
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`
 			},
 			withCredentials: true
 		})
 			.then(async (res) => {
+				console.log("🔔 Mensagens recebidas do servidor: ", res.status);
+				console.log("🔔 Mensagens recebidas do servidor: ", res.data);
 				if (res.status !== 200) {
 					throw new Error('Erro ao buscar dados do usuário');
 				}

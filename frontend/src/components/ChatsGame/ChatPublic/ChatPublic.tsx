@@ -10,17 +10,15 @@ import bgChatPublic from '../../../assets/game/bgChatPublic.png';
 import RightSide from './RightSide';
 import ModalIsBanned from './ModalIsBanned';
 
-type User = {
-	id: string,
-	nickname: string,
-	avatar: string,
-}
-
 export type Message = {
 	id: string,
 	content: string,
 	date: Date,
-	user: User,
+	user: {
+		id: string,
+		nickname: string,
+		avatar: string,
+	},
 }
 
 export type ChatData = {
@@ -166,6 +164,7 @@ export default function ChatPublic(props: propsPageChats) {
 
 					<div className="col-9 d-flex flex-column h-100 position-relative">
 						<RightSide
+							friend={chatData.members.find((member) => member.nickname !== userData.nickname) as Player}
 							chatName={props.chatName}
 							openPageChats={props.openPageChats}
 						/>
