@@ -1,5 +1,5 @@
 -- Tabela de usuários (UserCoreJpa)
-CREATE TABLE usuarios (
+CREATE TABLE IF NOT EXISTS usuarios (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) UNIQUE COMMENT 'E-mail do usuário (único se não for nulo)',
     senha_hash VARCHAR(512) NOT NULL COMMENT 'Hash da senha',
@@ -13,7 +13,7 @@ CREATE TABLE usuarios (
 );
 
 -- Tabela de chats (ChatCoreJpa)
-CREATE TABLE chat (
+CREATE TABLE IF NOT EXISTS chat (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     chatname VARCHAR(20) NULL COMMENT 'Nome do chat',
     onwer BIGINT NULL COMMENT 'ID do dono do chat',
@@ -25,7 +25,7 @@ CREATE TABLE chat (
 );
 
 -- Tabela intermediária: usuários no chat (ChatUserCoreJpa)
-CREATE TABLE chat_usuarios (
+CREATE TABLE IF NOT EXISTS chat_usuarios (
     chat_id BIGINT NOT NULL,
     usuario_id BIGINT NOT NULL,
     status_chat VARCHAR(10) NOT NULL COMMENT 'ativo, bloqueado, banido, removido',
@@ -38,7 +38,7 @@ CREATE TABLE chat_usuarios (
 );
 
 -- Tabela de mensagens (MessageCoreJpa)
-CREATE TABLE mensagens (
+CREATE TABLE IF NOT EXISTS mensagens (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     chat_id BIGINT NOT NULL COMMENT 'ID do chat',
     sender_id BIGINT NOT NULL COMMENT 'Usuário que enviou',
@@ -53,9 +53,8 @@ CREATE TABLE mensagens (
     FOREIGN KEY (sender_id) REFERENCES usuarios(id)
 );
 
-
 -- Tabela de amigos
-CREATE TABLE amigos (
+CREATE TABLE IF NOT EXISTS amigos (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   usuario1_id BIGINT NOT NULL,
   usuario2_id BIGINT NOT NULL,
@@ -68,7 +67,7 @@ CREATE TABLE amigos (
 );
 
 -- Tabela de partidas
-CREATE TABLE partidas (
+CREATE TABLE IF NOT EXISTS partidas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     usuario_1 BIGINT NOT NULL,
     usuario_2 BIGINT NOT NULL,
@@ -81,19 +80,20 @@ CREATE TABLE partidas (
     FOREIGN KEY (usuario_2) REFERENCES usuarios(id)
 );
 
+
 -- Inserts de usuários (4 apenas)
-INSERT INTO usuarios (email, senha_hash, nickname, telefone, avatar, online, ative) VALUES
-('user1@email.com', 'hash_senha1', 'UserOne',   '111111111', 'avatar1.png', FALSE, TRUE),
-('user2@email.com', 'hash_senha2', 'UserTwo',   '222222222', 'avatar2.png', TRUE,  TRUE),  -- online
-('user3@email.com', 'hash_senha3', 'UserThree', '333333333', 'avatar3.png', FALSE, TRUE),  -- offline
-('user4@email.com', 'hash_senha4', 'UserFour',  '444444444', 'avatar4.png', FALSE, TRUE);  -- offline
-
--- Amizades conforme regras
--- user1 amigo de user2
-INSERT INTO amigos (usuario1_id, usuario2_id, status) VALUES (1, 2, 'ACCEPTED');
-
--- user1 amigo de user3
-INSERT INTO amigos (usuario1_id, usuario2_id, status) VALUES (1, 3, 'ACCEPTED');
-
--- user1 enviou pedido para user4 (pendente)
-INSERT INTO amigos (usuario1_id, usuario2_id, status) VALUES (1, 4, 'PENDING');
+--INSERT INTO usuarios (email, senha_hash, nickname, telefone, avatar, online, ative) VALUES
+--('user1@email.com', 'hash_senha1', 'UserOne',   '111111111', 'avatar1.png', FALSE, TRUE),
+--('user2@email.com', 'hash_senha2', 'UserTwo',   '222222222', 'avatar2.png', TRUE,  TRUE),  -- online
+--('user3@email.com', 'hash_senha3', 'UserThree', '333333333', 'avatar3.png', FALSE, TRUE),  -- offline
+--('user4@email.com', 'hash_senha4', 'UserFour',  '444444444', 'avatar4.png', FALSE, TRUE);  -- offline
+--
+---- Amizades conforme regras
+---- user1 amigo de user2
+--INSERT INTO amigos (usuario1_id, usuario2_id, status) VALUES (1, 2, 'ACCEPTED');
+--
+---- user1 amigo de user3
+--INSERT INTO amigos (usuario1_id, usuario2_id, status) VALUES (1, 3, 'ACCEPTED');
+--
+---- user1 enviou pedido para user4 (pendente)
+--INSERT INTO amigos (usuario1_id, usuario2_id, status) VALUES (1, 4, 'PENDING');

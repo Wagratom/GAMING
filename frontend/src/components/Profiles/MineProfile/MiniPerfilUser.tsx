@@ -49,7 +49,7 @@ export default function MiniPerfilUser(props: propsMiniProfile) {
 
 			{/* icon to open options settings */}
 			<div className='position-relative w-100'>
-				<div className='d-flex justify-content-end ms-auto position-relative z-3'>
+				<div className='d-flex justify-content-end position-relative z-3'>
 					<IoMdSettings
 						type='button'
 						size={20}

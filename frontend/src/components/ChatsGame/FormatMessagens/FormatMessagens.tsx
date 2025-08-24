@@ -29,16 +29,21 @@ export default function FormatMessages({ friend }: { friend: Player }): JSX.Elem
 			},
 			withCredentials: true
 		})
-			.then(async (res) => {
-				console.log("🔔 Mensagens recebidas do servidor: ", res.status);
+			.then((res) => {
 				console.log("🔔 Mensagens recebidas do servidor: ", res.data);
-				if (res.status !== 200) {
-					throw new Error('Erro ao buscar dados do usuário');
-				}
-				const messages: Message[] = await res.data;
+
+				const messages: Message[] = res.data;
 				setMessages(messages);
 			})
-	}, [])
+			.catch((err) => {
+				if (err.response?.status === 403) {
+					console.log("🚫 Usuário não tem permissão para enviar mensagem para esse usuário");
+					return;
+				}
+				console.error("❌ Erro inesperado ao buscar mensagens: ", err);
+			});
+	}, []);
+
 
 	return (
 		<div className="h-100 text-black p-3 overflow-auto">

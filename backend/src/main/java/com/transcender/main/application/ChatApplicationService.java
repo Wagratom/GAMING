@@ -12,6 +12,8 @@ import com.transcender.main.domain.port.out.ChatRepositoryPort;
 import com.transcender.main.domain.port.out.FriendsRepositoryPort;
 import com.transcender.main.domain.port.out.JwtService;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,7 @@ public class ChatApplicationService implements ChatPort {
     private final UserRepositoryPort userRepository;
     private final JwtService jwtService;
     private final FriendsRepositoryPort friendRepository;
+    private final Logger logger = LoggerFactory.getLogger(ChatApplicationService.class);
 
     @Autowired
     public ChatApplicationService(ChatRepositoryPort chatRepository,
@@ -40,23 +43,30 @@ public class ChatApplicationService implements ChatPort {
         this.jwtService = jwtService;
     }
 
+    private Long getIdByToken(String jwt) {
+        Map<String, Object> userInfo =  jwtService.validateTokenAndGetClaims(jwt.substring(7));
+        Long userId = ((Number) userInfo.get("id")).longValue();
+        return  userId;
+    }
+
     @Override
     public Map<String, Object> getDirectChat(String jwt, Long friendId) {
-        Map<String, Object> userInfo =  jwtService.validateTokenAndGetClaims(jwt);
-        Long userId = ((Number) userInfo.get("id")).longValue();
+        Long userId = getIdByToken(jwt);
 
+        logger.info("[INIT] retornando o direct chat dos usuarios {} e {}", userId, friendId);
         UserCore user1 = userRepository.getUserById(userId)
                 .orElseThrow(() ->  new ResourceNotFound("Usuario", userId));
 
         UserCore user2 = userRepository.getUserById(friendId)
                 .orElseThrow(() ->  new ResourceNotFound("friendId", userId));
 
-
-        if (!friendRepository.existsFriends(user1.getId(), user2.getId())) new BadRequest("Os 2 usuarios não são amigos");
+        logger.info("[INFO] Verificando se os usuarios possuem amizade");
+        if (!friendRepository.existsFriends(user1.getId(), user2.getId())) throw new Forbidden("Os usuarios não são amigos");
 
         ChatCore chatCore = chatRepository.findDirectChatByUsers(userId, friendId)
                 .orElse(chatRepository.createDirectChat(user1, user2));
 
+        logger.info("[INFO] Montando json de resposta");
         List<Map<String, Object>> messagens = chatCore.getMessagens()
                 .stream()
                 .map(msg -> {
@@ -80,6 +90,7 @@ public class ChatApplicationService implements ChatPort {
                 "chatName", chatCore.getChatName(),
                 "messages", messagens
         );
+        logger.info("[END] Processo finalizado com sucesso");
         return chatJson;
     }
 

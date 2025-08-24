@@ -5,6 +5,7 @@ import com.transcender.main.domain.enuns.StatusChat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -15,6 +16,7 @@ import java.time.Instant;
 @Table(name = "chat_usuarios")
 @IdClass(ChatUserIdJpa.class)
 @AllArgsConstructor
+@NoArgsConstructor
 public class ChatUserCoreJpa {
 
     @Id

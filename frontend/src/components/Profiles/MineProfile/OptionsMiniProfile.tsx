@@ -3,8 +3,6 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { IoMdExit } from 'react-icons/io';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import { UserData } from '../../InitialPage/Contexts/Contexts';
 
 type propsSelectConfiuration = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
@@ -14,24 +12,18 @@ type propsSelectConfiuration = {
 
 export default function OptionsMiniProfile(props: propsSelectConfiuration): JSX.Element  {
 	const navitaion = useNavigate();
-	const userData = useContext(UserData).user;
 
 	const cursoPointer: React.CSSProperties = {
 		cursor: 'pointer',
 	}
 
 	const disconnect = () => {
-		let aux = {
-			user_id: props.id,
-			is_active: false,
-			msg: "entrei/sai"
-		}
 		Cookies.remove('jwtToken');
 		navitaion('/');
 	}
 
 	return (
-		<div className='bg-light text-black p-3 pb-0 rounded z-2'>
+		<div className='bg-light text-black rounded z-2' style={{paddingRight: '25px'}}>
 			<div className='border-bottom'
 				style={cursoPointer}
 				onClick={() => props.setShowConfigurations(true)}
@@ -44,7 +36,7 @@ export default function OptionsMiniProfile(props: propsSelectConfiuration): JSX.
 			>
 				<p><IoMdExit className='m-1' />Lougot</p>
 			</div>
-			<div className='border-bottom'
+			<div
 				style={cursoPointer}
 				onClick={() => props.showMiniPerfil('')}
 			>
