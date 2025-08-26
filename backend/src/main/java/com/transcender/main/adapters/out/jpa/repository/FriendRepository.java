@@ -32,7 +32,7 @@ public interface FriendRepository extends JpaRepository<FriendCoreJpa, Long> {
 
     // Lista todos os amigos de um usuário com um status específico
     @Query(value = """
-        SELECT u.*
+        SELECT a.*
         FROM amigos a
         JOIN usuarios u
             ON (u.id = a.usuario1_id AND a.usuario2_id = :userId1)
@@ -40,7 +40,7 @@ public interface FriendRepository extends JpaRepository<FriendCoreJpa, Long> {
         WHERE a.status = :status
           AND u.ative = true
         """, nativeQuery = true)
-    List<UserCoreJpa> findFriendsListByUserIdAndStatus(
+    List<FriendCoreJpa> findFriendsListByUserIdAndStatus(
             @Param("userId1") Long userId1,
             @Param("status") String status
     );

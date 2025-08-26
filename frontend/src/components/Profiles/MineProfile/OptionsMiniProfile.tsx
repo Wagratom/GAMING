@@ -10,7 +10,7 @@ type propsSelectConfiuration = {
 	setShowConfigurations: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function OptionsMiniProfile(props: propsSelectConfiuration): JSX.Element  {
+export default function OptionsMiniProfile(props: propsSelectConfiuration): JSX.Element {
 	const navitaion = useNavigate();
 
 	const cursoPointer: React.CSSProperties = {
@@ -23,7 +23,7 @@ export default function OptionsMiniProfile(props: propsSelectConfiuration): JSX.
 	}
 
 	return (
-		<div className='bg-light text-black rounded z-2' style={{paddingRight: '25px'}}>
+		<div className='bg-light text-black rounded z-2' style={{ paddingRight: '25px' }}>
 			<div className='border-bottom'
 				style={cursoPointer}
 				onClick={() => props.setShowConfigurations(true)}

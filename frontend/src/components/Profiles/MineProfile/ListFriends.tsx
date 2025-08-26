@@ -16,7 +16,7 @@ export default function ListFriends({ players, openChat }: { players: Player[], 
 	);
 
 	function handleOpenChatPrivate(player: Player) {
-		// if (!openChat) return 
+		if (!openChat) return 
 
 		if (player.nickname === friendSelectedForDirect.nickname) {
 			setFriendSelectedForDirect({} as Player);

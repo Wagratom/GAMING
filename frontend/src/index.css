@@ -71,3 +71,7 @@ body p {
 .circle-offline {
 	background-color: #666;
 }
+
+.c-pointer {
+	cursor: pointer;
+}

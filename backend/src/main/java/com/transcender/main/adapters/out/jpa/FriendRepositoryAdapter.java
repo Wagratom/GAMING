@@ -4,6 +4,7 @@ import com.transcender.main.adapters.out.jpa.entity.FriendCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
 import com.transcender.main.adapters.out.jpa.repository.FriendRepository;
 import com.transcender.main.adapters.out.jpa.mapper.MapperToJpaEntity;
+import com.transcender.main.domain.entity.FriendCore;
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.FriendStatus;
 import com.transcender.main.domain.port.out.FriendsRepositoryPort;
@@ -30,11 +31,12 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
     }
 
     @Override
-    public List<UserCore> getFriends(Long userId, FriendStatus status) {
+    public List<FriendCore> getFriendsCore(Long userId, FriendStatus status) {
         logger.info("FriendRepositoryAdapter::getFriends::{}", status);
+
         return friendsRepository.findFriendsListByUserIdAndStatus(userId, status.name())
                 .stream()
-                .map(user -> mapperToJpaEntity.toUserCore(user, false))
+                .map(user -> mapperToJpaEntity.toAFriendCore(user))
                 .collect(Collectors.toList());
     }
 

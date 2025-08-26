@@ -1,5 +1,6 @@
 package com.transcender.main.application;
 
+import com.transcender.main.domain.entity.FriendCore;
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.FriendStatus;
 import com.transcender.main.domain.exceptions.BadRequest;
@@ -72,26 +73,46 @@ public class FriendsApplication implements FriendsPort {
         return new UsersPair(requester, friend);
     }
 
-    private List<Map<String, Object>> convertUsersToJson(List<UserCore> users) {
-        return users.stream()
-                .map(user -> {
+    private List<Map<String, Object>> convertUsersToJson(List<FriendCore> friends) {
+        return friends.stream()
+                .map(friend -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.put("id", user.getId());
-                    map.put("nickname", user.getNickname());
-                    map.put("online", user.getOnline());
-                    map.put("criando_em", user.getCriadoEm());
+                    map.put("id", friend.id());
+
+                    // Quem enviou o pedido
+                    Map<String, Object> sender = new HashMap<>();
+                    sender.put("id", friend.sender().getId());
+                    sender.put("nickname", friend.sender().getNickname());
+                    sender.put("online", friend.sender().getOnline());
+                    sender.put("createdAt", friend.sender().getCriadoEm());
+                    map.put("sender", sender);
+
+                    // Quem recebeu o pedido
+                    Map<String, Object> receiver = new HashMap<>();
+                    receiver.put("id", friend.received().getId());
+                    receiver.put("nickname", friend.received().getNickname());
+                    receiver.put("online", friend.received().getOnline());
+                    receiver.put("createdAt", friend.received().getCriadoEm());
+                    map.put("receiver", receiver);
+
+                    // Dados da amizade
+                    map.put("status", friend.status().name());
+                    map.put("createdAt", friend.criadoEm());
+                    map.put("updatedAt", friend.atualizadoEm());
+
                     return map;
                 })
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<Map<String, Object>> getFriends(String jwt, FriendStatus status) {
         Long userId = extractUserIdFromJwt(jwt);
         FriendStatus effectiveStatus = status != null ? status : FriendStatus.ACCEPTED;
         logger.info("Obtendo amigos do usuário {} com status {}", userId, effectiveStatus);
-        List<UserCore> friends = friendsRepository.getFriends(userId, effectiveStatus);
-        return convertUsersToJson(friends);
+        List<FriendCore> friend = friendsRepository.getFriendsCore(userId, effectiveStatus);
+        return convertUsersToJson(friend);
     }
 
     @Override

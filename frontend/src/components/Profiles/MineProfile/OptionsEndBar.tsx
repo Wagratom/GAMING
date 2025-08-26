@@ -6,6 +6,8 @@ import { Player } from "../../InitialPage/Contexts/Contexts";
 
 type Props = {
     setPlayersList: React.Dispatch<React.SetStateAction<Player[]>>;
+	setResourcePlayer: React.Dispatch<React.SetStateAction<string>>;
+
 };
 
 type OpenState = {
@@ -13,7 +15,8 @@ type OpenState = {
     method: "POST" | "DELETE" | "";
 };
 
-export default function OptionsEndBar({ setPlayersList }: Props) {
+
+export default function OptionsEndBar({ setPlayersList, setResourcePlayer }: Props) {
     const [openInputSearch, setOpenInputSearch] = useState<OpenState>({
         openSearch: false,
         method: "",
@@ -147,6 +150,7 @@ export default function OptionsEndBar({ setPlayersList }: Props) {
                     className="me-2"
                     style={styleButton}
                     size={25}
+                    onClick={() => setResourcePlayer("/notifications?status=PENDING")}
                 />
             </div>
         </div>

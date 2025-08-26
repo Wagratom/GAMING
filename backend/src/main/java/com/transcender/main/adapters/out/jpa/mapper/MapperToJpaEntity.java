@@ -58,8 +58,8 @@ public class MapperToJpaEntity {
     public FriendCore toAFriendCore(FriendCoreJpa friendjpa) {
         return new FriendCore(
                 friendjpa.getId(),
-                friendjpa.getUsuario1().getId(),
-                friendjpa.getUsuario2().getId(),
+                toUserCore(friendjpa.getUsuario1(), false),
+                toUserCore(friendjpa.getUsuario2(), false),
                 friendjpa.getStatus(),
                 friendjpa.getCriadoEm(),
                 friendjpa.getAtualizadoEm()

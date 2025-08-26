@@ -6,22 +6,31 @@ import ListFriends from './ListFriends';
 import './MineProfile.css';
 import axios from 'axios';
 import { Player, UserData } from '../../InitialPage/Contexts/Contexts';
-import ConnectWebsocket from './FriendWebsocket'; 
+import ConnectWebsocket from './FriendWebsocket';
+import NotificacaoUX from './NotificacaoUX';
 
 type propsMiniProfile = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
 };
 
+type Notifications = {
+	"pendingFriends": Player[];
+	"peddingMatches": Player[];
+}
+
 export default function MiniProfile(props: propsMiniProfile) {
 	const { user } = useContext(UserData);
 	const [resoucePlayer, setResourcePlayer] = useState<string>("/friends?status=ACCEPTED");
 	const [players, setPlayers] = useState<Player[]>([]);
+	const [notifications, setNotifications] = useState<Notifications>({
+		pendingFriends: [],
+		peddingMatches: []
+	});
 
 	function newNotificationFriends(msg: string) {
 		console.log("🔔 Nova notificação de amigos recebida ", msg)
 	}
-	// 🔌 Conecta WebSocket passando user.id
-	const stompClient = ConnectWebsocket(`/topic/friends/${user.id}`, newNotificationFriends);
+	ConnectWebsocket(`/topic/friends/${user.id}`, newNotificationFriends);
 
 	const cssMiniprfile: React.CSSProperties = {
 		display: 'flex',
@@ -35,11 +44,15 @@ export default function MiniProfile(props: propsMiniProfile) {
 
 	function getPlayers() {
 		const route = process.env.REACT_APP_API_URL + resoucePlayer;
-		axios
-			.get(route, {
-				headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+		axios.get(route, {
+			headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+		})
+			.then((res) => {
+				if (resoucePlayer.startsWith("/notifications")) setNotifications(res.data);
+				else if (resoucePlayer.startsWith("/friends") || resoucePlayer.startsWith("/users")) {
+					setPlayers(res.data);
+				}
 			})
-			.then((res) => setPlayers(res.data))
 			.catch(() => { });
 	}
 
@@ -52,9 +65,15 @@ export default function MiniProfile(props: propsMiniProfile) {
 			<MiniPerfilUser showMiniPerfil={props.showMiniPerfil} />
 			<hr className="m-0 w-100 text-white" />
 			<Social setResourcePlayer={setResourcePlayer} />
-			<ListFriends players={players} openChat={resoucePlayer === "/friends?status=ACCEPTED"} />
+			{
+				resoucePlayer.startsWith("/users") || resoucePlayer.startsWith("/friends") 
+				? <ListFriends players={players} openChat={resoucePlayer === "/friends?status=ACCEPTED"} /> 
+				: resoucePlayer.startsWith("/notifications") 
+				? <NotificacaoUX notifications={notifications} /> 
+				: null
+			}
 			<hr className="m-0 w-100 text-white" />
-			<OptionsEndBar setPlayersList={setPlayers} />
+			<OptionsEndBar setPlayersList={setPlayers} setResourcePlayer={setResourcePlayer} />
 		</div>
 	);
 }
