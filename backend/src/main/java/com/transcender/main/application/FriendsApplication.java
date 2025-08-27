@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,25 +31,21 @@ public class FriendsApplication implements FriendsPort {
     private final JwtService jwtService;
 
     public FriendsApplication(UserRepositoryPort userRepository,
-            JwtService jwtService,
-            FriendsRepositoryPort friendsRepository) {
-
+                              JwtService jwtService,
+                              FriendsRepositoryPort friendsRepository) {
         this.userRepository = userRepository;
         this.friendsRepository = friendsRepository;
         this.jwtService = jwtService;
     }
 
-    private record UsersPair(UserCore user1, UserCore user2) {
-    }
+    private record UsersPair(UserCore requester, UserCore friend) {}
 
     private Long extractUserIdFromJwt(String jwt) {
         if (jwt == null || jwt.length() < 7) {
             throw new Unauthorized("Token inválido");
         }
         try {
-            // Remove prefix "Bearer "
-            String token = jwt.substring(7);
-            Map<String, Object> claims = jwtService.validateTokenAndGetClaims(token);
+            Map<String, Object> claims = jwtService.validateTokenAndGetClaims(jwt.substring(7));
             return ((Number) claims.get("id")).longValue();
         } catch (JwtException ex) {
             logger.error("Falha ao decodificar token JWT", ex);
@@ -56,7 +53,7 @@ public class FriendsApplication implements FriendsPort {
         }
     }
 
-    private UsersPair validateAndGetUsers(Long requesterId, Long friendId) {
+    private UsersPair getAndValidateUsers(Long requesterId, Long friendId) {
         UserCore requester = userRepository.getUserById(requesterId)
                 .orElseThrow(() -> new ResourceNotFound("UsuarioSolicitante", requesterId));
 
@@ -67,15 +64,19 @@ public class FriendsApplication implements FriendsPort {
             throw new BadRequest("O usuário não pode adicionar ele mesmo");
         }
 
-        logger.info("Verificando se o usuário está bloqueado");
-        if (friendsRepository.existsBlock(requester.getId(), friend.getId())) {
-            throw new BadRequest("Não é permitido adicionar um usuário bloqueado.");
-        }
-
         return new UsersPair(requester, friend);
     }
 
-    private Map<String, Object> convertUserToJson(FriendCore friend) {
+    private void validateFriendShip(FriendCore friendship, UserCore requester, UserCore receiver) {
+        if (friendship.received().equals(requester)) {
+            throw new BadRequest("O usuário não pode responder à solicitação que ele mesmo enviou");
+        }
+        if (friendship.status().equals(FriendStatus.BLOCKED)) {
+            throw new BadRequest("A amizade está bloqueada");
+        }
+    }
+
+    private Map<String, Object> convertFriendToJson(FriendCore friend) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", friend.id());
 
@@ -105,9 +106,9 @@ public class FriendsApplication implements FriendsPort {
         return map;
     }
 
-    private List<Map<String, Object>> convertUsersToJson(List<FriendCore> friends) {
+    private List<Map<String, Object>> convertFriendsToJson(List<FriendCore> friends) {
         return friends.stream()
-                .map(this::convertUserToJson)
+                .map(this::convertFriendToJson)
                 .collect(Collectors.toList());
     }
 
@@ -116,47 +117,68 @@ public class FriendsApplication implements FriendsPort {
         Long userId = extractUserIdFromJwt(jwt);
         FriendStatus effectiveStatus = status != null ? status : FriendStatus.ACCEPTED;
         logger.info("Obtendo amigos do usuário {} com status {}", userId, effectiveStatus);
-        List<FriendCore> friend = friendsRepository.getFriendsCore(userId, effectiveStatus);
-        return convertUsersToJson(friend);
+
+        List<FriendCore> friends = friendsRepository.getFriendsCore(userId, effectiveStatus);
+        return convertFriendsToJson(friends);
     }
 
     @Override
     public Map<String, Object> addFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Solicitação de amizade: solicitante={} | amigo={}", requesterId, friendId);
-        UsersPair users = validateAndGetUsers(requesterId, friendId);
-        return convertUserToJson(friendsRepository.addFriend(users.user1(), users.user2()));
+
+        UsersPair users = getAndValidateUsers(requesterId, friendId);
+        return convertFriendToJson(friendsRepository.addFriend(users.requester(), users.friend()));
     }
 
     @Override
     public Map<String, Object> acceptFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Aceitar amizade: solicitante={} | amigo={}", requesterId, friendId);
-        UsersPair users = validateAndGetUsers(requesterId, friendId);
-        return convertUserToJson(friendsRepository.acceptFriend(users.user1(), users.user2()));
+
+        UsersPair users = getAndValidateUsers(requesterId, friendId);
+        return convertFriendToJson(friendsRepository.acceptFriend(users.requester(), users.friend()));
     }
 
     @Override
     public Map<String, Object> declineFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
-        logger.info("Aceitar amizade: solicitante={} | amigo={}", requesterId, friendId);
-        UsersPair users = validateAndGetUsers(requesterId, friendId);
-        return convertUserToJson(friendsRepository.declineFriend(users.user1(), users.user2()));
+        logger.info("Recusar amizade: solicitante={} | amigo={}", requesterId, friendId);
+
+        UsersPair users = getAndValidateUsers(requesterId, friendId);
+        FriendCore friendship = friendsRepository.getFriendCore(requesterId, friendId)
+                .orElseThrow(() -> new BadRequest("Amizade não encontrada"));
+
+        validateFriendShip(friendship, users.requester(), users.friend());
+        return convertFriendToJson(friendsRepository.declineFriend(users.requester(), users.friend()));
     }
 
     @Override
     public Map<String, Object> removeFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Remover amizade: solicitante={} | amigo={}", requesterId, friendId);
-        UsersPair users = validateAndGetUsers(requesterId, friendId);
-        return convertUserToJson(friendsRepository.removeFriend(users.user1(), users.user2()));
+
+        UsersPair users = getAndValidateUsers(requesterId, friendId);
+        FriendCore friendship = friendsRepository.getFriendCore(requesterId, friendId)
+                .orElseThrow(() -> new BadRequest("Amizade não encontrada"));
+
+        validateFriendShip(friendship, users.requester(), users.friend());
+        return convertFriendToJson(friendsRepository.removeFriend(users.requester(), users.friend()));
     }
 
     @Override
     public Map<String, Object> blockFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Bloquear usuário: solicitante={} | amigo={}", requesterId, friendId);
-        UsersPair users = validateAndGetUsers(requesterId, friendId);
-        return convertUserToJson(friendsRepository.blockFriend(users.user1(), users.user2()));
+
+        UsersPair users = getAndValidateUsers(requesterId, friendId);
+        FriendCore friendship = friendsRepository.getFriendCore(requesterId, friendId)
+                .orElseThrow(() -> new BadRequest("Amizade não encontrada"));
+
+        if (friendship.received().equals(users.requester())) {
+            throw new BadRequest("O usuário não pode bloquear a si mesmo");
+        }
+
+        return convertFriendToJson(friendsRepository.blockFriend(users.requester(), users.friend()));
     }
 }

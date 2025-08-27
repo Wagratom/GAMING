@@ -5,6 +5,7 @@ import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.FriendStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FriendsRepositoryPort {
     List<FriendCore> getFriendsCore(Long id, FriendStatus status);
@@ -16,6 +17,7 @@ public interface FriendsRepositoryPort {
     FriendCore removeFriend(UserCore solicitante, UserCore friend);
     FriendCore blockFriend(UserCore solicitante, UserCore friend);
 
+    Optional<FriendCore> getFriendCore(Long userId1, Long userId2);
     boolean existsFriends(Long userId1, Long userId2);
     boolean existsBlock(Long userId1, Long userId2);
 }
