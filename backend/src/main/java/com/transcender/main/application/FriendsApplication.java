@@ -30,15 +30,16 @@ public class FriendsApplication implements FriendsPort {
     private final JwtService jwtService;
 
     public FriendsApplication(UserRepositoryPort userRepository,
-                              JwtService jwtService,
-                              FriendsRepositoryPort friendsRepository) {
+            JwtService jwtService,
+            FriendsRepositoryPort friendsRepository) {
 
         this.userRepository = userRepository;
         this.friendsRepository = friendsRepository;
         this.jwtService = jwtService;
     }
 
-    private record UsersPair(UserCore user1, UserCore user2) {}
+    private record UsersPair(UserCore user1, UserCore user2) {
+    }
 
     private Long extractUserIdFromJwt(String jwt) {
         if (jwt == null || jwt.length() < 7) {
@@ -103,6 +104,7 @@ public class FriendsApplication implements FriendsPort {
 
         return map;
     }
+
     private List<Map<String, Object>> convertUsersToJson(List<FriendCore> friends) {
         return friends.stream()
                 .map(this::convertUserToJson)

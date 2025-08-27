@@ -10,7 +10,6 @@ public interface FriendsPort {
     Map<String, Object> addFriend(String jwt, Long friendId);
     Map<String, Object> acceptFriend(String jwt, Long friendId);
     Map<String, Object> declineFriend(String jwt, Long friendId);
-    Map<String, Object> recusetFriend(String jwt, Long friendId);
 
     Map<String, Object> removeFriend(String jwt, Long friendId);
     Map<String, Object> blockFriend(String jwt, Long friendId);
