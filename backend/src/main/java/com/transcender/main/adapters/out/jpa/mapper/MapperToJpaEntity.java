@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 public class MapperToJpaEntity {
     public UserCore toUserCore(UserCoreJpa user, boolean includeFriends) {
         Set<FriendCore> solicitates = includeFriends
-                ? user.getSolicitadas().stream().map(this::toAFriendCore).collect(Collectors.toSet())
+                ? user.getSolicitadas().stream().map(this::toFriendCore).collect(Collectors.toSet())
                 : Set.of();
 
         Set<FriendCore> receives = includeFriends
-                ? user.getRecebidas().stream().map(this::toAFriendCore).collect(Collectors.toSet())
+                ? user.getRecebidas().stream().map(this::toFriendCore).collect(Collectors.toSet())
                 : Set.of();
 
         return new UserCore(
@@ -55,7 +55,7 @@ public class MapperToJpaEntity {
 
 
 
-    public FriendCore toAFriendCore(FriendCoreJpa friendjpa) {
+    public FriendCore toFriendCore(FriendCoreJpa friendjpa) {
         return new FriendCore(
                 friendjpa.getId(),
                 toUserCore(friendjpa.getUsuario1(), false),

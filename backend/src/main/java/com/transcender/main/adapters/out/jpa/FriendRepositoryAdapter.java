@@ -36,7 +36,7 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
 
         return friendsRepository.findFriendsListByUserIdAndStatus(userId, status.name())
                 .stream()
-                .map(user -> mapperToJpaEntity.toAFriendCore(user))
+                .map(user -> mapperToJpaEntity.toFriendCore(user))
                 .collect(Collectors.toList());
     }
 
@@ -70,6 +70,12 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
     }
 
     @Override
+    public Optional<FriendCore> getFriendCore(Long userId1, Long userId2) {
+        return friendsRepository.findFriendsByUsersId(userId1, userId2)
+                .map((FriendShip) -> mapperToJpaEntity.toFriendCore(FriendShip));
+    }
+
+    @Override
     public boolean existsFriends(Long userId1, Long userId2) {
         logger.info("FriendRepositoryAdapter::existsFriends");
         return friendsRepository.findFriendsByUsersIdAndStatus(userId1, userId2, FriendStatus.ACCEPTED.name()).isPresent();
@@ -95,7 +101,7 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
                             return amz;
                 }).orElseGet(() -> new FriendCoreJpa(solicitanteJpa, friendJpa, status))
         );
-        return mapperToJpaEntity.toAFriendCore(newFriend);
+        return mapperToJpaEntity.toFriendCore(newFriend);
     }
 
 }
