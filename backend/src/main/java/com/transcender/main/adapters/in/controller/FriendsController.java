@@ -2,8 +2,11 @@ package com.transcender.main.adapters.in.controller;
 
 import com.transcender.main.adapters.in.controller.dto.AddUserDto;
 import com.transcender.main.application.FriendsApplication;
+import com.transcender.main.application.UserApplication;
 import com.transcender.main.domain.enuns.FriendStatus;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -16,9 +19,9 @@ import java.util.Map;
 @RequestMapping("friends")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class FriendsController {
-
     private final FriendsApplication friendsApplication;
     private final SimpMessagingTemplate messagingTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(FriendsController.class);
 
     public FriendsController(FriendsApplication friendsApplication, SimpMessagingTemplate messagingTemplate) {
         this.friendsApplication = friendsApplication;
@@ -54,6 +57,8 @@ public class FriendsController {
     @PostMapping
     public ResponseEntity<String> addFriend(@RequestHeader("Authorization") String jwt,
             @Valid @RequestBody AddUserDto friend) {
+
+        logger.info("Iniciando controller para adicionar um amigo");
         Map<String, Object> response = friendsApplication.addFriend(jwt, Long.parseLong(friend.friendId()));
         long receiver = ((Number) ((Map<String, Object>) response.get("receiver")).get("id")).longValue();
         messagingTemplate.convertAndSend("/topic/friends/" + receiver, response);
@@ -70,9 +75,10 @@ public class FriendsController {
     }
 
     @PostMapping("{friendId}/decline")
-    public ResponseEntity<String> declineFriend(
-            @RequestHeader("Authorization") String jwt,
+    public ResponseEntity<String> declineFriend(@RequestHeader("Authorization") String jwt,
             @PathVariable Long friendId) {
+
+        logger.info("Iniciando controller para recusar um amigo");
         Map<String, Object> response = friendsApplication.declineFriend(jwt, friendId);
         long receiver = ((Number) ((Map<String, Object>) response.get("receiver")).get("id")).longValue();
         messagingTemplate.convertAndSend("/topic/friends/" + receiver, response);
@@ -83,6 +89,7 @@ public class FriendsController {
     public ResponseEntity<String> removeFriend(@RequestHeader("Authorization") String jwt,
             @PathVariable Long friendId) {
 
+        logger.info("Iniciando controller para remover um amigo");
         Map<String, Object> response = friendsApplication.removeFriend(jwt, friendId);
         long receiver = ((Number) ((Map<String, Object>) response.get("receiver")).get("id")).longValue();
         messagingTemplate.convertAndSend("/topic/friends/" + receiver, response);
@@ -91,6 +98,8 @@ public class FriendsController {
 
     @PostMapping("{friendId}/block")
     public ResponseEntity<String> blockFriend(@RequestHeader("Authorization") String jwt, @PathVariable Long friendId) {
+
+        logger.info("Iniciando controller para blockear um amigo");
         Map<String, Object> response = friendsApplication.blockFriend(jwt, friendId);
         long receiver = ((Number) ((Map<String, Object>) response.get("receiver")).get("id")).longValue();
         messagingTemplate.convertAndSend("/topic/friends/" + receiver, response);

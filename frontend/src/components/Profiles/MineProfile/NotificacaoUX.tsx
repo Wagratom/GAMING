@@ -6,6 +6,7 @@ import { ImCancelCircle } from "react-icons/im";
 import { LiaRobotSolid } from "react-icons/lia";
 import { useContext, useState } from 'react';
 import axios from 'axios';
+import ConnectWebsocket from './FriendWebsocket';
 
 type Notifications = {
 	sender: Player;
@@ -17,6 +18,13 @@ export default function NotificacaoUX({ notifications }: { notifications: Notifi
 
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>({ id: '', nickname: '' });
+
+	function newNotificationFriends(msg: string) {
+		console.log("🔔 Nova notificação de amigos recebida ", msg)
+	}
+
+	ConnectWebsocket(`/topic/friends/${user.id}`, newNotificationFriends);
+
 
 	if (notifications.length === 0) {
 		return (
@@ -30,14 +38,16 @@ export default function NotificacaoUX({ notifications }: { notifications: Notifi
 
 	function acceptOrDeclineFriendRequest(player: Player, accept: boolean) {
 		// Lógica para aceitar ou recusar a solicitação de amizade
-		if (accept) {
-			console.log(`Solicitação de amizade de ${player.id} aceita.`);
-			axios.post
-			// Adicione aqui a lógica para adicionar o amigo
-		} else {
-			console.log(`Solicitação de amizade de ${player.id} recusada.`);
-			// Adicione aqui a lógica para recusar a solicitação
-		}
+		const url = process.env.REACT_APP_API_URL + `/friends/${player.id}/${accept ? 'accept' : 'decline'}`;
+		axios.post(url, {}, {
+			headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+		})
+			.then((res) => {
+				console.log(res.data);
+			})
+			.catch((err) => {
+				console.error("Erro ao processar a solicitação de amizade:", err);
+			});
 	}
 
 	return (
