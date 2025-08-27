@@ -32,6 +32,7 @@ public class FriendsApplication implements FriendsPort {
     public FriendsApplication(UserRepositoryPort userRepository,
                               JwtService jwtService,
                               FriendsRepositoryPort friendsRepository) {
+
         this.userRepository = userRepository;
         this.friendsRepository = friendsRepository;
         this.jwtService = jwtService;
@@ -73,38 +74,40 @@ public class FriendsApplication implements FriendsPort {
         return new UsersPair(requester, friend);
     }
 
+    private Map<String, Object> convertUserToJson(FriendCore friend) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", friend.id());
+
+        // Quem enviou o pedido
+        Map<String, Object> sender = new HashMap<>();
+        sender.put("id", friend.sender().getId());
+        sender.put("nickname", friend.sender().getNickname());
+        sender.put("avatar", friend.sender().getAvatar());
+        sender.put("online", friend.sender().getOnline());
+        sender.put("createdAt", friend.sender().getCriadoEm());
+        map.put("sender", sender);
+
+        // Quem recebeu o pedido
+        Map<String, Object> receiver = new HashMap<>();
+        receiver.put("id", friend.received().getId());
+        receiver.put("nickname", friend.received().getNickname());
+        receiver.put("avatar", friend.received().getAvatar());
+        receiver.put("online", friend.received().getOnline());
+        receiver.put("createdAt", friend.received().getCriadoEm());
+        map.put("receiver", receiver);
+
+        // Dados da amizade
+        map.put("status", friend.status().name());
+        map.put("createdAt", friend.criadoEm());
+        map.put("updatedAt", friend.atualizadoEm());
+
+        return map;
+    }
     private List<Map<String, Object>> convertUsersToJson(List<FriendCore> friends) {
         return friends.stream()
-                .map(friend -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("id", friend.id());
-
-                    // Quem enviou o pedido
-                    Map<String, Object> sender = new HashMap<>();
-                    sender.put("id", friend.sender().getId());
-                    sender.put("nickname", friend.sender().getNickname());
-                    sender.put("online", friend.sender().getOnline());
-                    sender.put("createdAt", friend.sender().getCriadoEm());
-                    map.put("sender", sender);
-
-                    // Quem recebeu o pedido
-                    Map<String, Object> receiver = new HashMap<>();
-                    receiver.put("id", friend.received().getId());
-                    receiver.put("nickname", friend.received().getNickname());
-                    receiver.put("online", friend.received().getOnline());
-                    receiver.put("createdAt", friend.received().getCriadoEm());
-                    map.put("receiver", receiver);
-
-                    // Dados da amizade
-                    map.put("status", friend.status().name());
-                    map.put("createdAt", friend.criadoEm());
-                    map.put("updatedAt", friend.atualizadoEm());
-
-                    return map;
-                })
+                .map(this::convertUserToJson)
                 .collect(Collectors.toList());
     }
-
 
     @Override
     public List<Map<String, Object>> getFriends(String jwt, FriendStatus status) {
@@ -116,42 +119,42 @@ public class FriendsApplication implements FriendsPort {
     }
 
     @Override
-    public boolean addFriend(String jwt, Long friendId) {
+    public Map<String, Object> addFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Solicitação de amizade: solicitante={} | amigo={}", requesterId, friendId);
         UsersPair users = validateAndGetUsers(requesterId, friendId);
-        return friendsRepository.addFriend(users.user1(), users.user2());
+        return convertUserToJson(friendsRepository.addFriend(users.user1(), users.user2()));
     }
 
     @Override
-    public boolean acceptFriend(String jwt, Long friendId) {
+    public Map<String, Object> acceptFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Aceitar amizade: solicitante={} | amigo={}", requesterId, friendId);
         UsersPair users = validateAndGetUsers(requesterId, friendId);
-        return friendsRepository.acceptFriend(users.user1(), users.user2());
+        return convertUserToJson(friendsRepository.acceptFriend(users.user1(), users.user2()));
     }
 
     @Override
-    public boolean recusetFriend(String jwt, Long friendId) {
+    public Map<String, Object> declineFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
-        logger.info("Recusar amizade: solicitante={} | amigo={}", requesterId, friendId);
+        logger.info("Aceitar amizade: solicitante={} | amigo={}", requesterId, friendId);
         UsersPair users = validateAndGetUsers(requesterId, friendId);
-        return friendsRepository.recuseFriend(users.user1(), users.user2());
+        return convertUserToJson(friendsRepository.declineFriend(users.user1(), users.user2()));
     }
 
     @Override
-    public boolean removeFriend(String jwt, Long friendId) {
+    public Map<String, Object> removeFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Remover amizade: solicitante={} | amigo={}", requesterId, friendId);
         UsersPair users = validateAndGetUsers(requesterId, friendId);
-        return friendsRepository.removeFriend(users.user1(), users.user2());
+        return convertUserToJson(friendsRepository.removeFriend(users.user1(), users.user2()));
     }
 
     @Override
-    public boolean blockFriend(String jwt, Long friendId) {
+    public Map<String, Object> blockFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Bloquear usuário: solicitante={} | amigo={}", requesterId, friendId);
         UsersPair users = validateAndGetUsers(requesterId, friendId);
-        return friendsRepository.blockFriend(users.user1(), users.user2());
+        return convertUserToJson(friendsRepository.blockFriend(users.user1(), users.user2()));
     }
 }

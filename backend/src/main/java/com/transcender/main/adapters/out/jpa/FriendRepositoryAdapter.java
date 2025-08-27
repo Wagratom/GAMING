@@ -41,38 +41,32 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
     }
 
     @Override
-    public boolean addFriend(UserCore solicitante, UserCore friend) {
+    public FriendCore addFriend(UserCore solicitante, UserCore friend) {
         logger.info("FriendRepositoryAdapter::addFriend");
-        updateFriendTable(solicitante, friend, FriendStatus.PENDING);
-        return true;
+        return updateFriendTable(solicitante, friend, FriendStatus.PENDING);
     }
 
     @Override
-    public boolean acceptFriend(UserCore solicitante, UserCore friend) {
+    public FriendCore acceptFriend(UserCore solicitante, UserCore friend) {
         logger.info("FriendRepositoryAdapter::acceptFriend");
-        updateFriendTable(solicitante, friend, FriendStatus.ACCEPTED);
-        return true;
+        return  updateFriendTable(solicitante, friend, FriendStatus.ACCEPTED);
+    }
+
+    public FriendCore declineFriend(UserCore solicitante, UserCore friend) {
+        logger.info("FriendRepositoryAdapter::acceptFriend");
+        return  updateFriendTable(solicitante, friend, FriendStatus.DECLINED);
     }
 
     @Override
-    public boolean recuseFriend(UserCore solicitante, UserCore friend) {
-        logger.info("FriendRepositoryAdapter::recusetFriend");
-        updateFriendTable(solicitante, friend, FriendStatus.DECLINED);
-        return true;
-    }
-
-    @Override
-    public boolean removeFriend(UserCore solicitante, UserCore friend) {
+    public FriendCore removeFriend(UserCore solicitante, UserCore friend) {
         logger.info("FriendRepositoryAdapter::removeFriend");
-        updateFriendTable(solicitante, friend, FriendStatus.REMOVED);
-        return true;
+        return updateFriendTable(solicitante, friend, FriendStatus.REMOVED);
     }
 
     @Override
-    public boolean blockFriend(UserCore solicitante, UserCore friend) {
+    public FriendCore blockFriend(UserCore solicitante, UserCore friend) {
         logger.info("FriendRepositoryAdapter::blockFriend");
-        updateFriendTable(solicitante, friend, FriendStatus.BLOCKED);
-        return true;
+        return updateFriendTable(solicitante, friend, FriendStatus.BLOCKED);
     }
 
     @Override
@@ -87,7 +81,7 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
         return friendsRepository.findFriendsByUsersIdAndStatus(userId1, userId2, FriendStatus.BLOCKED.name()).isPresent();
     }
 
-    private void updateFriendTable(UserCore solicitante, UserCore friend, FriendStatus status) {
+    private FriendCore updateFriendTable(UserCore solicitante, UserCore friend, FriendStatus status) {
         UserCoreJpa solicitanteJpa = mapperToJpaEntity.toUserCoreJpa(solicitante);
         UserCoreJpa friendJpa = mapperToJpaEntity.toUserCoreJpa(friend);
 
@@ -95,13 +89,13 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
                 solicitanteJpa.getId(), friendJpa.getId()
         );
 
-        friendsRepository.save(
-                amizadeExistente
-                        .map(amz -> {
+        FriendCoreJpa newFriend = friendsRepository.save(
+                amizadeExistente.map(amz -> {
                             amz.setStatus(status);
                             return amz;
-                        })
-                        .orElseGet(() -> new FriendCoreJpa(solicitanteJpa, friendJpa, status))
+                }).orElseGet(() -> new FriendCoreJpa(solicitanteJpa, friendJpa, status))
         );
+        return mapperToJpaEntity.toAFriendCore(newFriend);
     }
+
 }

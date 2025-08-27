@@ -26,7 +26,7 @@ public class NotificationsController {
     }
 
     @GetMapping
-    public ResponseEntity<Map<String, List<Map<String, Object>>>> getNotifications(
+    public ResponseEntity<List<Map<String, Object>>> getNotifications(
             @RequestHeader("Authorization") String jwt,
             @RequestParam(value = "status", required = false, defaultValue = "PENDING") String filter) {
 
@@ -41,13 +41,11 @@ public class NotificationsController {
         }
 
         if (filter.equalsIgnoreCase("PENDING")) {
-            return ResponseEntity.ok(
-                    Map.of("pendingFriends", friendsApplication.getFriends(jwt, FriendStatus.PENDING))
-            );
+            return ResponseEntity.ok(friendsApplication.getFriends(jwt, FriendStatus.PENDING));
         }
 
         // TODO: implementar "ALL"
-        return ResponseEntity.ok(Map.of("allFriends", List.of()));
+        return ResponseEntity.ok(List.of());
     }
 
 }

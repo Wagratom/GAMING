@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.Map;
 
 @RestController
@@ -22,6 +23,16 @@ public class FriendsController {
     public FriendsController(FriendsApplication friendsApplication, SimpMessagingTemplate messagingTemplate) {
         this.friendsApplication = friendsApplication;
         this.messagingTemplate = messagingTemplate;
+    }
+
+    private Map<String, Object> buildEvent(String eventType, Long senderId, Long receiverId, String message) {
+        return Map.of(
+                "eventType", eventType,
+                "senderId", senderId,
+                "receiverId", receiverId,
+                "timestamp", Instant.now().toString(),
+                "payload", Map.of("message", message)
+        );
     }
 
     @GetMapping
@@ -57,11 +68,11 @@ public class FriendsController {
             @RequestHeader("Authorization") String jwt,
             @Valid @RequestBody AddUserDto friend
     ) {
-        friendsApplication.addFriend(jwt, Long.parseLong(friend.friendId()));
-
-        // Notifica o destinatário
-        messagingTemplate.convertAndSend("/topic/friends/" + friend.friendId(),
-                Map.of("type", "FRIEND_REQUEST", "message", "Você recebeu uma solicitação de amizade"));
+        Map<String, Object> response = friendsApplication.addFriend(jwt, Long.parseLong(friend.friendId()));
+        Long senderId = ((Number) ((Map<String, Object>) response.get("sender")).get("id")).longValue();
+        messagingTemplate.convertAndSend("/topic/friends/" + senderId,
+                buildEvent(response)
+        );
 
         return ResponseEntity.ok("Success");
     }
@@ -71,16 +82,33 @@ public class FriendsController {
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long friendId
     ) {
-        boolean accepted = friendsApplication.acceptFriend(jwt, friendId);
-
-        if (accepted) {
-            // Notifica o solicitante original
-            messagingTemplate.convertAndSend("/topic/user/" + friendId,
-                    Map.of("type", "FRIEND_ACCEPTED", "message", "Sua solicitação de amizade foi aceita"));
+        Map<String, Object> response = friendsApplication.acceptFriend(jwt, friendId);
+        Long senderId = ((Number) ((Map<String, Object>) response.get("sender")).get("id")).longValue();
+            messagingTemplate.convertAndSend(
+                    "/topic/friends/" + senderId,
+                    buildEvent("FRIEND_ACCEPTED", senderId, friendId,
+                            "Sua solicitação de amizade foi aceita")
+            );
             return ResponseEntity.ok("Solicitação de amizade aceita com sucesso.");
+    }
+
+    @PostMapping("{friendId}/decline")
+    public ResponseEntity<String> declineFriend(
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long friendId
+    ) {
+        Map<String, Object> response = friendsApplication.declineFriend(jwt, friendId);
+
+        if (declined) {
+            messagingTemplate.convertAndSend(
+                    "/topic/friends/" + friendId,
+                    buildEvent("FRIEND_DECLINED", senderId, friendId,
+                            "Sua solicitação de amizade foi recusada")
+            );
+            return ResponseEntity.ok("Solicitação de amizade recusada com sucesso.");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Não foi possível aceitar a solicitação de amizade.");
+                    .body("Não foi possível recusar a solicitação de amizade.");
         }
     }
 
@@ -89,10 +117,13 @@ public class FriendsController {
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long friendId
     ) {
-        friendsApplication.removeFriend(jwt, friendId);
+        Map<String, Object> response = friendsApplication.removeFriend(jwt, friendId);
 
-        messagingTemplate.convertAndSend("/topic/user/" + friendId,
-                Map.of("type", "FRIEND_REMOVED", "message", "Você foi removido da lista de amigos"));
+        messagingTemplate.convertAndSend(
+                "/topic/friends/" + friendId,
+                buildEvent("FRIEND_REMOVED", senderId, friendId,
+                        "Você foi removido da lista de amigos")
+        );
 
         return ResponseEntity.ok("Amigo removido com sucesso.");
     }
@@ -102,10 +133,13 @@ public class FriendsController {
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long friendId
     ) {
-        friendsApplication.blockFriend(jwt, friendId);
+        Map<String, Object> response = friendsApplication.blockFriend(jwt, friendId);
 
-        messagingTemplate.convertAndSend("/topic/user/" + friendId,
-                Map.of("type", "FRIEND_BLOCKED", "message", "Você foi bloqueado"));
+        messagingTemplate.convertAndSend(
+                "/topic/friends/" + friendId,
+                buildEvent("FRIEND_BLOCKED", senderId, friendId,
+                        "Você foi bloqueado")
+        );
 
         return ResponseEntity.ok("Usuário bloqueado com sucesso.");
     }

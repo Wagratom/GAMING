@@ -9,12 +9,12 @@ import java.util.List;
 public interface FriendsRepositoryPort {
     List<FriendCore> getFriendsCore(Long id, FriendStatus status);
 
-    boolean addFriend(UserCore solicitante, UserCore friend);
-    boolean acceptFriend(UserCore solicitante, UserCore friend);
-    boolean recuseFriend(UserCore solicitante, UserCore friend);
+    FriendCore addFriend(UserCore solicitante, UserCore friend);
+    FriendCore acceptFriend(UserCore solicitante, UserCore friend);
+    FriendCore declineFriend(UserCore solicitante, UserCore friend);
 
-    boolean removeFriend(UserCore solicitante, UserCore friend);
-    boolean blockFriend(UserCore solicitante, UserCore friend);
+    FriendCore removeFriend(UserCore solicitante, UserCore friend);
+    FriendCore blockFriend(UserCore solicitante, UserCore friend);
 
     boolean existsFriends(Long userId1, Long userId2);
     boolean existsBlock(Long userId1, Long userId2);

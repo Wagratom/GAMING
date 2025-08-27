@@ -14,18 +14,17 @@ type propsMiniProfile = {
 };
 
 type Notifications = {
-	"pendingFriends": Player[];
-	"peddingMatches": Player[];
-}
+	sender: Player;
+	receiver: Player;
+};
+
+
 
 export default function MiniProfile(props: propsMiniProfile) {
 	const { user } = useContext(UserData);
 	const [resoucePlayer, setResourcePlayer] = useState<string>("/friends?status=ACCEPTED");
 	const [players, setPlayers] = useState<Player[]>([]);
-	const [notifications, setNotifications] = useState<Notifications>({
-		pendingFriends: [],
-		peddingMatches: []
-	});
+	const [notifications, setNotifications] = useState<Notifications[]>([]);
 
 	function newNotificationFriends(msg: string) {
 		console.log("🔔 Nova notificação de amigos recebida ", msg)
@@ -66,11 +65,11 @@ export default function MiniProfile(props: propsMiniProfile) {
 			<hr className="m-0 w-100 text-white" />
 			<Social setResourcePlayer={setResourcePlayer} />
 			{
-				resoucePlayer.startsWith("/users") || resoucePlayer.startsWith("/friends") 
-				? <ListFriends players={players} openChat={resoucePlayer === "/friends?status=ACCEPTED"} /> 
-				: resoucePlayer.startsWith("/notifications") 
-				? <NotificacaoUX notifications={notifications} /> 
-				: null
+				resoucePlayer.startsWith("/users") || resoucePlayer.startsWith("/friends")
+					? <ListFriends players={players} openChat={resoucePlayer === "/friends?status=ACCEPTED"} />
+					: resoucePlayer.startsWith("/notifications")
+						? <NotificacaoUX notifications={notifications} />
+						: null
 			}
 			<hr className="m-0 w-100 text-white" />
 			<OptionsEndBar setPlayersList={setPlayers} setResourcePlayer={setResourcePlayer} />

@@ -1,21 +1,24 @@
 import DinamicProfile from '../DinamicProfile/DinamicProfile';
 import PhotoWithOnlineStatus from './PhotoWithOnlineStatus';
-import { Player } from '../../InitialPage/Contexts/Contexts';
+import { Player, UserData } from '../../InitialPage/Contexts/Contexts';
 import { FaCheck } from "react-icons/fa";
 import { ImCancelCircle } from "react-icons/im";
 import { LiaRobotSolid } from "react-icons/lia";
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import axios from 'axios';
 
-type propsNotificacaoUX = {
-	"pendingFriends": Player[];
+type Notifications = {
+	sender: Player;
+	receiver: Player;
 };
 
-export default function NotificacaoUX({ notifications }: { notifications: propsNotificacaoUX }) {
+export default function NotificacaoUX({ notifications }: { notifications: Notifications[] }) {
+	const { user } = useContext(UserData)
+
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>({ id: '', nickname: '' });
 
-	console.log("🚀 ~ file: NotificacaoUX.tsx:8 ~ NotificacaoUX ~ notifications:", notifications)
-	if (notifications.pendingFriends.length === 0) {
+	if (notifications.length === 0) {
 		return (
 			<div className='d-flex flex-column justify-content-center align-items-center h-100'>
 				<div className='d-flex justify-content-center'>
@@ -25,9 +28,21 @@ export default function NotificacaoUX({ notifications }: { notifications: propsN
 		)
 	}
 
+	function acceptOrDeclineFriendRequest(player: Player, accept: boolean) {
+		// Lógica para aceitar ou recusar a solicitação de amizade
+		if (accept) {
+			console.log(`Solicitação de amizade de ${player.id} aceita.`);
+			axios.post
+			// Adicione aqui a lógica para adicionar o amigo
+		} else {
+			console.log(`Solicitação de amizade de ${player.id} recusada.`);
+			// Adicione aqui a lógica para recusar a solicitação
+		}
+	}
+
 	return (
 		<div className='p-2 text-white overflow-auto h-100'>
-			x			{!dinamicProfile ? null :
+			{!dinamicProfile ? null :
 				<DinamicProfile
 					openDinamicProfile={setDinamicProfile}
 					nickName={profileData.nickname}
@@ -37,13 +52,14 @@ export default function NotificacaoUX({ notifications }: { notifications: propsN
 
 			{/* Map for show players list */}
 			{
-				notifications.pendingFriends.map((play: Player) => {
+				notifications.map((notification: Notifications) => {
+					if (user.id === notification.sender.id) return null;
 					return (
-						<div className='d-flex  p-1 position relative z-1 ' key={play.id}>
+						<div className='d-flex  p-1 position relative z-1 ' key={notification.receiver.id}>
 							<div className='d-flex w-100 align-items-center'>
 								<PhotoWithOnlineStatus
-									online={play.online}
-									imgSrc={play.avatar}
+									online={notification.sender.online}
+									imgSrc={notification.sender.avatar}
 									photoHeight='2.5rem'
 									photoWidth='2.5rem'
 									positionTop='70%'
@@ -51,7 +67,7 @@ export default function NotificacaoUX({ notifications }: { notifications: propsN
 								/>
 								<p className='d-flex align-items-center'>
 									<LiaRobotSolid size={30} className='pe-2' />
-									{play.nickname} quer ser seu amigo
+									{notification.sender.nickname} quer ser seu amigo
 								</p>
 							</div>
 							<div className='d-flex align-items-center me-1'>
@@ -60,14 +76,14 @@ export default function NotificacaoUX({ notifications }: { notifications: propsN
 									className='me-5 c-pointer'
 									color='green'
 									title='Invite to play'
-									onClick={() => { }}
+									onClick={() => acceptOrDeclineFriendRequest(notification.sender, true)}
 								/>
 								<ImCancelCircle
 									size={25}
 									color='red'
 									className='c-pointer'
 									title='Invite to play'
-									onClick={() => { }}
+									onClick={() => acceptOrDeclineFriendRequest(notification.sender, false)}
 								/>
 							</div>
 						</div>
