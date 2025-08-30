@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,50 +75,59 @@ public class FriendsApplication implements FriendsPort {
         }
     }
 
-    private Map<String, Object> convertFriendToJson(FriendCore friend) {
+    private Map<String, Object> userToJson(UserCore user) {
+        Map<String, Object> json = new HashMap<>();
+        json.put("id", user.getId());
+        json.put("nickname", user.getNickname());
+        json.put("avatar", user.getAvatar());
+        json.put("online", user.getOnline());
+        json.put("createdAt", user.getCriadoEm());
+
+        return json;
+    }
+
+    private Map<String, Object> notificationsToJson(FriendCore friendShip) {
         Map<String, Object> map = new HashMap<>();
-        map.put("id", friend.id());
-
-        // Quem enviou o pedido
-        Map<String, Object> sender = new HashMap<>();
-        sender.put("id", friend.sender().getId());
-        sender.put("nickname", friend.sender().getNickname());
-        sender.put("avatar", friend.sender().getAvatar());
-        sender.put("online", friend.sender().getOnline());
-        sender.put("createdAt", friend.sender().getCriadoEm());
-        map.put("sender", sender);
-
-        // Quem recebeu o pedido
-        Map<String, Object> receiver = new HashMap<>();
-        receiver.put("id", friend.received().getId());
-        receiver.put("nickname", friend.received().getNickname());
-        receiver.put("avatar", friend.received().getAvatar());
-        receiver.put("online", friend.received().getOnline());
-        receiver.put("createdAt", friend.received().getCriadoEm());
-        map.put("receiver", receiver);
 
         // Dados da amizade
-        map.put("status", friend.status().name());
-        map.put("createdAt", friend.criadoEm());
-        map.put("updatedAt", friend.atualizadoEm());
+        map.put("id", friendShip.id());
+        map.put("status", friendShip.status().name());
+        map.put("createdAt", friendShip.criadoEm());
+        map.put("updatedAt", friendShip.atualizadoEm());
 
+        // Quem enviou o pedido
+        map.put("sender", userToJson(friendShip.sender()));
+
+        // Quem recebeu o pedido
+        map.put("receiver", userToJson(friendShip.received()));
         return map;
     }
 
-    private List<Map<String, Object>> convertFriendsToJson(List<FriendCore> friends) {
-        return friends.stream()
-                .map(this::convertFriendToJson)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public List<Map<String, Object>> getFriends(String jwt, FriendStatus status) {
         Long userId = extractUserIdFromJwt(jwt);
         FriendStatus effectiveStatus = status != null ? status : FriendStatus.ACCEPTED;
         logger.info("Obtendo amigos do usuário {} com status {}", userId, effectiveStatus);
 
         List<FriendCore> friends = friendsRepository.getFriendsCore(userId, effectiveStatus);
-        return convertFriendsToJson(friends);
+        return friends.stream().map((friendShip) -> {
+            if (friendShip.received().getId().equals(userId)) {
+                return userToJson(friendShip.sender());
+            } else {
+                return userToJson(friendShip.received());
+            }
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Map<String, Object>> getFriendsNotication(String jwt, FriendStatus status) {
+        Long userId = extractUserIdFromJwt(jwt);
+        FriendStatus effectiveStatus = status != null ? status : FriendStatus.ACCEPTED;
+        logger.info("Obtendo amigos do usuário {} com status {}", userId, effectiveStatus);
+
+        List<FriendCore> friends = friendsRepository.getFriendsCore(userId, effectiveStatus);
+        return friends.stream()
+                .map(this::notificationsToJson)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -128,7 +136,7 @@ public class FriendsApplication implements FriendsPort {
         logger.info("Solicitação de amizade: solicitante={} | amigo={}", requesterId, friendId);
 
         UsersPair users = getAndValidateUsers(requesterId, friendId);
-        return convertFriendToJson(friendsRepository.addFriend(users.requester(), users.friend()));
+        return notificationsToJson(friendsRepository.addFriend(users.requester(), users.friend()));
     }
 
     @Override
@@ -137,7 +145,7 @@ public class FriendsApplication implements FriendsPort {
         logger.info("Aceitar amizade: solicitante={} | amigo={}", requesterId, friendId);
 
         UsersPair users = getAndValidateUsers(requesterId, friendId);
-        return convertFriendToJson(friendsRepository.acceptFriend(users.requester(), users.friend()));
+        return notificationsToJson(friendsRepository.acceptFriend(users.requester(), users.friend()));
     }
 
     @Override
@@ -150,7 +158,7 @@ public class FriendsApplication implements FriendsPort {
                 .orElseThrow(() -> new BadRequest("Amizade não encontrada"));
 
         validateFriendShip(friendship, users.requester(), users.friend());
-        return convertFriendToJson(friendsRepository.declineFriend(users.requester(), users.friend()));
+        return notificationsToJson(friendsRepository.declineFriend(users.requester(), users.friend()));
     }
 
     @Override
@@ -163,7 +171,7 @@ public class FriendsApplication implements FriendsPort {
                 .orElseThrow(() -> new BadRequest("Amizade não encontrada"));
 
         validateFriendShip(friendship, users.requester(), users.friend());
-        return convertFriendToJson(friendsRepository.removeFriend(users.requester(), users.friend()));
+        return notificationsToJson(friendsRepository.removeFriend(users.requester(), users.friend()));
     }
 
     @Override
@@ -179,6 +187,6 @@ public class FriendsApplication implements FriendsPort {
             throw new BadRequest("O usuário não pode bloquear a si mesmo");
         }
 
-        return convertFriendToJson(friendsRepository.blockFriend(users.requester(), users.friend()));
+        return notificationsToJson(friendsRepository.blockFriend(users.requester(), users.friend()));
     }
 }

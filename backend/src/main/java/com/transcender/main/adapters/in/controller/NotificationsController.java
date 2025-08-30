@@ -41,7 +41,7 @@ public class NotificationsController {
         }
 
         if (filter.equalsIgnoreCase("PENDING")) {
-            return ResponseEntity.ok(friendsApplication.getFriends(jwt, FriendStatus.PENDING));
+            return ResponseEntity.ok(friendsApplication.getFriendsNotication(jwt, FriendStatus.PENDING));
         }
 
         // TODO: implementar "ALL"

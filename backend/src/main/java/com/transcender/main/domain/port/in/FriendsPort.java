@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface FriendsPort {
+    List<Map<String, Object>> getFriendsNotication(String jwt, FriendStatus status);
     List<Map<String, Object>> getFriends(String jwt, FriendStatus status);
 
     Map<String, Object> addFriend(String jwt, Long friendId);

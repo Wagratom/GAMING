@@ -69,8 +69,8 @@ public class FriendsController {
     public ResponseEntity<String> acceptFriend(@RequestHeader("Authorization") String jwt,
             @PathVariable Long friendId) {
         Map<String, Object> response = friendsApplication.acceptFriend(jwt, friendId);
-        long receiver = ((Number) ((Map<String, Object>) response.get("receiver")).get("id")).longValue();
-        messagingTemplate.convertAndSend("/topic/friends/" + receiver, response);
+        long sender = ((Number) ((Map<String, Object>) response.get("sender")).get("id")).longValue();
+        messagingTemplate.convertAndSend("/topic/friends/" + sender, response);
         return ResponseEntity.ok("Solicitação de amizade aceitada com sucesso.");
     }
 
@@ -80,8 +80,8 @@ public class FriendsController {
 
         logger.info("Iniciando controller para recusar um amigo");
         Map<String, Object> response = friendsApplication.declineFriend(jwt, friendId);
-        long receiver = ((Number) ((Map<String, Object>) response.get("receiver")).get("id")).longValue();
-        messagingTemplate.convertAndSend("/topic/friends/" + receiver, response);
+        long sender = ((Number) ((Map<String, Object>) response.get("sender")).get("id")).longValue();
+        messagingTemplate.convertAndSend("/topic/friends/" + sender, response);
         return ResponseEntity.ok("Solicitação de amizade recusada com sucesso.");
     }
 
