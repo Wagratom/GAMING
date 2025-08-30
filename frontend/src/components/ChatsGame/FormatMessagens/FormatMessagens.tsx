@@ -2,11 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import { ChatContext, Message } from "../ChatPublic/ChatPublic";
 import MessageUser from "./MessageUser";
 import MessagePeople from "./MessagePeople";
-import { Player, UserData } from "../../InitialPage/Contexts/Contexts";
+import { PlayerDto, UserData } from "../../InitialPage/Contexts/Contexts";
 import ConnectWebsocket from "../../Profiles/MineProfile/FriendWebsocket";
 import axios from "axios";
 
-export default function FormatMessages({ friend }: { friend: Player }): JSX.Element {
+export default function FormatMessages({ friend }: { friend: PlayerDto }): JSX.Element {
 	const [messages, setMessages] = useState<Message[]>([]);
 	const { setDinamicProfile } = useContext(ChatContext);
 	const { user } = useContext(UserData);

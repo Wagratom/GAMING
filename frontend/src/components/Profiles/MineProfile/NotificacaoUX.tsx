@@ -1,6 +1,6 @@
 import DinamicProfile from '../DinamicProfile/DinamicProfile';
 import PhotoWithOnlineStatus from './PhotoWithOnlineStatus';
-import { Player, UserData } from '../../InitialPage/Contexts/Contexts';
+import { PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts';
 import { FaCheck } from "react-icons/fa";
 import { ImCancelCircle } from "react-icons/im";
 import { LiaRobotSolid } from "react-icons/lia";
@@ -10,14 +10,14 @@ import ConnectWebsocket from './FriendWebsocket';
 
 
 type Notifications = {
-	sender: Player;
-	receiver: Player;
+	sender: PlayerDto;
+	receiver: PlayerDto;
 };
 
 
 export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String }) {
 	const { user } = useContext(UserData)
-	const [friendshipRequests, setFriendshipRequests] = useState<Player[]>([]);
+	const [friendshipRequests, setFriendshipRequests] = useState<PlayerDto[]>([]);
 
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>({ id: '', nickname: '' });
@@ -57,7 +57,7 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 		)
 	}
 
-	function acceptOrDeclineFriendRequest(player: Player, accept: boolean) {
+	function acceptOrDeclineFriendRequest(player: PlayerDto, accept: boolean) {
 		// Lógica para aceitar ou recusar a solicitação de amizade
 		const url = process.env.REACT_APP_API_URL + `/friends/${player.id}/${accept ? 'accept' : 'decline'}`;
 		axios.post(url, {}, {

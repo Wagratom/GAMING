@@ -2,10 +2,10 @@ import { PiEnvelopeSimpleThin } from "react-icons/pi";
 import { MdOutlinePersonAddAlt1, MdOutlinePersonRemove } from "react-icons/md";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Player } from "../../InitialPage/Contexts/Contexts";
+import { PlayerDto } from "../../InitialPage/Contexts/Contexts";
 
 type Props = {
-    setPlayersList: React.Dispatch<React.SetStateAction<Player[]>>;
+    setPlayersList: React.Dispatch<React.SetStateAction<PlayerDto[]>>;
 	setResourcePlayer: React.Dispatch<React.SetStateAction<string>>;
 
 };
@@ -21,14 +21,14 @@ export default function OptionsEndBar({ setPlayersList, setResourcePlayer }: Pro
         openSearch: false,
         method: "",
     });
-    const [players, setPlayers] = useState<Player[]>([]);
+    const [players, setPlayers] = useState<PlayerDto[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
 
     // Busca todos os jogadores
     async function getPlayers() {
         try {
             const route = `${process.env.REACT_APP_API_URL}/users`;
-            const res = await axios.get<Player[]>(route, {
+            const res = await axios.get<PlayerDto[]>(route, {
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             });
             setPlayers(res.data);

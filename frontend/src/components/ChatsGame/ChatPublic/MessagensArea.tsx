@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import InputChats from "../InputChats";
-import { Player, UserData } from '../../InitialPage/Contexts/Contexts';
+import { PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts';
 import FormatMessages from "../FormatMessagens/FormatMessagens";
 
-export default function MessagensArea({ friend }: { friend: Player }): JSX.Element {
+export default function MessagensArea({ friend }: { friend: PlayerDto }): JSX.Element {
 	const userData = useContext(UserData).user;
 
 	// useEffect(() => {

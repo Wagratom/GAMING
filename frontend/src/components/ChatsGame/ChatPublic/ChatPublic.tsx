@@ -1,4 +1,4 @@
-import { Player } from '../../InitialPage/Contexts/Contexts'
+import { PlayerDto } from '../../InitialPage/Contexts/Contexts'
 import { createContext, useContext, useEffect } from 'react';
 import { UserData } from '../../InitialPage/Contexts/Contexts';
 
@@ -25,10 +25,10 @@ export type ChatData = {
 	id: string,
 	name: string,
 	photo: string,
-	members: Player[],
-	banned: Player[],
-	kicked: Player[],
-	admin: Player[],
+	members: PlayerDto[],
+	banned: PlayerDto[],
+	kicked: PlayerDto[],
+	admin: PlayerDto[],
 	mutted: { id: string }[],
 	message: Message[],
 }
@@ -164,7 +164,7 @@ export default function ChatPublic(props: propsPageChats) {
 
 					<div className="col-9 d-flex flex-column h-100 position-relative">
 						<RightSide
-							friend={chatData.members.find((member) => member.nickname !== userData.nickname) as Player}
+							friend={chatData.members.find((member) => member.nickname !== userData.nickname) as PlayerDto}
 							chatName={props.chatName}
 							openPageChats={props.openPageChats}
 						/>

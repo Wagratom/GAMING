@@ -5,7 +5,7 @@ import OptionsEndBar from './OptionsEndBar';
 import ListFriends from './ListFriends';
 import './MineProfile.css';
 import axios from 'axios';
-import { Player } from '../../InitialPage/Contexts/Contexts';
+import { PlayerDto } from '../../InitialPage/Contexts/Contexts';
 import NotificacaoUX from './NotificacaoUX';
 
 type propsMiniProfile = {
@@ -15,7 +15,7 @@ type propsMiniProfile = {
 
 export default function MiniProfile(props: propsMiniProfile) {
 	const [resoucePlayer, setResourcePlayer] = useState<string>("/friends?status=ACCEPTED");
-	const [players, setPlayers] = useState<Player[]>([]);
+	const [players, setPlayers] = useState<PlayerDto[]>([]);
 
 	const cssMiniprfile: React.CSSProperties = {
 		display: 'flex',

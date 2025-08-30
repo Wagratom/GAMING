@@ -2,10 +2,10 @@ import Configurations from "./Configurations/Configurations";
 import BarConfigurations from "./barConfigurations";
 import MessagensArea from "./MessagensArea";
 import { useState } from "react";
-import { Player } from "../../InitialPage/Contexts/Contexts";
+import { PlayerDto } from "../../InitialPage/Contexts/Contexts";
 
 type propsRightSide = {
-	friend: Player;
+	friend: PlayerDto;
 	chatName: string;
 	openPageChats: React.Dispatch<React.SetStateAction<string>>;
 }

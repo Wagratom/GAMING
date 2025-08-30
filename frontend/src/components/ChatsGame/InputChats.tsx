@@ -1,12 +1,8 @@
 import { useRef } from 'react';
 import { AiOutlineSend } from 'react-icons/ai';
 
-type PropsInputChats = {
-	obj: any,
-	disable: boolean
-}
 
-export default function InputChats(props: PropsInputChats) {
+export default function InputChats({setMessagens}: {setMessagens: React.Dispatch<React.SetStateAction<Message>>}) {
 	const inputChat = useRef<HTMLInputElement>(null);
 
 	const sendMessageClick = (event: React.MouseEvent<SVGElement, MouseEvent>) => {

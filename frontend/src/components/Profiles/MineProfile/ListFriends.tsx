@@ -2,22 +2,22 @@ import PlayerNicknameAndIcons from './PlayerNicknameAndIcons';
 import { useContext, useState } from 'react';
 import ChatPrivate from '../../ChatsGame/ChatPrivate/ChatPrivate';
 import DinamicProfile from '../DinamicProfile/DinamicProfile';
-import { UserData, Player } from '../../InitialPage/Contexts/Contexts';
+import { UserData, PlayerDto } from '../../InitialPage/Contexts/Contexts';
 import PhotoWithOnlineStatus from './PhotoWithOnlineStatus';
 import { TbPingPong } from 'react-icons/tb';
 
-export default function ListFriends({ players, openChat }: { players: Player[], openChat: boolean }) {
+export default function ListFriends({ players, openChat }: { players: PlayerDto[], openChat: boolean }) {
 	const { user } = useContext(UserData);
-	const [friendSelectedForDirect, setFriendSelectedForDirect] = useState<Player>({} as Player);
+	const [friendSelectedForDirect, setFriendSelectedForDirect] = useState<PlayerDto>({} as PlayerDto);
 
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>({ id: '', nickname: '' });
 
-	function handleOpenChatPrivate(player: Player) {
+	function handleOpenChatPrivate(player: PlayerDto) {
 		if (!openChat) return
 
 		if (player.nickname === friendSelectedForDirect.nickname) {
-			setFriendSelectedForDirect({} as Player);
+			setFriendSelectedForDirect({} as PlayerDto);
 		}
 		else setFriendSelectedForDirect(player)
 	}
@@ -45,7 +45,7 @@ export default function ListFriends({ players, openChat }: { players: Player[], 
 
 			{/* Map for show players list */}
 			{
-				players.map((play: Player) => {
+				players.map((play: PlayerDto) => {
 					if (play.id === user.id) return null
 					return (
 						<div className='d-flex hover p-1 position relative z-1 ' key={play.id}>

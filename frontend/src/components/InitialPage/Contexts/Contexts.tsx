@@ -11,7 +11,7 @@ export type UserDto = {
   criando_em: string | null;
 };
 
-export type Player = {
+export type PlayerDto = {
   id: string,
   avatar: string,
   nickname: string,
