@@ -1,13 +1,10 @@
-import { useContext, useEffect, useState } from "react";
-import { ChatContext, Message } from "../ChatPublic/ChatPublic";
+import { useContext } from "react";
+import { ChatContext } from "../ChatPublic/ChatPublic";
 import MessageUser from "./MessageUser";
 import MessagePeople from "./MessagePeople";
-import { PlayerDto, UserData } from "../../InitialPage/Contexts/Contexts";
-import ConnectWebsocket from "../../Profiles/MineProfile/FriendWebsocket";
-import axios from "axios";
+import { MessageDto, UserData } from "../../InitialPage/Contexts/Contexts";
 
-export default function FormatMessages({ friend }: { friend: PlayerDto }): JSX.Element {
-	const [messages, setMessages] = useState<Message[]>([]);
+export default function FormatMessages({ messages }: { messages: MessageDto[] }): JSX.Element {
 	const { setDinamicProfile } = useContext(ChatContext);
 	const { user } = useContext(UserData);
 
@@ -15,50 +12,20 @@ export default function FormatMessages({ friend }: { friend: PlayerDto }): JSX.E
 		setDinamicProfile({ nickName: nickname, id: id });
 	}
 
-	function newNotificationMessages(msg: string) {
-		console.log("🔔 Nova notificação de mensagem recebida ", msg)
-	}
-	// 🔌 Conecta WebSocket passando user.id
-	const stompClient = ConnectWebsocket(`/topic/friends/${friend.id}${user.id}{}`, newNotificationMessages);
-
-	useEffect(() => {
-		console.log("🔔 Conectando ao WebSocket para mensagens diretas");
-		axios.get(`${process.env.REACT_APP_API_URL}/directChats/${friend.id}`, {
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem("token")}`
-			},
-			withCredentials: true
-		})
-			.then((res) => {
-				console.log("🔔 Mensagens recebidas do servidor: ", res.data);
-
-				const messages: Message[] = res.data;
-				setMessages(messages);
-			})
-			.catch((err) => {
-				if (err.response?.status === 403) {
-					console.log("🚫 Usuário não tem permissão para enviar mensagem para esse usuário");
-					return;
-				}
-				console.error("❌ Erro inesperado ao buscar mensagens: ", err);
-			});
-	}, []);
-
-
 	return (
 		<div className="h-100 text-black p-3 overflow-auto">
-			{messages.map((message: Message) => {
+			{messages.map((message: MessageDto) => {
 				{
-					const data = new Date(message.date)
+					const data = new Date(message.criando_em)
 					const dataFormating: string = `${data.getHours()}:${data.getMinutes()}`;
-					if (message.user.nickname === user.nickname) {
+					if (message.sender.nickname === user.nickname) {
 						return (
 							<MessageUser
 								content={message.content}
-								avatarUrl={message.user.avatar}
+								avatarUrl={message.sender.avatar}
 								dataFormating={dataFormating}
-								nickname={message.user.nickname}
-								id={message.user.id}
+								nickname={message.sender.nickname}
+								id={message.sender.id}
 								showDinamicProfile={showDinamicProfile}
 								key={message.id}
 							/>
@@ -67,12 +34,12 @@ export default function FormatMessages({ friend }: { friend: PlayerDto }): JSX.E
 						return (
 							<MessagePeople
 								content={message.content}
-								avatarUrl={message.user.avatar}
+								avatarUrl={message.sender.avatar}
 								dataFormating={dataFormating}
-								nickname={message.user.nickname}
-								avatar_name={message.user.nickname}
+								nickname={message.sender.nickname}
+								avatar_name={message.sender.nickname}
 								showDinamicProfile={showDinamicProfile}
-								id={message.user.id}
+								id={message.sender.id}
 								key={message.id}
 							/>
 						);

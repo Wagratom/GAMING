@@ -1,4 +1,4 @@
-import { PlayerDto } from '../../InitialPage/Contexts/Contexts'
+import { ChatDataDto, PlayerDto } from '../../InitialPage/Contexts/Contexts'
 import { createContext, useContext, useEffect } from 'react';
 import { UserData } from '../../InitialPage/Contexts/Contexts';
 
@@ -10,28 +10,7 @@ import bgChatPublic from '../../../assets/game/bgChatPublic.png';
 import RightSide from './RightSide';
 import ModalIsBanned from './ModalIsBanned';
 
-export type Message = {
-	id: string,
-	content: string,
-	date: Date,
-	user: {
-		id: string,
-		nickname: string,
-		avatar: string,
-	},
-}
 
-export type ChatData = {
-	id: string,
-	name: string,
-	photo: string,
-	members: PlayerDto[],
-	banned: PlayerDto[],
-	kicked: PlayerDto[],
-	admin: PlayerDto[],
-	mutted: { id: string }[],
-	message: Message[],
-}
 
 type DinamicProfile = {
 	nickName: string,
@@ -39,11 +18,11 @@ type DinamicProfile = {
 }
 
 export const ChatContext = createContext<{
-	chatData: ChatData;
-	setDataChat: React.Dispatch<React.SetStateAction<ChatData>>;
+	chatData: ChatDataDto;
+	setDataChat: React.Dispatch<React.SetStateAction<ChatDataDto>>;
 	setDinamicProfile: React.Dispatch<React.SetStateAction<DinamicProfile>>;
 }>({
-	chatData: {} as ChatData,
+	chatData: {} as ChatDataDto,
 	setDataChat: () => { },
 	setDinamicProfile: () => { }
 });
@@ -55,7 +34,7 @@ type propsPageChats = {
 }
 
 export default function ChatPublic(props: propsPageChats) {
-	const [chatData, setDataChat] = useState<ChatData>({} as ChatData);
+	const [chatData, setDataChat] = useState<ChatDataDto>({} as ChatDataDto);
 	const [dinamicProfile, setDinamicProfile] = useState<DinamicProfile>({} as DinamicProfile);
 	const [showDinamicProfile, setShowDinamicProfile] = useState<string>('');
 	const userData = useContext(UserData).user;
@@ -65,7 +44,7 @@ export default function ChatPublic(props: propsPageChats) {
 		return muttedList.map((item) => ({ id: item.userId[0].id }))
 	}
 
-	function addNewMember(chat_id: String, data: ChatData) {
+	function addNewMember(chat_id: String, data: ChatDataDto) {
 		data.mutted = createMutedList(data.mutted)
 		if (data.members.map((member) => member.nickname).includes(userData.nickname)) {
 			return

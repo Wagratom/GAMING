@@ -10,7 +10,6 @@ public class MessageCore {
     private Long id;
     private Long chatId;       // referência ao Chat
     private UserCore sender;     // usuário que enviou
-    private String nickname;   // nickname de quem enviou
     private String conteudo;   // texto da mensagem
     private MessageType tipo;  // TEXT, IMAGE, FILE, SYSTEM...
     private Instant criadoEm;
@@ -42,7 +41,7 @@ public class MessageCore {
 
     // Construtor de reconstrução (ex: banco de dados)
     public MessageCore(Long id, Long chatId, UserCore senderId, String conteudo,
-                       MessageType tipo, String nickname, Instant criadoEm, Instant atualizadoEm,
+                       MessageType tipo, Instant criadoEm, Instant atualizadoEm,
                        boolean editado, boolean deletado) {
         if (id == null || id <= 0) throw new ChatArgumentInvalid("Id inválido");
         this.id = id;
@@ -53,7 +52,6 @@ public class MessageCore {
         this.criadoEm = criadoEm;
         this.atualizadoEm = atualizadoEm;
         this.editado = editado;
-        this.nickname = nickname;
         this.deletado = deletado;
     }
 
@@ -87,9 +85,6 @@ public class MessageCore {
 
     public String getConteudo() {
         return conteudo;
-    }
-    public String getNickname() {
-        return nickname;
     }
 
     public MessageType getTipo() {

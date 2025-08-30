@@ -56,6 +56,14 @@ public class ChatController {
         return ResponseEntity.ok(chatService.getDirectChat(jwt, Long.valueOf(friendId)));
     }
 
+    @PostMapping("/directChats/{friendId}")
+    public ResponseEntity<Map<String, Object>> postDirectChat(
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable("friendId") @Valid String friendId
+    ) {
+        return ResponseEntity.ok(chatService.getDirectChat(jwt, Long.valueOf(friendId)));
+    }
+
     @GetMapping
     public List<ChatApplicationDto> getAllChats(){
         return chatService.getAllChats()

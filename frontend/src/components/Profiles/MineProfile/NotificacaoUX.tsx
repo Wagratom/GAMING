@@ -27,7 +27,7 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 		if (!resoucePlayer.startsWith("/notifications")) return;
 		console.log("Recurso de notificação alterado:", resoucePlayer);
 
-		const route = `${process.env.REACT_APP_API_URL}/notifications?status=PENDING` ?? "http://localhost:8080/notifications?status=PENDING";
+		const route = `${process.env.REACT_APP_API_URL}/notifications?status=PENDING`;
 
 		axios.get(route, {
 			headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

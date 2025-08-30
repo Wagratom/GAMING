@@ -20,6 +20,27 @@ export type PlayerDto = {
   match_status: string
 }
 
+export type MessageDto = {
+  id: string,
+  content: string,
+  sender: PlayerDto
+  criando_em: string;
+}
+
+export type ChatDataDto = {
+  id: string,
+  name: string,
+  photo: string,
+  members: PlayerDto[],
+  banned: PlayerDto[],
+  kicked: PlayerDto[],
+  admin: PlayerDto[],
+  mutted: { id: string }[],
+  message: MessageDto[],
+}
+
+
+
 // Tipo do contexto
 type UserContextType = {
   user: UserDto;

@@ -1,59 +1,55 @@
 import { useRef } from 'react';
 import { AiOutlineSend } from 'react-icons/ai';
+import { MessageDto } from '../InitialPage/Contexts/Contexts';
+import axios from 'axios';
 
+type PropsInputChats = {
+	setMessages: React.Dispatch<React.SetStateAction<MessageDto[]>>;
+	resourceSend: string;
+};
 
-export default function InputChats({setMessagens}: {setMessagens: React.Dispatch<React.SetStateAction<Message>>}) {
+export default function InputChats({ setMessages, resourceSend }: PropsInputChats) {
 	const inputChat = useRef<HTMLInputElement>(null);
-
-	const sendMessageClick = (event: React.MouseEvent<SVGElement, MouseEvent>) => {
-		props.obj.content = inputChat.current?.value as string;
-		if (inputChat.current?.value) {
-			inputChat.current.value = '';
-		}
-	}
 
 	const sendMessageEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === 'Enter') {
-			props.obj.content = event.currentTarget.value;
-			event.currentTarget.value = '';
+			event.preventDefault();
+			sendMessage();
 		}
-		event.stopPropagation();
-	}
+	};
 
-	const getInput = (): JSX.Element => {
-		if (props.disable) {
-			return (
-				<input
-					className='remove-format-input'
-					type='text'
-					ref={inputChat}
-					placeholder='Digite sua mensagem'
-					onKeyDown={sendMessageEnter}
-					disabled
-				/>
-			)
-		}
-		return (
-			<input
-				className='remove-format-input'
-				type='text'
-				ref={inputChat}
-				placeholder='Digite sua mensagem'
-				onKeyDown={sendMessageEnter}
-			/>
-		)
-	}
+	const sendMessage = () => {
+		const message = inputChat.current?.value?.trim();
+		if (!message) return;
+
+		axios
+			.post(`${process.env.REACT_APP_API_URL}${resourceSend}`, { content: message })
+			.then(res => {
+				// Aqui assumo que a API retorna um objeto MessageDto
+				const newMsg: MessageDto = res.data;
+				setMessages(prev => [...prev, newMsg]);
+				if (inputChat.current) inputChat.current.value = "";
+			})
+			.catch(err => {
+				console.error("❌ Erro ao enviar mensagem:", err);
+			});
+	};
 
 	return (
-		<div className='d-flex align-items-center'>
-			{getInput()}
+		<div className="d-flex align-items-center">
+			<input
+				className="remove-format-input"
+				type="text"
+				ref={inputChat}
+				placeholder="Digite sua mensagem"
+				onKeyDown={sendMessageEnter}
+			/>
 			<button
-				className='remove-format-button'>
-				<AiOutlineSend size={22}
-					style={{ color: "#808287" }}
-					onClick={sendMessageClick}
-				/>
+				className="remove-format-button"
+				onClick={sendMessage}
+			>
+				<AiOutlineSend size={22} style={{ color: "#808287" }} />
 			</button>
 		</div>
-	)
+	);
 }
