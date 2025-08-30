@@ -8,12 +8,15 @@ import { useContext, useState } from 'react';
 import axios from 'axios';
 import ConnectWebsocket from './FriendWebsocket';
 
-type Notifications = {
-	sender: Player;
-	receiver: Player;
-};
+type propsNotificacaoUX = {
+	notifications: {
+		sender: Player;
+		receiver: Player;
+	}[];
+	removePlayerList: (id: string) => void;
+}
 
-export default function NotificacaoUX({ notifications }: { notifications: Notifications[] }) {
+export default function NotificacaoUX({ notifications, removePlayerList }: propsNotificacaoUX) {
 	const { user } = useContext(UserData)
 
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
@@ -43,7 +46,9 @@ export default function NotificacaoUX({ notifications }: { notifications: Notifi
 			headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 		})
 			.then((res) => {
-				console.log(res.data);
+				if (res.status === 200) {
+					removePlayerList(player.id);
+				}
 			})
 			.catch((err) => {
 				console.error("Erro ao processar a solicitação de amizade:", err);
@@ -62,14 +67,14 @@ export default function NotificacaoUX({ notifications }: { notifications: Notifi
 
 			{/* Map for show players list */}
 			{
-				notifications.map((notification: Notifications) => {
-					if (user.id === notification.sender.id) return null;
+				notifications.map((notificacao) => {
+					if (user.id === notificacao.sender.id) return null;
 					return (
-						<div className='d-flex  p-1 position relative z-1 ' key={notification.receiver.id}>
+						<div className='d-flex  p-1 position relative z-1 ' key={notificacao.receiver.id}>
 							<div className='d-flex w-100 align-items-center'>
 								<PhotoWithOnlineStatus
-									online={notification.sender.online}
-									imgSrc={notification.sender.avatar}
+									online={notificacao.sender.online}
+									imgSrc={notificacao.sender.avatar}
 									photoHeight='2.5rem'
 									photoWidth='2.5rem'
 									positionTop='70%'
@@ -77,7 +82,7 @@ export default function NotificacaoUX({ notifications }: { notifications: Notifi
 								/>
 								<p className='d-flex align-items-center'>
 									<LiaRobotSolid size={30} className='pe-2' />
-									{notification.sender.nickname} quer ser seu amigo
+									{notificacao.sender.nickname} quer ser seu amigo
 								</p>
 							</div>
 							<div className='d-flex align-items-center me-1'>
@@ -86,14 +91,14 @@ export default function NotificacaoUX({ notifications }: { notifications: Notifi
 									className='me-5 c-pointer'
 									color='green'
 									title='Invite to play'
-									onClick={() => acceptOrDeclineFriendRequest(notification.sender, true)}
+									onClick={() => acceptOrDeclineFriendRequest(notificacao.sender, true)}
 								/>
 								<ImCancelCircle
 									size={25}
 									color='red'
 									className='c-pointer'
 									title='Invite to play'
-									onClick={() => acceptOrDeclineFriendRequest(notification.sender, false)}
+									onClick={() => acceptOrDeclineFriendRequest(notificacao.sender, false)}
 								/>
 							</div>
 						</div>

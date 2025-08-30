@@ -11,12 +11,11 @@ export default function ListFriends({ players, openChat }: { players: Player[], 
 	const [friendSelectedForDirect, setFriendSelectedForDirect] = useState<Player>({} as Player);
 
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
-	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>(
-		{ id: '', nickname: '' }
-	);
+	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>({ id: '', nickname: '' });
 
+	console.log("ListFriends Rendered: ", players);
 	function handleOpenChatPrivate(player: Player) {
-		if (!openChat) return 
+		if (!openChat) return
 
 		if (player.nickname === friendSelectedForDirect.nickname) {
 			setFriendSelectedForDirect({} as Player);
@@ -75,7 +74,7 @@ export default function ListFriends({ players, openChat }: { players: Player[], 
 									size={25}
 									style={{ color: "#808287" }}
 									title='Invite to play'
-									onClick={() => {}}
+									onClick={() => { }}
 								/>
 							</div>
 						</div>

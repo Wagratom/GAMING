@@ -18,7 +18,6 @@ type Notifications = {
 };
 
 export default function MiniProfile(props: propsMiniProfile) {
-	const { user } = useContext(UserData);
 	const [resoucePlayer, setResourcePlayer] = useState<string>("/friends?status=ACCEPTED");
 	const [players, setPlayers] = useState<Player[]>([]);
 	const [notifications, setNotifications] = useState<Notifications[]>([]);
@@ -31,6 +30,10 @@ export default function MiniProfile(props: propsMiniProfile) {
 		backgroundPosition: 'center',
 		height: '100% !important',
 		width: '25vw',
+	};
+
+	const removePlayerList = (id: string) => {
+		setPlayers((prevPlayers) => prevPlayers.filter((player) => player.id !== id));
 	};
 
 	function getPlayers() {
@@ -60,7 +63,7 @@ export default function MiniProfile(props: propsMiniProfile) {
 				resoucePlayer.startsWith("/users") || resoucePlayer.startsWith("/friends")
 					? <ListFriends players={players} openChat={resoucePlayer === "/friends?status=ACCEPTED"} />
 					: resoucePlayer.startsWith("/notifications")
-						? <NotificacaoUX notifications={notifications} />
+						? <NotificacaoUX notifications={notifications} removePlayerList={removePlayerList} />
 						: null
 			}
 			<hr className="m-0 w-100 text-white" />
