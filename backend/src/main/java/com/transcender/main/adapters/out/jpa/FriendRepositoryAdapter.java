@@ -2,8 +2,8 @@ package com.transcender.main.adapters.out.jpa;
 
 import com.transcender.main.adapters.out.jpa.entity.FriendCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
-import com.transcender.main.adapters.out.jpa.repository.FriendRepository;
 import com.transcender.main.adapters.out.jpa.mapper.MapperToJpaEntity;
+import com.transcender.main.adapters.out.jpa.repository.FriendRepository;
 import com.transcender.main.domain.entity.FriendCore;
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.FriendStatus;
@@ -49,12 +49,12 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
     @Override
     public FriendCore acceptFriend(UserCore solicitante, UserCore friend) {
         logger.info("FriendRepositoryAdapter::acceptFriend");
-        return  updateFriendTable(solicitante, friend, FriendStatus.ACCEPTED);
+        return updateFriendTable(solicitante, friend, FriendStatus.ACCEPTED);
     }
 
     public FriendCore declineFriend(UserCore solicitante, UserCore friend) {
         logger.info("FriendRepositoryAdapter::acceptFriend");
-        return  updateFriendTable(solicitante, friend, FriendStatus.DECLINED);
+        return updateFriendTable(solicitante, friend, FriendStatus.DECLINED);
     }
 
     @Override
@@ -99,8 +99,8 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
 
         FriendCoreJpa newFriend = friendsRepository.save(
                 amizadeExistente.map(amz -> {
-                            amz.setStatus(status);
-                            return amz;
+                    amz.setStatus(status);
+                    return amz;
                 }).orElseGet(() -> new FriendCoreJpa(solicitanteJpa, friendJpa, status))
         );
         return mapperToJpaEntity.toFriendCore(newFriend);

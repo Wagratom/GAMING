@@ -19,22 +19,15 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 			withCredentials: true
 		})
 			.then((res) => {
-				console.log("🔔 Mensagens recebidas do servidor: ", res.data);
-				setMessages(res.data);
+				setMessages(res.data.messages);
 			})
-			.catch((err) => {
-				if (err.response?.status === 403) {
-					console.log("🚫 Usuário não tem permissão para enviar mensagem para esse usuário");
-					return;
-				}
-				console.error("❌ Erro inesperado ao buscar mensagens: ", err);
-			});
+			.catch(() => { });
 	}, []);
 
 	const newMessageChat = (msg: string) => {
 		setMessages(prev => [...prev, msg as unknown as MessageDto]);
 	};
-	
+
 	ConnectWebsocket(`/topic/friends/${friend.id}`, newMessageChat);
 
 

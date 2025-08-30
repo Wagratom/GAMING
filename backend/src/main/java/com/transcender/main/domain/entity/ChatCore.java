@@ -56,7 +56,7 @@ public class ChatCore {
         if (chatName == null || chatName.trim().isEmpty()) {
             throw new ChatArgumentInvalid("Nome do chat não pode estar vazio");
         }
-        if (chatName.length() > 10){
+        if (chatName.length() > 10) {
             throw new ChatArgumentInvalid("Nome do chat deve ter no máximo 10 caracteres");
         }
 
@@ -179,5 +179,7 @@ public class ChatCore {
         return atualizadoEm;
     }
 
-    public List<MessageCore> getMessagens() {return messages;}
+    public List<MessageCore> getMessagens() {
+        return messages;
+    }
 }

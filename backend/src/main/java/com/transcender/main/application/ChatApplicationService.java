@@ -66,10 +66,10 @@ public class ChatApplicationService implements ChatPort {
     private Map<String, Object> messageToJson(MessageCore messages) {
         UserCore sender = messages.getSender();
         return Map.of(
-                    "id", messages.getId(),
-                    "content", messages.getConteudo(),
-                    "date", messages.getAtualizadoEm(),
-                    "sender", Map.of(
+                "id", messages.getId(),
+                "content", messages.getConteudo(),
+                "date", messages.getAtualizadoEm(),
+                "sender", Map.of(
                         "id", sender.getId(),
                         "nickname", sender.getNickname(),
                         "avatar", sender.getAvatar(),
