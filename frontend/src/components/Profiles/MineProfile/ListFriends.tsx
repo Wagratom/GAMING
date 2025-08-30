@@ -13,7 +13,6 @@ export default function ListFriends({ players, openChat }: { players: Player[], 
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>({ id: '', nickname: '' });
 
-	console.log("ListFriends Rendered: ", players);
 	function handleOpenChatPrivate(player: Player) {
 		if (!openChat) return
 

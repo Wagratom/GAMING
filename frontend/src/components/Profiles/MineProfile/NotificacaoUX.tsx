@@ -4,23 +4,41 @@ import { Player, UserData } from '../../InitialPage/Contexts/Contexts';
 import { FaCheck } from "react-icons/fa";
 import { ImCancelCircle } from "react-icons/im";
 import { LiaRobotSolid } from "react-icons/lia";
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import ConnectWebsocket from './FriendWebsocket';
 
-type propsNotificacaoUX = {
-	notifications: {
-		sender: Player;
-		receiver: Player;
-	}[];
-	removePlayerList: (id: string) => void;
-}
 
-export default function NotificacaoUX({ notifications, removePlayerList }: propsNotificacaoUX) {
+type Notifications = {
+	sender: Player;
+	receiver: Player;
+};
+
+
+export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String }) {
 	const { user } = useContext(UserData)
+	const [friendshipRequests, setFriendshipRequests] = useState<Player[]>([]);
 
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>({ id: '', nickname: '' });
+
+	useEffect(() => {
+		console.log("Recurso de notificação alterado:", resoucePlayer);
+		if (!resoucePlayer.startsWith("/notifications")) return;
+		console.log("Recurso de notificação alterado:", resoucePlayer);
+
+		const route = `${process.env.REACT_APP_API_URL}/notifications?status=PENDING` ?? "http://localhost:8080/notifications?status=PENDING";
+
+		axios.get(route, {
+			headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+		})
+			.then((res) => {
+				console.log("Notificações recebidas:", res.data);
+				setFriendshipRequests(res.data.map((notification: Notifications) => notification.sender));
+			})
+			.catch(() => { });
+	}, [resoucePlayer]);
+
 
 	function newNotificationFriends(msg: string) {
 		console.log("🔔 Nova notificação de amigos recebida ", msg)
@@ -29,7 +47,7 @@ export default function NotificacaoUX({ notifications, removePlayerList }: props
 	ConnectWebsocket(`/topic/friends/${user.id}`, newNotificationFriends);
 
 
-	if (notifications.length === 0) {
+	if (friendshipRequests.length === 0) {
 		return (
 			<div className='d-flex flex-column justify-content-center align-items-center h-100'>
 				<div className='d-flex justify-content-center'>
@@ -47,7 +65,7 @@ export default function NotificacaoUX({ notifications, removePlayerList }: props
 		})
 			.then((res) => {
 				if (res.status === 200) {
-					removePlayerList(player.id);
+					setFriendshipRequests((prevRequests) => prevRequests.filter((p) => p.id !== player.id));
 				}
 			})
 			.catch((err) => {
@@ -67,14 +85,14 @@ export default function NotificacaoUX({ notifications, removePlayerList }: props
 
 			{/* Map for show players list */}
 			{
-				notifications.map((notificacao) => {
-					if (user.id === notificacao.sender.id) return null;
+				friendshipRequests.map((userRequests) => {
+					if (user.id === userRequests.id) return null;
 					return (
-						<div className='d-flex  p-1 position relative z-1 ' key={notificacao.receiver.id}>
+						<div className='d-flex  p-1 position relative z-1 ' key={userRequests.id}>
 							<div className='d-flex w-100 align-items-center'>
 								<PhotoWithOnlineStatus
-									online={notificacao.sender.online}
-									imgSrc={notificacao.sender.avatar}
+									online={userRequests.online}
+									imgSrc={userRequests.avatar}
 									photoHeight='2.5rem'
 									photoWidth='2.5rem'
 									positionTop='70%'
@@ -82,7 +100,7 @@ export default function NotificacaoUX({ notifications, removePlayerList }: props
 								/>
 								<p className='d-flex align-items-center'>
 									<LiaRobotSolid size={30} className='pe-2' />
-									{notificacao.sender.nickname} quer ser seu amigo
+									{userRequests.nickname} quer ser seu amigo
 								</p>
 							</div>
 							<div className='d-flex align-items-center me-1'>
@@ -91,14 +109,14 @@ export default function NotificacaoUX({ notifications, removePlayerList }: props
 									className='me-5 c-pointer'
 									color='green'
 									title='Invite to play'
-									onClick={() => acceptOrDeclineFriendRequest(notificacao.sender, true)}
+									onClick={() => acceptOrDeclineFriendRequest(userRequests, true)}
 								/>
 								<ImCancelCircle
 									size={25}
 									color='red'
 									className='c-pointer'
 									title='Invite to play'
-									onClick={() => acceptOrDeclineFriendRequest(notificacao.sender, false)}
+									onClick={() => acceptOrDeclineFriendRequest(userRequests, false)}
 								/>
 							</div>
 						</div>
