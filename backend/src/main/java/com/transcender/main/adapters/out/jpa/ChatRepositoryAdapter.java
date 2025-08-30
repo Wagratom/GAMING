@@ -31,48 +31,25 @@ import java.util.stream.Collectors;
 public class ChatRepositoryAdapter implements ChatRepositoryPort {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
-    private final ChatUserRepository chatUserRepository;
     private final MapperToJpaEntity mapperToJpaEntity;
     private final Logger logger = LoggerFactory.getLogger(UserRepositoryAdapter.class);
 
     @Autowired
     public ChatRepositoryAdapter(ChatRepository chatRepository,
                                  UserRepository userRepository,
-                                 ChatUserRepository chatUserRepository,
-                                 MapperToJpaEntity mapperToJpaEntit) {
+                                 MapperToJpaEntity mapperToJpaEntiy) {
         this.chatRepository = chatRepository;
         this.userRepository = userRepository;
-        this.chatUserRepository = chatUserRepository;
-        this.mapperToJpaEntity = mapperToJpaEntit;
+        this.mapperToJpaEntity = mapperToJpaEntiy;
     }
 
     @Override
-    public Optional<ChatCore> findDirectChatByUsers(Long userId, Long friendId) {
-        return chatRepository.findPrivateChatBetweenUsers(List.of(userId, friendId)).map(this::toChatCore);
-    }
+    public ChatCore getOrCreateDirectChat(Long userId, Long friendId) {
+        ChatCoreJpa chatCoreJpa = chatRepository
+                .findPrivateChatBetweenUsers(List.of(userId, friendId))
+                .orElse(chatRepository.save(ChatCoreJpa.newPrivateChat()));
 
-    @Override
-    public ChatCore createDirectChat(UserCore user, UserCore friend) {
-        ChatCoreJpa newChat = chatRepository.save(ChatCoreJpa.newPrivateChat());
-        chatUserRepository.save(new ChatUserCoreJpa(
-                newChat,
-                mapperToJpaEntity.toUserCoreJpa(user),
-                StatusChat.ATIVE,
-                PermitionChat.MEMBER,
-                Instant.now(),
-                Instant.now()
-        ));
-
-        chatUserRepository.save(new ChatUserCoreJpa(
-                newChat,
-                mapperToJpaEntity.toUserCoreJpa(friend),
-                StatusChat.ATIVE,
-                PermitionChat.MEMBER,
-                Instant.now(),
-                Instant.now()
-        ));
-
-        return toChatCore(newChat);
+        return toChatCore(chatCoreJpa);
     }
 
     @Override
@@ -174,12 +151,10 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
                 mapperToJpaEntity.toUserCore(messagesJpa.getSender(), false),
                 messagesJpa.getConteudo(),
                 messagesJpa.getTipo(),
-                messagesJpa.getSender().getNickname(),
                 messagesJpa.getCriadoEm(),
                 messagesJpa.getAtualizadoEm(),
                 messagesJpa.isEditado(),
                 messagesJpa.isDeletado()
         );
     }
-
 }
