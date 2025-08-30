@@ -1,6 +1,6 @@
 import PlayerNicknameAndIcons from './PlayerNicknameAndIcons';
 import { useContext, useState } from 'react';
-import ChatPrivate from '../../ChatsGame/ChatPrivate/ChatPrivate';
+import PrivateChat from '../../ChatsGame/ChatPrivate/PrivateChat';
 import DinamicProfile from '../DinamicProfile/DinamicProfile';
 import { UserData, PlayerDto } from '../../InitialPage/Contexts/Contexts';
 import PhotoWithOnlineStatus from './PhotoWithOnlineStatus';
@@ -34,7 +34,7 @@ export default function ListFriends({ players, openChat }: { players: PlayerDto[
 
 	return (
 		<div className='p-2 text-white overflow-auto h-100'>
-			{friendSelectedForDirect.nickname && <ChatPrivate friend={friendSelectedForDirect} />}
+			{friendSelectedForDirect.nickname && <PrivateChat friend={friendSelectedForDirect} />}
 			{!dinamicProfile ? null :
 				<DinamicProfile
 					openDinamicProfile={setDinamicProfile}

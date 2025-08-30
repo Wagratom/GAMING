@@ -11,7 +11,6 @@ import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.entity.MessageCore;
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.MessageType;
-import com.transcender.main.domain.enuns.PermitionChat;
 import com.transcender.main.domain.port.out.ChatRepositoryPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -44,11 +42,12 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
 
     @Override
     public ChatCore getOrCreateDirectChat(Long userId, Long friendId) {
+        logger.info("ChatRepositoryAdapter::getOrCreateDirectChat > user1={}::user2={}", userId, friendId);
         ChatCoreJpa chatCoreJpa = chatRepository
                 .findPrivateChatBetweenUsers(List.of(userId, friendId))
                 .orElse(chatRepository.save(ChatCoreJpa.newPrivateChat()));
 
-        return toChatCore(chatCoreJpa);
+        return mapperToJpaEntity.toChatCore(chatCoreJpa);
     }
 
     @Override
@@ -71,7 +70,8 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
 
     @Override
     public Optional<ChatCore> findChatById(Long id) {
-        return chatRepository.findById(id).map(this::toChatCore);
+        return chatRepository.findById(id)
+                .map((chatJpa) -> mapperToJpaEntity.toChatCore(chatJpa));
     }
 
     @Override
@@ -79,7 +79,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         logger.info("ChatRepositoryAdapter > createChat > exec");
 
         ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
-        return toChatCore(chatJpa); // toChatCore que recebe diretamente o objeto, não Optional
+        return mapperToJpaEntity.toChatCore(chatJpa); // toChatCore que recebe diretamente o objeto, não Optional
     }
 
     @Override
@@ -87,7 +87,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         logger.info("ChatRepositoryAdapter > updateChat > exec");
 
         ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
-        return toChatCore(chatJpa);
+        return mapperToJpaEntity.toChatCore(chatJpa);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
 
         return chatRepository.findAll()
                 .stream()
-                .map(this::toChatCore)
+                .map((chatJpa) -> mapperToJpaEntity.toChatCore(chatJpa))
                 .collect(Collectors.toList());
     }
 
@@ -137,30 +137,5 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         chatJpa.setCriadoEm(chat.getCriadoEm());
         chatJpa.setAtualizadoEm(chat.getAtualizadoEm());
         return chatJpa;
-    }
-
-    public ChatCore toChatCore(ChatCoreJpa chatJpa) {
-        List<MessageCoreJpa> messages = chatJpa.getMensagens();
-
-        // Filtra usuários com permissão de ADMIN
-        Set<Long> adms = chatJpa.getUsuarios().stream()
-                .filter(u -> u.getPermitionChat() == PermitionChat.ADM)
-                .map(u -> u.getUsuario().getId())
-                .collect(Collectors.toSet());
-
-        return new ChatCore(
-                chatJpa.getId(),
-                chatJpa.getChatName(),
-                chatJpa.getOnwer().getId(),
-                chatJpa.getType(),
-                chatJpa.getDescricao(),
-                adms,
-                chatJpa.getMensagens()
-                        .stream()
-                        .map((msg) -> mapperToJpaEntity.toMessageCore(msg))
-                        .collect(Collectors.toList()),
-                chatJpa.getCriadoEm(),
-                chatJpa.getAtualizadoEm()
-        );
     }
 }

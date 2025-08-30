@@ -8,7 +8,7 @@ import './ChatPrivate.css'
 import ConnectWebsocket from '../../Profiles/MineProfile/FriendWebsocket';
 
 
-export default function ChatPrivate({ friend }: { friend: PlayerDto }) {
+export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 	const [messages, setMessages] = useState<MessageDto[]>([])
 
 	useEffect(() => {

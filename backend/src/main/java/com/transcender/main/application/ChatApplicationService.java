@@ -91,7 +91,7 @@ public class ChatApplicationService implements ChatPort {
         logger.info("[INFO] Montando json de resposta");
         Map<String, Object> chatJson = Map.of(
                 "chatId", chatCore.getId(),
-                "chatName", chatCore.getChatName(),
+                "chatName", users.friend.getNickname(),
                 "messages", chatCore.getMessagens().stream().map(this::messageToJson)
         );
         logger.info("[END] Processo finalizado com sucesso");
