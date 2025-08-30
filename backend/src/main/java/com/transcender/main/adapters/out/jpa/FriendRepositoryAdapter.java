@@ -77,14 +77,16 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
 
     @Override
     public boolean existsFriends(Long userId1, Long userId2) {
-        logger.info("FriendRepositoryAdapter::existsFriends");
-        return friendsRepository.findFriendsByUsersIdAndStatus(userId1, userId2, FriendStatus.ACCEPTED.name()).isPresent();
+        boolean exist = friendsRepository.findFriendsByUsersIdAndStatus(userId1, userId2, FriendStatus.ACCEPTED.name()).isPresent();
+        logger.info("FriendRepositoryAdapter::existsFriends::exist={}", exist);
+        return exist;
     }
 
     @Override
     public boolean existsBlock(Long userId1, Long userId2) {
-        logger.info("FriendRepositoryAdapter::existsBlock");
-        return friendsRepository.findFriendsByUsersIdAndStatus(userId1, userId2, FriendStatus.BLOCKED.name()).isPresent();
+        boolean exist = friendsRepository.findFriendsByUsersIdAndStatus(userId1, userId2, FriendStatus.BLOCKED.name()).isPresent();
+        logger.info("FriendRepositoryAdapter::existsBlock::exist={}", exist);
+        return exist;
     }
 
     private FriendCore updateFriendTable(UserCore solicitante, UserCore friend, FriendStatus status) {

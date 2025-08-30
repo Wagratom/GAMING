@@ -1,8 +1,12 @@
 package com.transcender.main.adapters.out.jpa.mapper;
 
+import com.transcender.main.adapters.out.jpa.entity.ChatCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.FriendCoreJpa;
+import com.transcender.main.adapters.out.jpa.entity.MessageCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
+import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.entity.FriendCore;
+import com.transcender.main.domain.entity.MessageCore;
 import com.transcender.main.domain.entity.UserCore;
 import org.springframework.stereotype.Component;
 
@@ -53,8 +57,6 @@ public class MapperToJpaEntity {
         );
     }
 
-
-
     public FriendCore toFriendCore(FriendCoreJpa friendjpa) {
         return new FriendCore(
                 friendjpa.getId(),
@@ -64,6 +66,31 @@ public class MapperToJpaEntity {
                 friendjpa.getStatus(),
                 friendjpa.getCriadoEm(),
                 friendjpa.getAtualizadoEm()
+        );
+    }
+
+    public ChatCoreJpa toChatCoreJpa(ChatCore chat, UserCoreJpa owner) {
+        ChatCoreJpa chatJpa = new ChatCoreJpa();
+        chatJpa.setId(chat.getId());
+        chatJpa.setChatName(chat.getChatName());
+        chatJpa.setOnwer(owner);
+        chatJpa.setDescricao(chat.getDescricao());
+        chatJpa.setCriadoEm(chat.getCriadoEm());
+        chatJpa.setAtualizadoEm(chat.getAtualizadoEm());
+        return chatJpa;
+    }
+
+    public MessageCore toMessageCore(MessageCoreJpa messagesJpa) {
+        return new MessageCore(
+                messagesJpa.getId(),
+                messagesJpa.getChat().getId(),
+                toUserCore(messagesJpa.getSender(), false),
+                messagesJpa.getConteudo(),
+                messagesJpa.getTipo(),
+                messagesJpa.getCriadoEm(),
+                messagesJpa.getAtualizadoEm(),
+                messagesJpa.isEditado(),
+                messagesJpa.isDeletado()
         );
     }
 }

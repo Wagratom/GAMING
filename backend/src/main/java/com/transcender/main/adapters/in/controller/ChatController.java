@@ -4,6 +4,7 @@ import com.transcender.main.adapters.in.controller.dto.ChatDtoCreate;
 import com.transcender.main.application.ChatApplicationService;
 import com.transcender.main.application.dto.ChatApplicationDto;
 import com.transcender.main.domain.entity.ChatCore;
+import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.port.in.ChatPort;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +60,11 @@ public class ChatController {
     @PostMapping("/directChats/{friendId}")
     public ResponseEntity<Map<String, Object>> postDirectChat(
             @RequestHeader("Authorization") String jwt,
-            @PathVariable("friendId") @Valid String friendId
+            @PathVariable("friendId") @Valid String friendId,
+            @RequestBody String content
     ) {
-        return ResponseEntity.ok(chatService.getDirectChat(jwt, Long.valueOf(friendId)));
+        if (content.isBlank()) throw new BadRequest("Message empty");
+        return ResponseEntity.ok(chatService.postDirectChat(jwt, Long.parseLong(friendId), content));
     }
 
     @GetMapping

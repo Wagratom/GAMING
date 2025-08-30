@@ -1,27 +1,23 @@
 package com.transcender.main.adapters.out.jpa;
 
 import com.transcender.main.adapters.out.jpa.entity.ChatCoreJpa;
-import com.transcender.main.adapters.out.jpa.entity.ChatUserCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.MessageCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
 import com.transcender.main.adapters.out.jpa.mapper.MapperToJpaEntity;
 import com.transcender.main.adapters.out.jpa.repository.ChatRepository;
-import com.transcender.main.adapters.out.jpa.repository.ChatUserRepository;
+import com.transcender.main.adapters.out.jpa.repository.MessageRepository;
 import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.entity.MessageCore;
 import com.transcender.main.domain.entity.UserCore;
-import com.transcender.main.domain.enuns.ChatType;
 import com.transcender.main.domain.enuns.MessageType;
 import com.transcender.main.domain.enuns.PermitionChat;
-import com.transcender.main.domain.enuns.StatusChat;
 import com.transcender.main.domain.port.out.ChatRepositoryPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -32,14 +28,17 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
     private final MapperToJpaEntity mapperToJpaEntity;
+    private final MessageRepository messageRepository;
     private final Logger logger = LoggerFactory.getLogger(UserRepositoryAdapter.class);
 
     @Autowired
     public ChatRepositoryAdapter(ChatRepository chatRepository,
                                  UserRepository userRepository,
+                                 MessageRepository messageRepository,
                                  MapperToJpaEntity mapperToJpaEntiy) {
         this.chatRepository = chatRepository;
         this.userRepository = userRepository;
+        this.messageRepository = messageRepository;
         this.mapperToJpaEntity = mapperToJpaEntiy;
     }
 
@@ -50,6 +49,24 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
                 .orElse(chatRepository.save(ChatCoreJpa.newPrivateChat()));
 
         return toChatCore(chatCoreJpa);
+    }
+
+    @Override
+    public MessageCore addNewMessageDirectChat(UserCore sender, UserCore friendId, String content) {
+        ChatCoreJpa chatCoreJpa = chatRepository
+                .findPrivateChatBetweenUsers(List.of(sender.getId(), friendId.getId()))
+                .orElse(chatRepository.save(ChatCoreJpa.newPrivateChat()));
+
+        MessageCoreJpa mensagem = messageRepository.save(new MessageCoreJpa(
+                chatCoreJpa,
+                mapperToJpaEntity.toUserCoreJpa(sender),
+                content,
+                MessageType.TEXT,
+                false,
+                false
+                ));
+
+        return mapperToJpaEntity.toMessageCore(mensagem);
     }
 
     @Override
@@ -138,23 +155,12 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
                 chatJpa.getType(),
                 chatJpa.getDescricao(),
                 adms,
-                chatJpa.getMensagens().stream().map(this::toChatCore).collect(Collectors.toList()),
+                chatJpa.getMensagens()
+                        .stream()
+                        .map((msg) -> mapperToJpaEntity.toMessageCore(msg))
+                        .collect(Collectors.toList()),
                 chatJpa.getCriadoEm(),
                 chatJpa.getAtualizadoEm()
-        );
-    }
-
-    public MessageCore toChatCore(MessageCoreJpa messagesJpa) {
-        return new MessageCore(
-                messagesJpa.getId(),
-                messagesJpa.getChat().getId(),
-                mapperToJpaEntity.toUserCore(messagesJpa.getSender(), false),
-                messagesJpa.getConteudo(),
-                messagesJpa.getTipo(),
-                messagesJpa.getCriadoEm(),
-                messagesJpa.getAtualizadoEm(),
-                messagesJpa.isEditado(),
-                messagesJpa.isDeletado()
         );
     }
 }

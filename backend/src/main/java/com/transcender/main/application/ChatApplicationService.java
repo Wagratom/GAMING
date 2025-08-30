@@ -7,7 +7,6 @@ import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.exceptions.Forbidden;
 import com.transcender.main.domain.exceptions.ResourceNotFound;
 import com.transcender.main.domain.port.in.ChatPort;
-import com.transcender.main.domain.port.in.FriendsPort;
 import com.transcender.main.domain.port.out.ChatRepositoryPort;
 import com.transcender.main.domain.port.out.FriendsRepositoryPort;
 import com.transcender.main.domain.port.out.JwtService;
@@ -17,10 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class ChatApplicationService implements ChatPort {
@@ -30,7 +27,11 @@ public class ChatApplicationService implements ChatPort {
     private final JwtService jwtService;
     private final FriendsRepositoryPort friendRepository;
     private final Logger logger = LoggerFactory.getLogger(ChatApplicationService.class);
-    private record UsersPair(UserCore requester, UserCore friendId){};
+
+    private record UsersPair(UserCore requester, UserCore friend) {
+    }
+
+    ;
 
     @Autowired
     public ChatApplicationService(ChatRepositoryPort chatRepository,
@@ -44,69 +45,82 @@ public class ChatApplicationService implements ChatPort {
     }
 
     private Long getIdByToken(String jwt) {
-        Map<String, Object> userInfo =  jwtService.validateTokenAndGetClaims(jwt.substring(7));
+        Map<String, Object> userInfo = jwtService.validateTokenAndGetClaims(jwt.substring(7));
         Long userId = ((Number) userInfo.get("id")).longValue();
-        return  userId;
+        return userId;
     }
 
     private UsersPair usersExists(Long requester, Long friendId) {
-        UserCore user1 = userRepository.getUserById(friendId)
-                .orElseThrow(() ->  new ResourceNotFound("Usuario", friendId));
+        logger.info("[INIT] pegando mensagens privadas entre o {} e {}", requester, friendId);
+
+        UserCore user1 = userRepository.getUserById(requester)
+                .orElseThrow(() -> new ResourceNotFound("Usuario", friendId));
 
         UserCore user2 = userRepository.getUserById(friendId)
-                .orElseThrow(() ->  new ResourceNotFound("friendId", friendId));
+                .orElseThrow(() -> new ResourceNotFound("friendId", friendId));
+
 
         return new UsersPair(user1, user2);
     }
 
-    @Override
-    public List<Map<String, Object>> getMessagensDirectChat(String jwt, Long friendId) {
-        Long userId = getIdByToken(jwt);
+    private Map<String, Object> messageToJson(MessageCore messages) {
+        UserCore sender = messages.getSender();
+        return Map.of(
+                    "id", messages.getId(),
+                    "content", messages.getConteudo(),
+                    "date", messages.getAtualizadoEm(),
+                    "sender", Map.of(
+                        "id", sender.getId(),
+                        "nickname", sender.getNickname(),
+                        "avatar", sender.getAvatar(),
+                        "online", sender.getOnline()
+                ));
+    }
 
-        logger.info("[INIT] pegando mensagens privadas entre o {} e {}", userId, friendId);
+    @Override
+    public Map<String, Object> getDirectChat(String jwt, Long friendId) {
+        Long userId = getIdByToken(jwt);
         UsersPair users = usersExists(userId, friendId);
 
-        logger.info("[INFO] Verificando se os usuarios possuem amizade");
-        if (!friendRepository.existsFriends(users.requester.getId(), users.friendId.getId())) throw new Forbidden("Os usuarios não são amigos");
+        if (!friendRepository.existsFriends(users.requester.getId(), users.friend.getId())) {
+            throw new Forbidden("Os usuarios não são amigos");
+        }
 
         ChatCore chatCore = chatRepository.getOrCreateDirectChat(userId, friendId);
 
         logger.info("[INFO] Montando json de resposta");
-        List<Map<String, Object>> messagens = chatCore.getMessagens()
-                .stream()
-                .map(msg -> {
-                    Map<String, Object> messageJson = new HashMap<>();
-                    messageJson.put("id", msg.getId());
-                    messageJson.put("content", msg.getConteudo());
-                    messageJson.put("date", msg.getAtualizadoEm());
-
-                    Map<String, Object> userJpa = new HashMap<>();
-                    userJpa.put("id", msg.getSender().getId());
-                    userJpa.put("nickname", msg.getSender().getNickname());
-                    userJpa.put("avatar", msg.getSender().getAvatar());
-
-                    messageJson.put("user", userJpa);
-                    return messageJson;
-                })
-                .collect(Collectors.toList());
-
         Map<String, Object> chatJson = Map.of(
                 "chatId", chatCore.getId(),
                 "chatName", chatCore.getChatName(),
-                "messages", messagens
+                "messages", chatCore.getMessagens().stream().map(this::messageToJson)
         );
         logger.info("[END] Processo finalizado com sucesso");
         return chatJson;
     }
 
     @Override
-    public ChatCore createChat(ChatCore chat) {
-       chat.validateCreateChat();
+    public Map<String, Object> postDirectChat(String jwt, Long friendId, String content) {
+        Long userId = getIdByToken(jwt);
+        UsersPair users = usersExists(userId, friendId);
 
-       userRepository.getUserById(chat.getChatOwner())
+        logger.info("[INFO] Verificando se os usuarios possuem amizade");
+        if (!friendRepository.existsFriends(users.requester.getId(), users.friend.getId()))
+            throw new Forbidden("Os usuarios não são amigos");
+
+        MessageCore messageCore = chatRepository.addNewMessageDirectChat(users.requester(), users.friend(), content);
+
+        logger.info("[INFO] Montando json de resposta");
+        return messageToJson(messageCore);
+    }
+
+    @Override
+    public ChatCore createChat(ChatCore chat) {
+        chat.validateCreateChat();
+
+        userRepository.getUserById(chat.getChatOwner())
                 .orElseThrow(() -> new ResourceNotFound("Usuário", chat.getChatOwner()));
 
-       return chatRepository.createChat(chat);
+        return chatRepository.createChat(chat);
     }
 
     @Override

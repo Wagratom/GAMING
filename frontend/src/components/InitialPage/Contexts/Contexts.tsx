@@ -13,9 +13,8 @@ export type UserDto = {
 
 export type PlayerDto = {
   id: string,
-  avatar: string,
   nickname: string,
-  avatar_name: string,
+  avatar: string,
   online: boolean,
   match_status: string
 }

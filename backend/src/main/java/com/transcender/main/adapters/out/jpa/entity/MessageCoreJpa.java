@@ -2,6 +2,7 @@ package com.transcender.main.adapters.out.jpa.entity;
 
 import com.transcender.main.domain.enuns.MessageType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,4 +46,15 @@ public class MessageCoreJpa {
 
     @Column(nullable = false)
     private boolean deletado = false;
+
+    public MessageCoreJpa(ChatCoreJpa chat, UserCoreJpa sender, String content, MessageType tipo,
+                          boolean editado, boolean deletado) {
+
+        this.chat = chat;
+        this.tipo = tipo;
+        this.sender = sender;
+        this.conteudo = content;
+        this.deletado = deletado;
+        this.editado = editado;
+    }
 }
