@@ -1,6 +1,7 @@
 package com.transcender.main.adapters.in.controller;
 
 import com.transcender.main.adapters.in.controller.dto.ChatDtoCreate;
+import com.transcender.main.adapters.in.controller.dto.NewMessageChat;
 import com.transcender.main.application.ChatApplicationService;
 import com.transcender.main.application.dto.ChatApplicationDto;
 import com.transcender.main.domain.entity.ChatCore;
@@ -22,24 +23,23 @@ import java.util.stream.Collectors;
 public class ChatController {
     private final ChatPort chatService;
     private final SimpMessagingTemplate messagingTemplate;
-    private static final Logger logger = LoggerFactory.getLogger(FriendsController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 
     @Autowired
-    public ChatController(ChatApplicationService chatService,  SimpMessagingTemplate messagingTemplate){
+    public ChatController(ChatApplicationService chatService, SimpMessagingTemplate messagingTemplate) {
         this.chatService = chatService;
         this.messagingTemplate = messagingTemplate;
     }
 
-
     @PostMapping("")
     public ResponseEntity<String> criarChat(@Valid @RequestBody ChatDtoCreate chatDto) {
         ChatCore novoChat = chatService.createChat(new ChatCore(
-                chatDto.getChatName(),
-                chatDto.getChatOwner(),
-                chatDto.getType(),
-                chatDto.getDescricao(),
-                chatDto.getAdms()
-            )
+                        chatDto.getChatName(),
+                        chatDto.getChatOwner(),
+                        chatDto.getType(),
+                        chatDto.getDescricao(),
+                        chatDto.getAdms()
+                )
         );
 
         ChatCore criado = chatService.createChat(novoChat);
@@ -67,18 +67,17 @@ public class ChatController {
     public ResponseEntity<Map<String, Object>> postDirectChat(
             @RequestHeader("Authorization") String jwt,
             @PathVariable("friendId") @Valid String friendId,
-            @RequestBody String content
+            @RequestBody @Valid NewMessageChat content
     ) {
-        if (content.isBlank()) throw new BadRequest("Message empty");
-        logger.info("[INIT] controller content: {}", content);
-        return ResponseEntity.ok(Map.of());
-//        Map<String, Object> message = chatService.postDirectChat(jwt, Long.parseLong(friendId), content);
-//        messagingTemplate.convertAndSend("/topic/directChats/" + friendId, message);
-//        return ResponseEntity.ok(message);
+        if (content.content().isBlank()) throw new BadRequest("Message empty");
+        logger.info("[INIT] controller add new message direct chat friendId ={}", friendId);
+        Map<String, Object> message = chatService.postDirectChat(jwt, Long.parseLong(friendId), content.content());
+        messagingTemplate.convertAndSend("/topic/directChats/" + friendId, message);
+        return ResponseEntity.ok(message);
     }
 
     @GetMapping
-    public List<ChatApplicationDto> getAllChats(){
+    public List<ChatApplicationDto> getAllChats() {
         return chatService.getAllChats()
                 .stream()
                 .map(this::toDto)
@@ -87,11 +86,11 @@ public class ChatController {
 
     private ChatApplicationDto toDto(ChatCore core) {
         return new ChatApplicationDto(
-            core.getId(),
-            core.getChatName(),
-            core.getDescricao(),
-            core.getType(),
-            core.getChatOwner()
+                core.getId(),
+                core.getChatName(),
+                core.getDescricao(),
+                core.getType(),
+                core.getChatOwner()
         );
     }
 }

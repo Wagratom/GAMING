@@ -13,17 +13,16 @@ export default function InputChats({ setMessages, resourceSend }: PropsInputChat
 
 	const sendMessageEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === 'Enter') {
-			event.preventDefault();
 			sendMessage();
 		}
+		event.stopPropagation();
 	};
 
 	const sendMessage = () => {
 		const message = inputChat.current?.value?.trim();
 		if (!message) return;
 
-		axios.post(
-			`${process.env.REACT_APP_API_URL}${resourceSend}`,
+		axios.post(`${process.env.REACT_APP_API_URL}${resourceSend}`,
 			{ content: message },
 			{
 				headers: {

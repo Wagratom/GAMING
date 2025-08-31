@@ -26,6 +26,7 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 	}, []);
 
 	const newMessageChat = (msg: string) => {
+		console.log("websocket: ",msg)
 		setMessages(prev => [...prev, msg as unknown as MessageDto]);
 	};
 
