@@ -23,9 +23,7 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>({ id: '', nickname: '' });
 
 	useEffect(() => {
-		console.log("Recurso de notificação alterado:", resoucePlayer);
 		if (!resoucePlayer.startsWith("/notifications")) return;
-		console.log("Recurso de notificação alterado:", resoucePlayer);
 
 		const route = `${process.env.REACT_APP_API_URL}/notifications?status=PENDING`;
 
@@ -41,7 +39,8 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 
 
 	function newNotificationFriends(msg: string) {
-		console.log("🔔 Nova notificação de amigos recebida ", msg)
+		const not = msg as unknown as Notifications
+		setFriendshipRequests((prev) => [...prev, not.sender ])
 	}
 
 	ConnectWebsocket(`/topic/friends/${user.id}`, newNotificationFriends);
