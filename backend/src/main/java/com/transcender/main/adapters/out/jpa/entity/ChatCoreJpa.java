@@ -13,17 +13,16 @@ import java.util.List;
 @Entity
 @Table(name = "chat")
 public class ChatCoreJpa {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "chatname", nullable = true, length = 20)
+    @Column(name = "chatname", length = 20)
     private String chatName;
 
     @ManyToOne
-    @JoinColumn(name = "onwer", nullable = true)
-    private UserCoreJpa onwer;
+    @JoinColumn(name = "owner") // corrigido!
+    private UserCoreJpa owner;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
@@ -33,7 +32,7 @@ public class ChatCoreJpa {
     private String descricao;
 
     @OneToMany(mappedBy = "chat", fetch = FetchType.LAZY)
-    @OrderBy("atualizadoEm ASC") // ou DESC se quiser mais recentes primeiro
+    @OrderBy("atualizadoEm ASC")
     private List<MessageCoreJpa> mensagens;
 
     @Column(name = "criado_em", nullable = false)

@@ -1,22 +1,28 @@
 package com.transcender.main.adapters.out.jpa;
 
 import com.transcender.main.adapters.out.jpa.entity.ChatCoreJpa;
+import com.transcender.main.adapters.out.jpa.entity.ChatUserCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.MessageCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
 import com.transcender.main.adapters.out.jpa.mapper.MapperToJpaEntity;
 import com.transcender.main.adapters.out.jpa.repository.ChatRepository;
+import com.transcender.main.adapters.out.jpa.repository.ChatUserRepository;
 import com.transcender.main.adapters.out.jpa.repository.MessageRepository;
 import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.entity.MessageCore;
 import com.transcender.main.domain.entity.UserCore;
+import com.transcender.main.domain.enuns.ChatType;
 import com.transcender.main.domain.enuns.MessageType;
+import com.transcender.main.domain.enuns.PermitionChat;
+import com.transcender.main.domain.enuns.StatusChat;
 import com.transcender.main.domain.port.out.ChatRepositoryPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,33 +33,61 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     private final UserRepository userRepository;
     private final MapperToJpaEntity mapperToJpaEntity;
     private final MessageRepository messageRepository;
+    private final ChatUserRepository chatUserRepository;
     private final Logger logger = LoggerFactory.getLogger(UserRepositoryAdapter.class);
 
     @Autowired
     public ChatRepositoryAdapter(ChatRepository chatRepository,
                                  UserRepository userRepository,
                                  MessageRepository messageRepository,
+                                 ChatUserRepository chatUserRepository,
                                  MapperToJpaEntity mapperToJpaEntiy) {
         this.chatRepository = chatRepository;
         this.userRepository = userRepository;
         this.messageRepository = messageRepository;
         this.mapperToJpaEntity = mapperToJpaEntiy;
+        this.chatUserRepository = chatUserRepository;
+    }
+
+    public ChatCoreJpa createDirectChat(UserCoreJpa user1, UserCoreJpa user2) {
+        ChatCoreJpa privateChat = ChatCoreJpa.newPrivateChat();
+        privateChat = chatRepository.save(privateChat);
+
+        ChatUserCoreJpa chatUser1 = new ChatUserCoreJpa(
+                privateChat, user1, StatusChat.ATIVE, PermitionChat.MEMBER, Instant.now(), null
+        );
+        ChatUserCoreJpa chatUser2 = new ChatUserCoreJpa(
+                privateChat, user2, StatusChat.ATIVE, PermitionChat.MEMBER, Instant.now(), null
+        );
+
+        // 3. Salva os vínculos
+        chatUserRepository.save(chatUser1);
+        chatUserRepository.save(chatUser2);
+
+        return privateChat;
     }
 
     @Override
-    public ChatCore getOrCreateDirectChat(Long userId, Long friendId) {
-        logger.info("ChatRepositoryAdapter::getOrCreateDirectChat > user1={}::user2={}", userId, friendId);
+    public ChatCore getOrCreateDirectChat(UserCore user1, UserCore user2) {
+        var ids = List.of(user1.getId(), user2.getId());
+        logger.info("Get direct chat | IDS={}", ids);
         ChatCoreJpa chatCoreJpa = chatRepository
-                .findPrivateChatBetweenUsers(List.of(userId, friendId))
-                .orElse(chatRepository.save(ChatCoreJpa.newPrivateChat()));
+                .findPrivateChatBetweenUsers(ids, ids.size())
+                .orElseGet(() -> createDirectChat(
+                        mapperToJpaEntity.toUserCoreJpa(user1),
+                        mapperToJpaEntity.toUserCoreJpa(user2)
+                ));
 
         return mapperToJpaEntity.toChatCore(chatCoreJpa);
     }
 
+
     @Override
-    public MessageCore addNewMessageDirectChat(UserCore sender, UserCore friendId, String content) {
+    public MessageCore addNewMessageDirectChat(UserCore sender, UserCore friend, String content) {
+        var ids = List.of(sender.getId(), friend.getId());
+        logger.info("Get direct chat | IDS={}", ids);
         ChatCoreJpa chatCoreJpa = chatRepository
-                .findPrivateChatBetweenUsers(List.of(sender.getId(), friendId.getId()))
+                .findPrivateChatBetweenUsers(ids, ids.size())
                 .orElse(chatRepository.save(ChatCoreJpa.newPrivateChat()));
 
         MessageCoreJpa mensagem = messageRepository.save(new MessageCoreJpa(
@@ -63,7 +97,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
                 MessageType.TEXT,
                 false,
                 false
-                ));
+        ));
 
         return mapperToJpaEntity.toMessageCore(mensagem);
     }
@@ -132,7 +166,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         ChatCoreJpa chatJpa = new ChatCoreJpa();
         chatJpa.setId(chat.getId());
         chatJpa.setChatName(chat.getChatName());
-        chatJpa.setOnwer(owner);
+        chatJpa.setOwner(owner);
         chatJpa.setDescricao(chat.getDescricao());
         chatJpa.setCriadoEm(chat.getCriadoEm());
         chatJpa.setAtualizadoEm(chat.getAtualizadoEm());

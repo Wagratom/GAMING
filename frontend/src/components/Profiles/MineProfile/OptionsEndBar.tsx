@@ -1,13 +1,13 @@
 import { PiEnvelopeSimpleThin } from "react-icons/pi";
 import { MdOutlinePersonAddAlt1, MdOutlinePersonRemove } from "react-icons/md";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PlayerDto } from "../../InitialPage/Contexts/Contexts";
 
 type Props = {
     setPlayersList: React.Dispatch<React.SetStateAction<PlayerDto[]>>;
-	setResourcePlayer: React.Dispatch<React.SetStateAction<string>>;
-
+    allPlayers: PlayerDto[];
+    setResourcePlayer: React.Dispatch<React.SetStateAction<string>>;
 };
 
 type OpenState = {
@@ -16,29 +16,14 @@ type OpenState = {
 };
 
 
-export default function OptionsEndBar({ setPlayersList, setResourcePlayer }: Props) {
-    const [openInputSearch, setOpenInputSearch] = useState<OpenState>({
-        openSearch: false,
-        method: "",
-    });
-    const [players, setPlayers] = useState<PlayerDto[]>([]);
+export default function OptionsEndBar({ setPlayersList, setResourcePlayer, allPlayers }: Props) {
+    const [openInputSearch, setOpenInputSearch] = useState<OpenState>({ openSearch: false, method: "" });
     const [searchValue, setSearchValue] = useState<string>("");
-
-    // Busca todos os jogadores
-    async function getPlayers() {
-        try {
-            const route = `${process.env.REACT_APP_API_URL}/users`;
-            const res = await axios.get<PlayerDto[]>(route, {
-                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-            });
-            setPlayers(res.data);
-        } catch (error) {
-            console.error("Erro ao buscar jogadores:", error);
-        }
-    }
 
     // Adiciona ou remove amigo
     async function handleRequestsBackend(method: "POST" | "DELETE", playerId: string) {
+        console.log("method: ", method)
+        console.log("playerId: ", playerId)
         try {
             const route = `${process.env.REACT_APP_API_URL}/friends`;
             await axios({
@@ -59,55 +44,35 @@ export default function OptionsEndBar({ setPlayersList, setResourcePlayer }: Pro
         }
     }
 
-    useEffect(() => {
-        getPlayers()
-    }, [])
-
     // Filtra jogadores por nome
     function filterPlayersByName(value: string) {
+        if (allPlayers.length === 0) setResourcePlayer('/users')
+
         setSearchValue(value);
-        const filtered = players.filter((p) =>
+        const filtered = allPlayers.filter((p) =>
             p.nickname.toLowerCase().includes(value.toLowerCase())
         );
         setPlayersList(filtered);
     }
 
     // Pega o ID do jogador a partir do filtro atual e dispara a ação
-    function getPlayerId(method: "POST" | "DELETE") {
-        const filtered = players.filter((p) =>
+    function getPlayerId() {
+        if (openInputSearch.method === "") return
+
+        const filtered = allPlayers.filter((p) =>
             p.nickname.toLowerCase().includes(searchValue.toLowerCase())
         );
 
         if (filtered.length === 1) {
-            handleRequestsBackend(method, filtered[0].id);
+            handleRequestsBackend(openInputSearch.method, filtered[0].id);
         } else {
-            alert("Please select a single player.");
+            alert("Player not found");
         }
-    }
-
-    // Renderiza campo de input
-    function renderSearchInput(method: "POST" | "DELETE") {
-        const placeholderText = method === "POST" ? "Add Friend" : "Remove Friend";
-        return (
-            <div className="rounded w-100">
-                <input
-                    style={{ height: "30px", width: "100%" }}
-                    type="text"
-                    className="remove-format-input"
-                    placeholder={placeholderText}
-                    value={searchValue}
-                    onChange={(e) => filterPlayersByName(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") getPlayerId(method);
-                    }}
-                />
-            </div>
-        );
     }
 
     // Handlers dos ícones (controlam abertura e método)
     function onClickOpen(method: "POST" | "DELETE") {
-
+        setResourcePlayer('/users')
         setOpenInputSearch((prev) => {
             const isSame = prev.openSearch && prev.method === method;
             const next: OpenState = {
@@ -118,13 +83,13 @@ export default function OptionsEndBar({ setPlayersList, setResourcePlayer }: Pro
             if (isSame) {
                 setSearchValue("");
             }
-            setPlayersList(players);
+            setPlayersList(allPlayers);
             return next;
         });
     }
 
     const styleButton: React.CSSProperties = { margin: "5px", cursor: "pointer" };
-
+    const placeholderText = openInputSearch.method === "POST" ? "Add Friend" : "Remove Friend";
     return (
         <div className="d-flex align-items-center px-2" style={{ color: "#808287" }}>
             <MdOutlinePersonAddAlt1
@@ -140,9 +105,23 @@ export default function OptionsEndBar({ setPlayersList, setResourcePlayer }: Pro
                 onClick={() => onClickOpen("DELETE")}
             />
 
-            {openInputSearch.openSearch &&
+            {
+                openInputSearch.openSearch &&
                 openInputSearch.method &&
-                renderSearchInput(openInputSearch.method)}
+                (
+                    <div className="rounded w-100">
+                        <input
+                            style={{ height: "30px", width: "100%" }}
+                            type="text"
+                            className="remove-format-input"
+                            placeholder={placeholderText}
+                            value={searchValue}
+                            onChange={(e) => filterPlayersByName(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === "Enter") getPlayerId(); }}
+                        />
+                    </div>
+                )
+            }
 
             <div className="d-flex justify-content-end options ms-auto">
                 <PiEnvelopeSimpleThin

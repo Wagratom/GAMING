@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChatRepositoryPort {
-    ChatCore getOrCreateDirectChat(Long userId, Long friendId);
+    ChatCore getOrCreateDirectChat(UserCore user1, UserCore user2);
     MessageCore addNewMessageDirectChat(UserCore sender, UserCore friendId, String content);
     Optional<ChatCore> findChatById(Long chatId);
     ChatCore createChat(ChatCore chat);

@@ -14,6 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -73,8 +76,7 @@ public class MapperToJpaEntity {
         return new FriendCore(
                 friendjpa.getId(),
                 toUserCore(friendjpa.getUsuario1(), false),
-                toUserCore(friendjpa.getUsuario2(), false)
-                ,
+                toUserCore(friendjpa.getUsuario2(), false),
                 friendjpa.getStatus(),
                 friendjpa.getCriadoEm(),
                 friendjpa.getAtualizadoEm()
@@ -87,7 +89,7 @@ public class MapperToJpaEntity {
         ChatCoreJpa chatJpa = new ChatCoreJpa();
         chatJpa.setId(chat.getId());
         chatJpa.setChatName(chat.getChatName());
-        chatJpa.setOnwer(owner);
+        chatJpa.setOwner(owner);
         chatJpa.setDescricao(chat.getDescricao());
         chatJpa.setCriadoEm(chat.getCriadoEm());
         chatJpa.setAtualizadoEm(chat.getAtualizadoEm());
@@ -95,31 +97,37 @@ public class MapperToJpaEntity {
     }
 
     public ChatCore toChatCore(ChatCoreJpa chatJpa) {
-        logger.info("ChatRepositoryAdapter::toChatCore::exec");
+        logger.info("transformando em uma entity da aplicação, chatid={}", chatJpa.getId());
+        boolean isPrivate = chatJpa.getType() == ChatType.PRIVATE;
 
-        Set<Long> adms = chatJpa.getUsuarios()
-                .stream()
+        Set<Long> adms = isPrivate
+                ? Collections.emptySet()
+                : chatJpa.getUsuarios().stream()
                 .filter(u -> u.getPermitionChat() == PermitionChat.ADM)
                 .map(u -> u.getUsuario().getId())
                 .collect(Collectors.toSet());
 
-        Long userId = chatJpa.getType() == ChatType.PRIVATE ? null :  chatJpa.getOnwer().getId();
+        Long ownerId = isPrivate ? null : chatJpa.getOwner().getId();
+
+        List<MessageCore> mensagens = Optional.ofNullable(chatJpa.getMensagens())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(this::toMessageCore)
+                .collect(Collectors.toList());
 
         return new ChatCore(
                 chatJpa.getId(),
                 chatJpa.getChatName(),
-                userId,
+                ownerId,
                 chatJpa.getType(),
                 chatJpa.getDescricao(),
                 adms,
-                chatJpa.getMensagens()
-                        .stream()
-                        .map((msg) -> toMessageCore(msg))
-                        .collect(Collectors.toList()),
+                mensagens,
                 chatJpa.getCriadoEm(),
                 chatJpa.getAtualizadoEm()
         );
     }
+
 
     public MessageCore toMessageCore(MessageCoreJpa messagesJpa) {
         logger.info("ChatRepositoryAdapter::toMessageCore::exec");

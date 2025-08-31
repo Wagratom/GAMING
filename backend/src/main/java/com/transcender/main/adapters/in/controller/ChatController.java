@@ -7,6 +7,8 @@ import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.port.in.ChatPort;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class ChatController {
     private final ChatPort chatService;
     private final SimpMessagingTemplate messagingTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(FriendsController.class);
 
     @Autowired
     public ChatController(ChatApplicationService chatService,  SimpMessagingTemplate messagingTemplate){
@@ -67,9 +70,11 @@ public class ChatController {
             @RequestBody String content
     ) {
         if (content.isBlank()) throw new BadRequest("Message empty");
-        Map<String, Object> message = chatService.postDirectChat(jwt, Long.parseLong(friendId), content);
-        messagingTemplate.convertAndSend("/topic/directChats/" + friendId, message);
-        return ResponseEntity.ok(message);
+        logger.info("[INIT] controller content: {}", content);
+        return ResponseEntity.ok(Map.of());
+//        Map<String, Object> message = chatService.postDirectChat(jwt, Long.parseLong(friendId), content);
+//        messagingTemplate.convertAndSend("/topic/directChats/" + friendId, message);
+//        return ResponseEntity.ok(message);
     }
 
     @GetMapping

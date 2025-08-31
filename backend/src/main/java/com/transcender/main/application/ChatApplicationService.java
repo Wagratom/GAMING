@@ -51,14 +51,14 @@ public class ChatApplicationService implements ChatPort {
     }
 
     private UsersPair usersExists(Long requester, Long friendId) {
-        logger.info("[INIT] pegando mensagens privadas entre o {} e {}", requester, friendId);
+        if (requester.equals(friendId)) throw new BadRequest("O usuario não pode adicionar ele mesmo");
 
+        logger.info("[INIT] pegando mensagens privadas entre o {} e {}", requester, friendId);
         UserCore user1 = userRepository.getUserById(requester)
                 .orElseThrow(() -> new ResourceNotFound("Usuario", friendId));
 
         UserCore user2 = userRepository.getUserById(friendId)
                 .orElseThrow(() -> new ResourceNotFound("friendId", friendId));
-
 
         return new UsersPair(user1, user2);
     }
@@ -86,7 +86,7 @@ public class ChatApplicationService implements ChatPort {
             throw new Forbidden("Os usuarios não são amigos");
         }
 
-        ChatCore chatCore = chatRepository.getOrCreateDirectChat(userId, friendId);
+        ChatCore chatCore = chatRepository.getOrCreateDirectChat(users.requester, users.friend);
 
         logger.info("[INFO] Montando json de resposta");
         Map<String, Object> chatJson = Map.of(

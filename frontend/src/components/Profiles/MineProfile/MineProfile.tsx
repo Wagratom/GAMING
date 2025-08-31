@@ -58,7 +58,11 @@ export default function MiniProfile(props: propsMiniProfile) {
 						: null
 			}
 			<hr className="m-0 w-100 text-white" />
-			<OptionsEndBar setPlayersList={setPlayers} setResourcePlayer={setResourcePlayer} />
+			<OptionsEndBar
+				setPlayersList={setPlayers}
+				allPlayers={players}
+				setResourcePlayer={setResourcePlayer}
+			/>
 		</div>
 	);
 }

@@ -39,7 +39,7 @@ public class UserCoreJpa {
     @Column(name = "ative", nullable = true)
     private Boolean ative;
 
-    @OneToMany(mappedBy = "onwer")
+    @OneToMany(mappedBy = "owner")
     private List<ChatCoreJpa> chatsCriados;
 
     @OneToMany(mappedBy = "usuario")
