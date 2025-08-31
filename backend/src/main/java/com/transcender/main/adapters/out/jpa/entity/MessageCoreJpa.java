@@ -25,7 +25,7 @@ public class MessageCoreJpa {
 
     // Relacionamento com o usuário que enviou
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "sender_id", nullable = false)
     private UserCoreJpa sender;
 
     @Column(nullable = false, columnDefinition = "TEXT")

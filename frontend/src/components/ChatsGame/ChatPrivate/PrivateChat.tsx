@@ -2,13 +2,14 @@ import axios from 'axios';
 import FormatMessages from '../FormatMessagens/FormatMessagens';
 import TitleChatPrivate from './Title';
 import InputChats from '../InputChats';
-import { useEffect, useState } from 'react';
-import { MessageDto, PlayerDto } from '../../InitialPage/Contexts/Contexts'
+import { useContext, useEffect, useState } from 'react';
+import { MessageDto, PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts'
 import './ChatPrivate.css'
 import ConnectWebsocket from '../../Profiles/MineProfile/FriendWebsocket';
 
 
 export default function PrivateChat({ friend }: { friend: PlayerDto }) {
+	const { user } = useContext(UserData)
 	const [messages, setMessages] = useState<MessageDto[]>([])
 
 	useEffect(() => {
@@ -28,7 +29,7 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 		setMessages(prev => [...prev, msg as unknown as MessageDto]);
 	};
 
-	ConnectWebsocket(`/topic/friends/${friend.id}`, newMessageChat);
+	ConnectWebsocket(`/topic/directChats/${user.id}`, newMessageChat);
 
 
 	return (

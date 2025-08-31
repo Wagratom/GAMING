@@ -2,7 +2,6 @@ package com.transcender.main.adapters.in.controller;
 
 import com.transcender.main.adapters.in.controller.dto.AddUserDto;
 import com.transcender.main.application.FriendsApplication;
-import com.transcender.main.application.UserApplication;
 import com.transcender.main.domain.enuns.FriendStatus;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.util.Map;
 
 @RestController

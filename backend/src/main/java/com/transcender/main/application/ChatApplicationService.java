@@ -103,7 +103,7 @@ public class ChatApplicationService implements ChatPort {
         Long userId = getIdByToken(jwt);
         UsersPair users = usersExists(userId, friendId);
 
-        logger.info("[INFO] Verificando se os usuarios possuem amizade");
+        logger.info("[INFO] adicionando nova mensagem no chat privado");
         if (!friendRepository.existsFriends(users.requester.getId(), users.friend.getId()))
             throw new Forbidden("Os usuarios não são amigos");
 

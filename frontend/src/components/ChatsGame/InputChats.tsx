@@ -22,18 +22,30 @@ export default function InputChats({ setMessages, resourceSend }: PropsInputChat
 		const message = inputChat.current?.value?.trim();
 		if (!message) return;
 
-		axios
-			.post(`${process.env.REACT_APP_API_URL}${resourceSend}`, { content: message })
-			.then(res => {
-				// Aqui assumo que a API retorna um objeto MessageDto
+		axios.post(
+			`${process.env.REACT_APP_API_URL}${resourceSend}`,
+			{ content: message },
+			{
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+				withCredentials: true,
+			}
+		)
+			.then((res) => {
+				console.log("message ", res.data);
 				const newMsg: MessageDto = res.data;
-				setMessages(prev => [...prev, newMsg]);
-				if (inputChat.current) inputChat.current.value = "";
+				setMessages((prev) => [...prev, newMsg]);
+
+				if (inputChat.current) {
+					inputChat.current.value = "";
+				}
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.error("❌ Erro ao enviar mensagem:", err);
 			});
 	};
+
 
 	return (
 		<div className="d-flex align-items-center">

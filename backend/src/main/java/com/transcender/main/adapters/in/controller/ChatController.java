@@ -9,6 +9,7 @@ import com.transcender.main.domain.port.in.ChatPort;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,10 +19,12 @@ import java.util.stream.Collectors;
 @RestController
 public class ChatController {
     private final ChatPort chatService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    public ChatController(ChatApplicationService chatService){
+    public ChatController(ChatApplicationService chatService,  SimpMessagingTemplate messagingTemplate){
         this.chatService = chatService;
+        this.messagingTemplate = messagingTemplate;
     }
 
 
@@ -64,7 +67,9 @@ public class ChatController {
             @RequestBody String content
     ) {
         if (content.isBlank()) throw new BadRequest("Message empty");
-        return ResponseEntity.ok(chatService.postDirectChat(jwt, Long.parseLong(friendId), content));
+        Map<String, Object> message = chatService.postDirectChat(jwt, Long.parseLong(friendId), content);
+        messagingTemplate.convertAndSend("/topic/directChats/" + friendId, message);
+        return ResponseEntity.ok(message);
     }
 
     @GetMapping
