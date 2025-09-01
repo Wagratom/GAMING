@@ -1,7 +1,5 @@
 import { MessageDto } from "../../InitialPage/Contexts/Contexts"
 
-
-
 export default function MessageUser({ notificacao, date }: { notificacao: MessageDto, date: string }): JSX.Element {
 	const cssPhoto: React.CSSProperties = {
 		height: '40px',
@@ -12,13 +10,13 @@ export default function MessageUser({ notificacao, date }: { notificacao: Messag
 
 	return (
 		<div className='d-flex mb-2 justify-content-end'>
-			<div className='bg-light rounded me-2 p-2 d-flex' style={{ whiteSpace: 'pre-line' }}>
-				<p style={{ fontWeight: '600' }}>{notificacao.content}</p>
+			<div className='bg-light rounded me-2 p-2 d-flex' style={{ maxWidth: '65%' }}>
+				<div style={{ whiteSpace: 'pre-line', overflowWrap: 'anywhere', hyphens: 'auto' }}>
+					<p style={{ fontWeight: '600' }}>{notificacao.content}</p>
+				</div>
 				<p className="ms-2 d-flex align-items-end" style={{ fontSize: '10px', color: 'gray' }}>{date}</p>
 			</div>
-			<img style={cssPhoto}
-				src={notificacao.sender.avatar}
-				alt={`Foto do usuario ${notificacao.sender.nickname}`}
+			<img style={cssPhoto} src={notificacao.sender.avatar} alt={`Foto do usuario ${notificacao.sender.nickname}`}
 			// onClick={() => props.showDinamicProfile(props.sender.nickname, props.sender)}
 			/>
 		</div>
