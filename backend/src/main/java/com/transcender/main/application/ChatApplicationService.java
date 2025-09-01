@@ -6,11 +6,13 @@ import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.exceptions.Forbidden;
 import com.transcender.main.domain.exceptions.ResourceNotFound;
+import com.transcender.main.domain.exceptions.Unauthorized;
 import com.transcender.main.domain.port.in.ChatPort;
 import com.transcender.main.domain.port.out.ChatRepositoryPort;
 import com.transcender.main.domain.port.out.FriendsRepositoryPort;
 import com.transcender.main.domain.port.out.JwtService;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +47,12 @@ public class ChatApplicationService implements ChatPort {
     }
 
     private Long getIdByToken(String jwt) {
-        Map<String, Object> userInfo = jwtService.validateTokenAndGetClaims(jwt.substring(7));
-        Long userId = ((Number) userInfo.get("id")).longValue();
-        return userId;
+        try {
+            Map<String, Object> userInfo = jwtService.validateTokenAndGetClaims(jwt.substring(7));
+            return ((Number) userInfo.get("id")).longValue();
+        } catch (ExpiredJwtException err) {
+            throw new Unauthorized("Token expirado amigo!");
+        }
     }
 
     private UsersPair usersExists(Long requester, Long friendId) {

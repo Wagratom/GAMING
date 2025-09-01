@@ -14,33 +14,19 @@ export default function FormatMessages({ messages }: { messages: MessageDto[] })
 
 	return (
 		<div className="h-100 text-black p-3 overflow-auto">
-			{messages.map((message: MessageDto) => {
+			{messages.map((notificacao: MessageDto) => {
 				{
-					const data = new Date(message.criando_em)
-					const dataFormating: string = `${data.getHours()}:${data.getMinutes()}`;
-					if (message.sender.nickname === user.nickname) {
+					const date = new Date(notificacao.date.replace(/\.\d{3,6}/, '.000'));
+					const dateFormating: string = `${date.getHours()}:${date.getMinutes()}`;
+					if (notificacao.sender.nickname === user.nickname) {
 						return (
-							<MessageUser
-								content={message.content}
-								avatarUrl={message.sender.avatar}
-								dataFormating={dataFormating}
-								nickname={message.sender.nickname}
-								id={message.sender.id}
-								showDinamicProfile={showDinamicProfile}
-								key={message.id}
-							/>
+							<MessageUser notificacao={notificacao} date={dateFormating} />
 						);
 					} else {
 						return (
 							<MessagePeople
-								content={message.content}
-								avatarUrl={message.sender.avatar}
-								dataFormating={dataFormating}
-								nickname={message.sender.nickname}
-								avatar_name={message.sender.nickname}
-								showDinamicProfile={showDinamicProfile}
-								id={message.sender.id}
-								key={message.id}
+								notificacao={notificacao}
+								date={dateFormating}
 							/>
 						);
 					};

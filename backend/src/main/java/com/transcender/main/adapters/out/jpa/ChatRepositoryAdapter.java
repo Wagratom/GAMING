@@ -12,7 +12,6 @@ import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.entity.MessageCore;
 import com.transcender.main.domain.entity.UserCore;
-import com.transcender.main.domain.enuns.ChatType;
 import com.transcender.main.domain.enuns.MessageType;
 import com.transcender.main.domain.enuns.PermitionChat;
 import com.transcender.main.domain.enuns.StatusChat;
@@ -81,17 +80,14 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         return mapperToJpaEntity.toChatCore(chatCoreJpa);
     }
 
-
     @Override
     public MessageCore addNewMessageDirectChat(UserCore sender, UserCore friend, String content) {
         var ids = List.of(sender.getId(), friend.getId());
-        logger.info("Get direct chat | IDS={}", ids);
-        ChatCoreJpa chatCoreJpa = chatRepository
-                .findPrivateChatBetweenUsers(ids, ids.size())
-                .orElse(chatRepository.save(ChatCoreJpa.newPrivateChat()));
+        logger.info("add new message direct chat | IDS={}", ids);
+        ChatCoreJpa directChat = mapperToJpaEntity.toChatCoreJpa(getOrCreateDirectChat(sender, friend), null);
 
         MessageCoreJpa mensagem = messageRepository.save(new MessageCoreJpa(
-                chatCoreJpa,
+                directChat,
                 mapperToJpaEntity.toUserCoreJpa(sender),
                 content,
                 MessageType.TEXT,

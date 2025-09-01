@@ -23,7 +23,7 @@ export type MessageDto = {
   id: string,
   content: string,
   sender: PlayerDto
-  criando_em: string;
+  date: string;
 }
 
 export type ChatDataDto = {

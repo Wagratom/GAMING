@@ -32,7 +32,6 @@ export default function InputChats({ setMessages, resourceSend }: PropsInputChat
 			}
 		)
 			.then((res) => {
-				console.log("message ", res.data);
 				const newMsg: MessageDto = res.data;
 				setMessages((prev) => [...prev, newMsg]);
 

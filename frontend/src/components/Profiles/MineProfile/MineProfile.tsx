@@ -45,6 +45,7 @@ export default function MiniProfile(props: propsMiniProfile) {
 		getPlayers();
 	}, [resoucePlayer]);
 
+	console.log("atualizei")
 	return (
 		<div className="position-absolute top-0 end-0 h-100" style={cssMiniprfile}>
 			<MiniPerfilUser showMiniPerfil={props.showMiniPerfil} />
