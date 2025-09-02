@@ -3,6 +3,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { IoMdExit } from 'react-icons/io';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 type propsSelectConfiuration = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
@@ -11,15 +12,28 @@ type propsSelectConfiuration = {
 }
 
 export default function OptionsMiniProfile(props: propsSelectConfiuration): JSX.Element {
-	const navitaion = useNavigate();
+	const navigate = useNavigate();
 
 	const cursoPointer: React.CSSProperties = {
 		cursor: 'pointer',
 	}
 
 	const disconnect = () => {
-		Cookies.remove('jwtToken');
-		navitaion('/');
+		const route = `${process.env.REACT_APP_API_URL}/logout`;
+
+		axios.patch(route, {}, { // corpo vazio {}
+			headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+			withCredentials: true,
+		})
+			.then((res) => {
+				if (res.status === 200) {
+					Cookies.remove("jwtToken");
+					navigate("/");
+				}
+			})
+			.catch((err) => {
+				console.error("Erro ao desconectar:", err);
+			});
 	}
 
 	return (

@@ -48,6 +48,7 @@ public class ChatApplicationService implements ChatPort {
 
     private Long getIdByToken(String jwt) {
         try {
+            if (jwt == null) throw new BadRequest("Token não enviado");
             Map<String, Object> userInfo = jwtService.validateTokenAndGetClaims(jwt.substring(7));
             return ((Number) userInfo.get("id")).longValue();
         } catch (ExpiredJwtException err) {

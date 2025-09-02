@@ -56,7 +56,7 @@ public class AuthController {
         return UserDtoRegister.toEntity(user);
     }
 
-    @PostMapping("/logout")
+    @PatchMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String jwt) {
         userApplication.logout(jwt);
         return ResponseEntity.ok().body("Success");
