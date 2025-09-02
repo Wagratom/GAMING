@@ -4,7 +4,7 @@ import InicialPage from './components/InitialPage/InitialPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginFake from './components/LoginPage/LoginFake';
 import Game from './components/GamePage/Game/Game';
-import GameWW from './components/GamePage/Game/GameWW';
+import GameWW from './components/GamePage/Game/RoomPaty';
 
 export default function App() {
 	return (

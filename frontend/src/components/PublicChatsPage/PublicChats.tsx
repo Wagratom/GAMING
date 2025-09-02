@@ -1,5 +1,5 @@
 import React, { SetStateAction, useContext, useEffect, useState } from 'react';
-import bgChats from '../../assets/game/planets/backgrounds/bgChats.jpg'
+// import bgChats from '../../assets/game/planets/backgrounds/bgChats.jpg'
 import ScreenCreateNewChat from './ScreemCreateNewChat';
 import BarOptions from './BarOptions';
 import ChatList from './ChatsList';
@@ -97,7 +97,7 @@ export default function PageChats(props: propsPageChats) {
 	}, [])
 
 	const cssDivChats: React.CSSProperties = {
-		backgroundImage: `url(${bgChats})`,
+		// backgroundImage: `url(${bgChats})`,
 		backgroundSize: '100% 100%',
 		backgroundRepeat: 'no-repeat',
 		color: 'white',

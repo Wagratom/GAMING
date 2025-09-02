@@ -1,6 +1,6 @@
 import { MessageDto } from "../../InitialPage/Contexts/Contexts"
 
-export default function MessageUser({ notificacao, date }: { notificacao: MessageDto, date: string }): JSX.Element {
+export default function MessageUser({ notificacao, date, _key }: { notificacao: MessageDto, date: string, _key: string }): JSX.Element {
 	const cssPhoto: React.CSSProperties = {
 		height: '40px',
 		width: '40px',
@@ -9,7 +9,7 @@ export default function MessageUser({ notificacao, date }: { notificacao: Messag
 	}
 
 	return (
-		<div className='d-flex mb-2 justify-content-end'>
+		<div className='d-flex mb-2 justify-content-end' key={_key}>
 			<div className='bg-light rounded me-2 p-2 d-flex' style={{ maxWidth: '65%' }}>
 				<div style={{ whiteSpace: 'pre-line', overflowWrap: 'anywhere', hyphens: 'auto' }}>
 					<p style={{ fontWeight: '600' }}>{notificacao.content}</p>

@@ -1,11 +1,9 @@
 import { Modal } from "react-bootstrap";
 import { UserData } from "../../InitialPage/Contexts/Contexts";
 import { useContext } from "react";
-import { dataConvite } from "./Game";
 
 type propsModalConvite = {
 	setOpenChat: React.Dispatch<React.SetStateAction<boolean>>;
-	dataConvite: dataConvite;
 }
 export function ModalConvite(props: propsModalConvite): JSX.Element {
 	const userData = useContext(UserData).user;
@@ -33,8 +31,8 @@ export function ModalConvite(props: propsModalConvite): JSX.Element {
 				<p>Convite para partida</p>
 			</Modal.Header>
 			<Modal.Body>
-				<p className="fs-5 text-center"> {props.dataConvite.myNickname} vs {userData.nickname} </p>
-				<p className="fs-5 text-center"> {props.dataConvite.myNickname} te convidou para jogar! </p>
+				<p className="fs-5 text-center"> teste vs {userData.nickname} </p>
+				<p className="fs-5 text-center"> tes2 te convidou para jogar! </p>
 				<div className='w-100 d-flex pe-3 justify-content-between'>
 					<button className="btn btn-primary" onClick={sendResponse}> Aceitar </button>
 					<button className="btn btn-danger" onClick={() => props.setOpenChat(false)}> Cancelar </button>

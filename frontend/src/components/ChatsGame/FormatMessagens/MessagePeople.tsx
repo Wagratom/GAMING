@@ -17,9 +17,9 @@ const cssPhoto: React.CSSProperties = {
 
 // onClick={() => props.showDinamicProfile(props.nickname, props.id)}
 
-export default function MessagePeople({ notificacao, date }: { notificacao: MessageDto, date: string }): JSX.Element {
+export default function MessagePeople({ notificacao, date, _key }: { notificacao: MessageDto, date: string, _key: string  }): JSX.Element {
 	return (
-		<div className='d-flex mb-2'>
+		<div className='d-flex mb-2' key={_key}>
 			<img style={cssPhoto} src={notificacao.sender.avatar} alt={`foto do usuario ${notificacao.sender.avatar}`} />
 
 			<div className='bg-light rounded ms-2 p-2 d-flex' style={{ maxWidth: '65%' }}>
