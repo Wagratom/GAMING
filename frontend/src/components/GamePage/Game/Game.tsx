@@ -50,17 +50,19 @@ export default function Game() {
 			}} />
 
 			{/* Container Phaser */}
-			<div ref={gameContainerRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }} />
-
-			{/* Componentes React */}
-			{collisionPnt === 'planetLua' && <SettingsStore openSettingsStore={setCollisionPnt} />}
-			{collisionPnt === 'planetFire' && <SettingsPath openSettingsPath={setCollisionPnt} />}
-			{collisionPnt === 'planetTerra' && <MiniProfile showMiniPerfil={setCollisionPnt} />}
-			{collisionPnt === 'satelite' && <PageChats openPageChats={setCollisionPnt} />}
-			{collisionPnt === 'base' && <Ranking openStore={setCollisionPnt} />}
-			{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} />}
-			{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
-			{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
+			<div ref={gameContainerRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }} >
+				{/* Componentes React */}
+				<div >
+					{collisionPnt === 'planetTerra' && <MiniProfile showMiniPerfil={setCollisionPnt} />}
+					{collisionPnt === 'planetLua' && <SettingsStore openSettingsStore={setCollisionPnt} />}
+					{collisionPnt === 'planetFire' && <SettingsPath openSettingsPath={setCollisionPnt} />}
+					{collisionPnt === 'satelite' && <PageChats openPageChats={setCollisionPnt} />}
+					{collisionPnt === 'base' && <Ranking openStore={setCollisionPnt} />}
+					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} />}
+					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
+					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
+				</div>
+			</div>
 		</div>
 	)
 }

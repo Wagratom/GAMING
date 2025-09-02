@@ -15,7 +15,6 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		console.log("userfecct1")
 		axios.get(`${process.env.REACT_APP_API_URL}/directChats/${friend.id}`, {
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -26,11 +25,9 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 				setMessages(res.data.messages);
 			})
 			.catch((err) => {
-				console.error("Erro ao buscar dados do usuário:", err.response);
 				if (err.response.status === 401 || err.response.status === 403) {
 					alert("Sessão expirada ou não autorizada. Por favor, faça login novamente.");
 					navigate('/')
-					return;
 				}
 			})
 	}, [])
