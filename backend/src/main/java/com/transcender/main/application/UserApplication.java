@@ -110,7 +110,7 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public void logout(String jwt) {
+    public Long logout(String jwt) {
         Long userId = getIdByToken(jwt);
         logger.info("[INIT] logout user={}", userId);
 
@@ -120,6 +120,7 @@ public class UserApplication implements UserPortIn {
         user.setOnline(false);
         logger.info("Atualizando online=false");
         userRepository.updateUser(user);
+        return userId;
     }
 
     @Override

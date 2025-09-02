@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -19,10 +20,12 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthController {
     final private UserApplication userApplication;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    AuthController(UserApplication userApplication) {
+    AuthController(UserApplication userApplication, SimpMessagingTemplate messagingTemplate) {
         this.userApplication = userApplication;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @PostMapping("/login")
@@ -36,10 +39,18 @@ public class AuthController {
                 .sameSite("Strict")
                 .build();
 
+        messagingTemplate.convertAndSend("/topic/login/" + body.nickname());
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(Map.of("token", token));
 
+    }
+
+    @PatchMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String jwt) {
+        Long userId = userApplication.logout(jwt);
+        messagingTemplate.convertAndSend("/topic/logout/" + userId);
+        return ResponseEntity.ok().body("Success");
     }
 
     @PostMapping("/register")
@@ -54,12 +65,6 @@ public class AuthController {
             )
         );
         return UserDtoRegister.toEntity(user);
-    }
-
-    @PatchMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String jwt) {
-        userApplication.logout(jwt);
-        return ResponseEntity.ok().body("Success");
     }
 
     @GetMapping("/profile")
