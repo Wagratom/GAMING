@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import planetaAnel from '../../../assets/game/planets/planetaJupter.png';
 import planetaFire from '../../../assets/game/planets/planetaFire.png';
 import planetaLua from '../../../assets/game/planets/PlanetaLua.png';
 import Lua from '../../../assets/game/planets/lua.png';
@@ -12,7 +11,6 @@ import naveLateral from '../../../assets/game/nave/naveLateral.png';
 
 export default class GameScene extends Phaser.Scene {
     nave!: Phaser.Physics.Arcade.Sprite;
-    pntAnel!: Phaser.Physics.Arcade.Sprite;
     pntFire!: Phaser.Physics.Arcade.Sprite;
     pntLua!: Phaser.Physics.Arcade.Sprite;
     luaTerra!: Phaser.Physics.Arcade.Sprite;
@@ -31,7 +29,6 @@ export default class GameScene extends Phaser.Scene {
 
     preload() {
         // Planetas
-        this.load.image("planetAnel", planetaAnel);
         this.load.image("planetFire", planetaFire);
         this.load.image("planetLua", planetaLua);
         this.load.image("planetTerra", planetaTerra);
@@ -59,10 +56,6 @@ export default class GameScene extends Phaser.Scene {
         this.pntLua = this.physics.add.sprite(w * 0.9, h * 0.1, "planetLua");
         this.pntLua.setCircle(this.pntLua.width / 2, 0, 0);
 
-        // 🪐 Planeta com anel
-        this.pntAnel = this.physics.add.sprite(w * 0.9, h * 0.8, "planetAnel");
-        this.pntAnel.setCircle(this.pntAnel.width / 2, 0, 0);
-
         // 🌍 Terra
         this.pntTerra = this.physics.add.sprite(w * 0.6, h * 0.3, "planetTerra").setScale(0.7);
         this.pntTerra.setCircle(this.pntTerra.width / 2, 0, 0);
@@ -82,7 +75,7 @@ export default class GameScene extends Phaser.Scene {
         // Escala inicial da nave
         this.updateNaveScale();
 
-        [this.pntTerra, this.pntLua, this.pntFire, this.pntAnel, this.luaTerra, this.sateleteChat].forEach(planet => {
+        [this.pntTerra, this.pntLua, this.pntFire, this.luaTerra, this.sateleteChat].forEach(planet => {
             planet.setImmovable(true);
             planet.body!.pushable = false;
         });
@@ -105,8 +98,6 @@ export default class GameScene extends Phaser.Scene {
         this.pntLua.y = containerHeight * 0.1;
         this.pntFire.x = containerWidth * 0.1;
         this.pntFire.y = containerHeight * 0.2;
-        this.pntAnel.x = containerWidth * 0.9;
-        this.pntAnel.y = containerHeight * 0.8;
         this.sateleteChat.x = containerWidth * 0.6;
         this.sateleteChat.y = containerHeight * 0.7;
 
@@ -123,7 +114,6 @@ export default class GameScene extends Phaser.Scene {
             [this.nave, this.pntTerra, "planetTerra"],
             [this.nave, this.pntLua, "planetLua"],
             [this.nave, this.pntFire, "planetFire"],
-            [this.nave, this.pntAnel, "planetAnel"],
             [this.nave, this.sateleteChat, "satelite"],
             [this.nave, this.luaTerra, "Lua"]
         ] as const;

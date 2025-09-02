@@ -39,7 +39,7 @@ public class AuthController {
                 .sameSite("Strict")
                 .build();
 
-        messagingTemplate.convertAndSend("/topic/login/" + body.nickname());
+        messagingTemplate.convertAndSend("/topic/login", body.nickname());
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(Map.of("token", token));
@@ -49,7 +49,7 @@ public class AuthController {
     @PatchMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String jwt) {
         Long userId = userApplication.logout(jwt);
-        messagingTemplate.convertAndSend("/topic/logout/" + userId);
+        messagingTemplate.convertAndSend("/topic/logout", userId);
         return ResponseEntity.ok().body("Success");
     }
 

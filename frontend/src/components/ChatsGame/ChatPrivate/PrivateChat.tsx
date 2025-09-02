@@ -38,7 +38,6 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 
 	ConnectWebsocket(`/topic/directChats/${user.id}`, newMessageChat);
 
-
 	return (
 		<div className='text-white chat d-flex flex-column bg-degrader' style={{ zIndex: 2000 }}>
 			<TitleChatPrivate friend={friend} />

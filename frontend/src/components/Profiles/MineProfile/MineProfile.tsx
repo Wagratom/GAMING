@@ -7,6 +7,7 @@ import './MineProfile.css';
 import axios from 'axios';
 import { PlayerDto } from '../../InitialPage/Contexts/Contexts';
 import NotificacaoUX from './NotificacaoUX';
+import ConnectWebsocket from './FriendWebsocket';
 
 type propsMiniProfile = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
@@ -45,7 +46,29 @@ export default function MiniProfile(props: propsMiniProfile) {
 		getPlayers();
 	}, [resoucePlayer]);
 
-	console.log("atualizei")
+	// Quando usuário loga
+	async function loginNewUser(nickname: string) {
+		setPlayers((prev) =>
+			prev.map((player) =>
+				player.nickname === nickname ? { ...player, online: true } : player
+			)
+		);
+
+	}
+
+	// Quando usuário desloga
+	function logoutUser(userId: string) {
+		// Marca como inativo em vez de remover
+		setPlayers((prev) =>
+			prev.map((player) =>
+				player.id === userId ? { ...player, online: false } : player
+			)
+		);
+	}
+
+	ConnectWebsocket("/topic/login", loginNewUser);
+	ConnectWebsocket("/topic/logout", logoutUser);
+
 	return (
 		<div className="position-absolute top-0 end-0 h-100" style={cssMiniprfile}>
 			<MiniPerfilUser showMiniPerfil={props.showMiniPerfil} />
