@@ -61,6 +61,7 @@ export default function Game() {
 					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} />}
 					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
 					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
+					<DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} />
 				</div>
 			</div>
 		</div>

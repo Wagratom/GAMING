@@ -11,7 +11,7 @@ type propsDinamicProfile = {
 
 export default function DinamicProfile(props: propsDinamicProfile): JSX.Element {
 	const cssBackgroundTerra = {
-		backgroundImage: "url(https://socientifica.com.br/wp-content/uploads/2023/06/vida-na-Lua.jpg)",
+		backgroundImage: "url(https://64.media.tumblr.com/aa7de5c2a2d6edf560a38a38f89ea47f/tumblr_pea4idNiRJ1ww81r3o1_540.gif)",
 		backgroundSize: 'cover',
 		backgroundPosition: 'contain',
 		backgroundRepeat: 'no-repeat',
