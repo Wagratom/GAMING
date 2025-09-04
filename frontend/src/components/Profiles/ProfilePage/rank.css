@@ -1,4 +1,5 @@
 @import url('https:/fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap');
+
 .letter-pixel {
 	font-family: 'Pixelify Sans', cursive;
 }
@@ -9,21 +10,26 @@
 
 .faixa-amarela {
 	background-image: url('../../../assets/store/faixas/faixa1.png');
+	background-size: 100% 100%;
 	background-repeat: no-repeat;
-	background-size: contain ;
+	background-size: contain;
 }
 
 /*##############################################################*/
 /*							RANK 1								*/
 /*##############################################################*/
 
-.borderDivFotoRank1 {
-	background-image: url('../../../assets/bordaFoto/bordaFotoRank1.svg');
+.cssDefaultRanks {
 	background-size: 100% 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .borderDivFotoRank1 img {
-	padding: 1.4rem;
+	height: 220px;
+	width: 221px;
+	border-radius: 50%;
 }
 
 .borderWriteRank1 {
@@ -41,19 +47,14 @@
 /*							RANK 2								*/
 /*##############################################################*/
 
-.borderDivFotoRank2 {
-	background-image: url('../../../assets/bordaFoto/bordaFotoRank2.svg');
-	background-size: 100% 100%;
-}
-
-
 .borderDivFotoRank2 img {
-	padding: 2.1rem;
+	height: 181px;
+	width: 184px;
+	border-radius: 50%;
 }
 
-.borderWriteRank2{
+.borderWriteRank2 {
 	background-image: url('../../../assets/bordaWriteRank/bordaWriteRank2.png');
-	background-size: 100% 100%;
 	height: 100%;
 	width: 100%;
 
@@ -69,14 +70,16 @@
 
 .borderDivFotoRank3 {
 	background-image: url('../../../assets/bordaFoto/bordaFotoRank3.svg');
-	background-size: 100% 100%;
+	padding-top: 2px;
 }
 
 .borderDivFotoRank3 img {
-	padding: 10%;
+	height: 174px;
+	width: 176px;
+	border-radius: 50%;
 }
 
-.borderWriteRank3{
+.borderWriteRank3 {
 	background-image: url('../../../assets/bordaWriteRank/bordaWriteRank3.png');
 	background-size: 100% 100%;
 	height: 100%;
@@ -93,11 +96,13 @@
 
 .borderDivFotoRank4 {
 	background-image: url('../../../assets/bordaFoto/bordaFotoRank4.svg');
-	background-size: 100% 100%;
+	padding: 6px 3px 2px 0px;
 }
 
 .borderDivFotoRank4 img {
-	padding: 12%;
+	height: 150px;
+	width: 151px;
+	border-radius: 50%;
 }
 
 .borderWriteRank4 {
@@ -118,17 +123,17 @@
 
 .borderDivFotoRank5 {
 	background-image: url('../../../assets/bordaFoto/bordaFotoRank5.svg');
-	background-size: 100% 100%;
+	padding: 23px 3px 2px 2px;
 }
 
 .borderDivFotoRank5 img {
-	padding: 1.7rem;
-	padding-top: 2.3rem;
+	height: 139px;
+	width: 143px;
+	border-radius: 50%;
 }
 
 .borderWriteRank5 {
 	background-image: url('../../../assets/bordaWriteRank/bordaWriteRank4.png');
-	background-size: 100% 100%;
 	height: 100%;
 	width: 100%;
 
@@ -143,20 +148,24 @@
 
 .borderDivFotoRank6 {
 	background-image: url('../../../assets/bordaFoto/bordaFotoRank6.svg');
-	background-size: 100% 100%;
+	padding: 7px 2px 23px 9px;
+	width: 220px;
+	height: 220px;
 }
 
 .borderDivFotoRank6 img {
-	padding-top: 2rem;
-	padding-left: 2.4rem;
-	padding-right: 2.2rem;
-	padding-bottom: 2.6rem;
-
+	height: 78px;
+	width: 81px;
+	border-radius: 50%;
 }
 
 .borderWriteRank6 {
 	background-image: url('../../../assets/bordaWriteRank/bordaWriteRank4.png');
-	background-size: 100% 100%;
 	height: 100%;
 	width: 100%;
+}
+
+.h-profile {
+	height: 100%;
+	width: 310px;
 }

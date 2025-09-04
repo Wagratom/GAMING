@@ -4,7 +4,6 @@ type propsPointer = {
 	draws: number,
 	kda: number,
 	borderWrite: string,
-	pointers: number
 }
 
 export default function Pointer(props: propsPointer): JSX.Element {

@@ -11,8 +11,8 @@ export const RankMappings = [
 	{ max: 10, rank: rank2, borderImg: 'borderDivFotoRank2', borderWrite: 'borderWriteRank2'},
 	{ max: 15, rank: rank3, borderImg: 'borderDivFotoRank3', borderWrite: 'borderWriteRank3'},
 	{ max: 30, rank: rank4, borderImg: 'borderDivFotoRank4', borderWrite: 'borderWriteRank4'},
-	{ max: 35, rank: rank5, borderImg: 'borderDivFotoRank5', borderWrite: 'borderWriteRank4'},
-	{ max: Infinity, rank: rank6, borderImg: 'borderDivFotoRank6', borderWrite: 'borderWriteRank4'},
+	{ max: 35, rank: rank5, borderImg: 'borderDivFotoRank5', borderWrite: 'borderWriteRank5'},
+	{ max: Infinity, rank: rank6, borderImg: 'borderDivFotoRank6', borderWrite: 'borderWriteRank6'},
 ];
 
 export default function HandleRank(pointers: number): RankFormating  {
