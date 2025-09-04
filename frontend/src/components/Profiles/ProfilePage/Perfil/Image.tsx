@@ -10,11 +10,7 @@ export default function ProfilePhoto(props: propsImageProfile): JSX.Element {
 	function returnFunction() {
 		if (props.avatar) {
 			return (
-				<div className='h-profile' style={{
-					backgroundImage: `url(${background})`,
-					backgroundSize: "100% 100%",
-					width: '230px'
-				}}>
+				<div className='banner-profile'>
 					<div className={`cssDefaultRanks ${props.borderImg}`}>
 						<img src={props.avatar} alt='foto' />
 					</div>

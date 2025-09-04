@@ -25,7 +25,7 @@ export default function InfosUser({ nickName }: { nickName: string }): JSX.Eleme
 	// 	getProfile();
 	// }, []);
 
-	const { rank, borderImg, borderWrite } = HandleRank(40);
+	const { rank, borderImg, borderWrite } = HandleRank(6);
 
 	return (
 		<div className="h-100 position-absolute d-flex justify-content-center">
