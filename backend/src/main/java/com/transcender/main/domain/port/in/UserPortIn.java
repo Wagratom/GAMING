@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface UserPortIn {
+
     String login(Optional<String> nickname, Optional<String> email, String senha);
 
     Long logout(String jwt);
@@ -16,6 +17,8 @@ public interface UserPortIn {
     List<Map<String, Object>> getUsers(Boolean online, String jwt);
 
     Map<String, Object> getProfile(String jwt);
+
+    Map<String, Object> getUsuario(String jwt);
 
     void deleteUser(Long userId);
 

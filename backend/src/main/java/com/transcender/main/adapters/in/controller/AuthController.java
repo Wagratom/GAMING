@@ -70,7 +70,7 @@ public class AuthController {
     @GetMapping("/profile")
     public ResponseEntity<Map<String, Object>> profile(@RequestHeader("Authorization") String authorizationHeader) {
         return ResponseEntity.ok().body(
-                userApplication.getProfile(authorizationHeader)
+                userApplication.getUsuario(authorizationHeader)
         );
     }
 }

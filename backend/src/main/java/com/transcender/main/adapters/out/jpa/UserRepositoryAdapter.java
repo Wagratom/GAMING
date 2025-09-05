@@ -26,24 +26,31 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
+    public Optional<UserCore> getProfileById(Long userId) {
+        logger.info("UserRepositoryAdapter > getUserById > exec");
+        return userRepository.findById(userId)
+                .map((user) -> (mapperToJpaEntity.toUserCore(user, false, false)));
+    }
+
+    @Override
     public Optional<UserCore> getUserById(Long userId) {
         logger.info("UserRepositoryAdapter > getUserById > exec");
         return userRepository.findById(userId)
-                .map((user) -> (mapperToJpaEntity.toUserCore(user, false)));
+                .map((user) -> (mapperToJpaEntity.toUserCore(user, false, false)));
     }
 
     @Override
     public Optional<UserCore> getUserByEmail(String email) {
         logger.info("UserRepositoryAdapter > getUserByEmail > exec");
         return userRepository.findByEmail(email)
-                .map((user) -> mapperToJpaEntity.toUserCore(user, false));
+                .map((user) -> mapperToJpaEntity.toUserCore(user, false, false));
     }
 
     @Override
     public Optional<UserCore> getUserByNickname(String nickname) {
         logger.info("UserRepositoryAdapter > getUserByNickname > exec");
         return userRepository.findByNickname(nickname)
-                .map((user) -> mapperToJpaEntity.toUserCore(user, false));
+                .map((user) -> mapperToJpaEntity.toUserCore(user, false, false));
     }
 
     @Override
@@ -51,7 +58,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
         logger.info("UserRepositoryAdapter > getUsers > exec");
         return userRepository.findAll()
                 .stream()
-                .map((user) -> mapperToJpaEntity.toUserCore(user, false))
+                .map((user) -> mapperToJpaEntity.toUserCore(user, false, false))
                 .collect(Collectors.toList());
     }
 
@@ -60,7 +67,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
         logger.info("UserRepositoryAdapter > getUsersOnline > exec");
         return userRepository.findByOnlineTrueAndAtiveTrue()
                 .stream()
-                .map((user) -> mapperToJpaEntity.toUserCore(user, false))
+                .map((user) -> mapperToJpaEntity.toUserCore(user, false, false))
                 .collect(Collectors.toList());
     }
 
@@ -68,7 +75,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     public UserCore createUser(UserCore user) {
         logger.info("UserRepositoryAdapter > createUser > exec");
         logger.info("User: {}", user);
-        return mapperToJpaEntity.toUserCore(userRepository.save(mapperToJpaEntity.toUserCoreJpa(user)), false);
+        return mapperToJpaEntity.toUserCore(userRepository.save(mapperToJpaEntity.toUserCoreJpa(user)), false, false);
     }
 
     @Override
@@ -89,7 +96,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     @Override
     public UserCore updateUser(UserCore user) {
         logger.info("UserRepositoryAdapter > updateUser > exec");
-        return mapperToJpaEntity.toUserCore(userRepository.save(mapperToJpaEntity.toUserCoreJpa(user)), false);
+        return mapperToJpaEntity.toUserCore(userRepository.save(mapperToJpaEntity.toUserCoreJpa(user)), false, false);
     }
 
 }

@@ -124,10 +124,8 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public Map<String, Object> getProfile(String jwt) {
-        if (jwt == null) throw new BadRequest("Token não enviado");
+    public Map<String, Object> getUsuario(String jwt) {
         Long userId = getIdByToken(jwt);
-
 
         UserCore user = userRepository.getUserById(userId)
                 .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
@@ -136,6 +134,25 @@ public class UserApplication implements UserPortIn {
                 "id", user.getId(),
                 "nickname", user.getNickname() != null ? user.getNickname() : "",
                 "email", user.getEmail() != null ? user.getEmail() : "",
+                "avatar", user.getAvatar(),
+                "online", user.getOnline(),
+                "criando_em", user.getCriadoEm()
+        );
+        return jsonUser;
+    }
+
+    @Override
+    public Map<String, Object> getProfile(String jwt) {
+        Long userId = getIdByToken(jwt);
+
+        UserCore user = userRepository.getProfileById(userId)
+                .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
+
+        Map<String, Object> jsonUser = Map.of(
+                "id", user.getId(),
+                "nickname", user.getNickname() != null ? user.getNickname() : "",
+                "email", user.getEmail() != null ? user.getEmail() : "",
+                "matchs", user.getTodasPartidas(),
                 "avatar", user.getAvatar(),
                 "online", user.getOnline(),
                 "criando_em", user.getCriadoEm()

@@ -3,6 +3,8 @@ package com.transcender.main.domain.entity;
 import com.transcender.main.domain.exceptions.UsuarioArgumentInvalid;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,11 +23,18 @@ public class UserCore {
     private Set<FriendCore> solicitadas;
     private Set<FriendCore> recebidas;
 
+
+    private List<PartidaCore> partidasComoUsuario1;
+    private List<PartidaCore> partidasComoUsuario2;
+    private List<PartidaCore> partidasVencidas;
+
+
     public UserCore() {}
 
     public UserCore(Long id, String email, String senha, String nickname, String telefone,
                     boolean online, boolean ative, Set<FriendCore> solicitadas, Set<FriendCore> recebidas,
-                    Instant criadoEm, Instant atualizadoEm) {
+                    List<PartidaCore> partidasComoUsuario1, List<PartidaCore> partidasComoUsuario2,
+                    List<PartidaCore> partidasVencidas, Instant criadoEm, Instant atualizadoEm) {
 
         if (id == null || id <= 0) throw new UsuarioArgumentInvalid("Id invalido");
         this.id = id;
@@ -43,6 +52,10 @@ public class UserCore {
 
         this.solicitadas = solicitadas;
         this.recebidas = recebidas;
+
+        this.partidasComoUsuario1 = partidasComoUsuario1;
+        this.partidasComoUsuario2 = partidasComoUsuario2;
+        this.partidasVencidas = partidasVencidas;
     }
 
     public UserCore(String email, String senha, String nickname, String telefone, Optional<Long> id) {
@@ -111,10 +124,26 @@ public class UserCore {
     public String getAvatar() { return avatar; }
     public boolean getOnline() { return online; }
     public boolean getAtive() { return ative; }
-    public Instant getCriadoEm() { return criadoEm; }
-    public Instant getAtualizadoEm() { return atualizadoEm; }
+
     public Set<FriendCore> getSolicitadas() {return solicitadas; }
     public Set<FriendCore> getRecebidas() {return recebidas; }
+
+    public List<PartidaCore> getPartidasComoUsuario1() {return partidasComoUsuario1; }
+    public List<PartidaCore> getPartidasComoUsuario2() {return partidasComoUsuario2; }
+    public List<PartidaCore> getPartidasVencidas() {return partidasVencidas; }
+    public List<PartidaCore> getTodasPartidas() {
+        List<PartidaCore> todas = new ArrayList<>();
+        if (partidasComoUsuario1 != null) {
+            todas.addAll(partidasComoUsuario1);
+        }
+        if (partidasComoUsuario2 != null) {
+            todas.addAll(partidasComoUsuario2);
+        }
+        return todas;
+    }
+
+    public Instant getCriadoEm() { return criadoEm; }
+    public Instant getAtualizadoEm() { return atualizadoEm; }
 
     // Setters
     public void setId(Long id) { this.id = id; }
@@ -128,5 +157,4 @@ public class UserCore {
     public void setAtualizadoEm(Instant atualizadoEm) { this.atualizadoEm = atualizadoEm; }
     public void setSolicitadas(Set<FriendCore> solicitandas) { this.solicitadas = solicitadas; }
     public void setRecebebidas(Set<FriendCore> recebebidas) { this.recebidas = recebidas; }
-
 }

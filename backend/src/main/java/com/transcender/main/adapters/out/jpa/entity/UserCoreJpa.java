@@ -62,14 +62,6 @@ public class UserCoreJpa {
     @OneToMany(mappedBy = "usuario2", fetch = FetchType.LAZY)
     private List<FriendCoreJpa> recebidas;
 
-    // Data de criação do perfil
-    @Column(name = "criado_em", nullable = false)
-    private Instant criadoEm = Instant.now();
-
-    // Última vez que o perfil foi atualizado
-    @Column(name = "atualizado_em", nullable = false)
-    private Instant atualizadoEm = Instant.now();
-
     // Partidas em que o usuário foi registrado como "usuario1"
     @OneToMany(mappedBy = "usuario1", fetch = FetchType.LAZY)
     private List<PartidaCoreJpa> partidasComoUsuario1;
@@ -81,4 +73,12 @@ public class UserCoreJpa {
     // Partidas vencidas pelo usuário
     @OneToMany(mappedBy = "vencedor", fetch = FetchType.LAZY)
     private List<PartidaCoreJpa> partidasVencidas;
+
+    // Data de criação do perfil
+    @Column(name = "criado_em", nullable = false)
+    private Instant criadoEm = Instant.now();
+
+    // Última vez que o perfil foi atualizado
+    @Column(name = "atualizado_em", nullable = false)
+    private Instant atualizadoEm = Instant.now();
 }

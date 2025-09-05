@@ -1,13 +1,7 @@
 package com.transcender.main.adapters.out.jpa.mapper;
 
-import com.transcender.main.adapters.out.jpa.entity.ChatCoreJpa;
-import com.transcender.main.adapters.out.jpa.entity.FriendCoreJpa;
-import com.transcender.main.adapters.out.jpa.entity.MessageCoreJpa;
-import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
-import com.transcender.main.domain.entity.ChatCore;
-import com.transcender.main.domain.entity.FriendCore;
-import com.transcender.main.domain.entity.MessageCore;
-import com.transcender.main.domain.entity.UserCore;
+import com.transcender.main.adapters.out.jpa.entity.*;
+import com.transcender.main.domain.entity.*;
 import com.transcender.main.domain.enuns.ChatType;
 import com.transcender.main.domain.enuns.PermitionChat;
 import org.slf4j.Logger;
@@ -24,7 +18,7 @@ import java.util.stream.Collectors;
 public class MapperToJpaEntity {
     private final Logger logger = LoggerFactory.getLogger(MapperToJpaEntity.class);
 
-    public UserCore toUserCore(UserCoreJpa user, boolean includeFriends) {
+    public UserCore toUserCore(UserCoreJpa user, boolean includeFriends, boolean includePatys) {
         logger.info("ChatRepositoryAdapter::toUserCore::exec");
 
         Set<FriendCore> solicitates = includeFriends
@@ -34,6 +28,13 @@ public class MapperToJpaEntity {
         Set<FriendCore> receives = includeFriends
                 ? user.getRecebidas().stream().map(this::toFriendCore).collect(Collectors.toSet())
                 : Set.of();
+
+        List<PartidaCore> partidasComoUsuario1 = includePatys
+                ? user.getPartidasComoUsuario1().stream().map(this::toPartidaCore).collect(Collectors.toUnmodifiableList()) : null;
+        List<PartidaCore> partidasComoUsuario2 = includePatys
+                ? user.getPartidasComoUsuario2().stream().map(this::toPartidaCore).collect(Collectors.toUnmodifiableList()) : null;
+        List<PartidaCore> partidasVencidas = includePatys
+                ? user.getPartidasVencidas().stream().map(this::toPartidaCore).collect(Collectors.toUnmodifiableList()) : null;
 
         return new UserCore(
                 user.getId(),
@@ -45,8 +46,29 @@ public class MapperToJpaEntity {
                 user.getAtive(),
                 solicitates,
                 receives,
+                partidasComoUsuario1,
+                partidasComoUsuario2,
+                partidasVencidas,
                 user.getCriadoEm(),
                 user.getAtualizadoEm()
+        );
+    }
+
+    public PartidaCore toPartidaCore(PartidaCoreJpa partidaJpa) {
+        logger.info("MapperToJpaEntity::toPartidaCore::exec, partidaId={}", partidaJpa.getId());
+
+        return new PartidaCore(
+                partidaJpa.getId(),
+                toUserCore(partidaJpa.getUsuario1(), false, false), // converte jogador 1
+                toUserCore(partidaJpa.getUsuario2(), false, false), // converte jogador 2
+                partidaJpa.getScoreUsuario1(),
+                partidaJpa.getScoreUsuario2(),
+                partidaJpa.getVencedor() != null
+                        ? toUserCore(partidaJpa.getVencedor(), false, false)
+                        : null, // pode ser empate
+                partidaJpa.getMapa(),
+                partidaJpa.getCriadoEm(),
+                partidaJpa.getAtualizadoEm()
         );
     }
 
@@ -65,6 +87,9 @@ public class MapperToJpaEntity {
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
                 user.getCriadoEm(),
                 user.getAtualizadoEm()
         );
@@ -75,8 +100,8 @@ public class MapperToJpaEntity {
 
         return new FriendCore(
                 friendjpa.getId(),
-                toUserCore(friendjpa.getUsuario1(), false),
-                toUserCore(friendjpa.getUsuario2(), false),
+                toUserCore(friendjpa.getUsuario1(), false, false),
+                toUserCore(friendjpa.getUsuario2(), false, false),
                 friendjpa.getStatus(),
                 friendjpa.getCriadoEm(),
                 friendjpa.getAtualizadoEm()
@@ -135,7 +160,7 @@ public class MapperToJpaEntity {
         return new MessageCore(
                 messagesJpa.getId(),
                 messagesJpa.getChat().getId(),
-                toUserCore(messagesJpa.getSender(), false),
+                toUserCore(messagesJpa.getSender(), false, false),
                 messagesJpa.getConteudo(),
                 messagesJpa.getTipo(),
                 messagesJpa.getCriadoEm(),
