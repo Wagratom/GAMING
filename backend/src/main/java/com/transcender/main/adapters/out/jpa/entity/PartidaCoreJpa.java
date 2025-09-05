@@ -1,16 +1,14 @@
 package com.transcender.main.adapters.out.jpa.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
+import lombok.*;
 import java.time.Instant;
 
-@Entity
 @Getter
 @Setter
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "partidas")
 public class PartidaCoreJpa {
 
@@ -18,59 +16,29 @@ public class PartidaCoreJpa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "usuario1_id", nullable = false)
-    private Long usuario1Id;
+    // Jogador 1
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_1", nullable = false)
+    private UserCoreJpa usuario1;
 
-    @Column(name = "usuario2_id", nullable = false)
-    private Long usuario2Id;
+    // Jogador 2
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_2", nullable = false)
+    private UserCoreJpa usuario2;
 
-    @Column(name = "score_usuario1", nullable = false)
-    private int scoreUsuario1;
+    private Integer scoreUsuario1;
+    private Integer scoreUsuario2;
 
-    @Column(name = "score_usuario2", nullable = false)
-    private int scoreUsuario2;
+    // Quem venceu (null = empate)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vencedor")
+    private UserCoreJpa vencedor;
 
-    @Column(nullable = false)
     private String mapa;
 
-    @CreationTimestamp
-    @Column(name = "criado_em", updatable = false)
-    private Instant criadoEm;
+    @Column(name = "criado_em", nullable = false)
+    private Instant criadoEm = Instant.now();
 
-    @UpdateTimestamp
-    @Column(name = "atualizado_em")
-    private Instant atualizadoEm;
-
-    public PartidaCoreJpa() {}
-
-    public PartidaCoreJpa(Long id, Long usuario1Id, Long usuario2Id, int scoreUsuario1, int scoreUsuario2, String mapa, Instant criadoEm, Instant atualizadoEm) {
-        this.id = id;
-        this.usuario1Id = usuario1Id;
-        this.usuario2Id = usuario2Id;
-        this.scoreUsuario1 = scoreUsuario1;
-        this.scoreUsuario2 = scoreUsuario2;
-        this.mapa = mapa;
-        this.criadoEm = criadoEm;
-        this.atualizadoEm = atualizadoEm;
-    }
-
-    // Getters
-    //public Long getId() { return id; }
-    //public Long getUsuario1Id() { return usuario1Id; }
-    //public Long getUsuario2Id() { return usuario2Id; }
-    //public int getScoreUsuario1() { return scoreUsuario1; }
-    //public int getScoreUsuario2() { return scoreUsuario2; }
-    //public String getMapa() { return mapa; }
-    //public Instant getCriadoEm() { return criadoEm; }
-    //public Instant getAtualizadoEm() { return atualizadoEm; }
-
-    // Setters
-    //public void setId(Long id) { this.id = id; }
-    //public void setUsuario1Id(Long usuario1Id) { this.usuario1Id = usuario1Id; }
-    //public void setUsuario2Id(Long usuario2Id) { this.usuario2Id = usuario2Id; }
-    //public void setScoreUsuario1(int scoreUsuario1) { this.scoreUsuario1 = scoreUsuario1; }
-    //public void setScoreUsuario2(int scoreUsuario2) { this.scoreUsuario2 = scoreUsuario2; }
-    //public void setMapa(String mapa) { this.mapa = mapa; }
-    //public void setCriadoEm(Instant criadoEm) { this.criadoEm = criadoEm; }
-    //public void setAtualizadoEm(Instant atualizadoEm) { this.atualizadoEm = atualizadoEm; }
+    @Column(name = "atualizado_em", nullable = false)
+    private Instant atualizadoEm = Instant.now();
 }

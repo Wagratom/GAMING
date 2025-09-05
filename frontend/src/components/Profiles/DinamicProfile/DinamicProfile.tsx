@@ -27,7 +27,8 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
 
 
 	return (
-		<div className="text-white h-75 w-75 bg-degrader position-fixed top-50 start-50 translate-middle" style={cssBackgroundTerra}>
+		<div className="text-white h-75 w-75 position-fixed top-50 start-50 translate-middle" style={cssBackgroundTerra}>
+			<ButtonClosed backgroundColor="" backgroundShadow="" closed={props.openDinamicProfile} />
 			<BannerProfile
 				borderImg={borderImg}
 				avatar={user.avatar}
@@ -35,7 +36,6 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
 				rank={rank}
 			/>
 			<div className="d-flex flex-column h-100 position-relative p-5">
-				<ButtonClosed backgroundColor="" backgroundShadow="" closed={props.openDinamicProfile} />
 				<div className='overflow-auto h-100 '>
 					<div className="p-3 rounded h-100" id="MatchHistory">
 						<MatchHistory userId={props.id} />
