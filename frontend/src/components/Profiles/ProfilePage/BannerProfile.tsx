@@ -6,7 +6,7 @@ type propsImageProfile = {
 	rank: string;
 }
 
-export default function ProfilePhoto(props: propsImageProfile): JSX.Element {
+export default function BannerProfile(props: propsImageProfile): JSX.Element {
 	function returnFunction() {
 		if (props.avatar) {
 			return (
