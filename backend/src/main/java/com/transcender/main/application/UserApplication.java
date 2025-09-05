@@ -8,30 +8,23 @@ import com.transcender.main.domain.port.out.JwtService;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserApplication implements UserPortIn {
     private final UserRepositoryPort userRepository;
     private final EncriptyService encriptyService;
     private final JwtService jwtService;
     private static final Logger logger = LoggerFactory.getLogger(UserApplication.class);
-
-    @Autowired
-    UserApplication(UserRepositoryPort userRepository, EncriptyService encryptPortOut, JwtService jwtPortOut) {
-        this.userRepository = userRepository;
-        this.encriptyService = encryptPortOut;
-        this.jwtService = jwtPortOut;
-    }
 
     private Long getIdByToken(String jwt) {
         try {

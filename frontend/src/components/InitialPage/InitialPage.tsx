@@ -43,7 +43,6 @@ export default function InicialPage() {
 				}
 
 				const data: UserDto = await res.data;
-				console.log("RESSSS: ", data)
 				updateDataUser(data);
 
 				//reiniciando variaveis de controle
