@@ -31,7 +31,7 @@ export default function InicialPage() {
 
 	// Função para buscar dados do usuário com retry e timeout
 	function getInfoUser(timeForNewRequestAxios: number) {
-		axios.get(`${process.env.REACT_APP_API_URL}/profile`, {
+		axios.get(`${process.env.REACT_APP_API_URL}/users/me`, {
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`
 			},

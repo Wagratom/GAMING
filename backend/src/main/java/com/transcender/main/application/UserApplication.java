@@ -45,10 +45,21 @@ public class UserApplication implements UserPortIn {
         }
     }
 
+    private Map<String, Object> toJson(UserCore user, boolean includeMatchs) {
+        return Map.of(
+                "id", user.getId(),
+                "nickname", user.getNickname(),
+                "online", user.getOnline(),
+                "avatar", user.getAvatar(),
+                "criando_em", user.getCriadoEm(),
+                "matchs", includeMatchs ? user.getTodasPartidas() : "null"
+        );
+    }
+
     @Override
-    public UserCore getUserById(Long userId) {
+    public Map<String, Object> getUserById(Long userId) {
         if (userId <= 0) throw new BadRequest("Id do usuario não pode ser negativo");
-        return this.userRepository.getUserById(userId)
+        return this.userRepository.getUserById(userId).map((user) -> toJson(user, false))
                 .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
     }
 
@@ -61,30 +72,14 @@ public class UserApplication implements UserPortIn {
         List<UserCore> users = Boolean.TRUE.equals(online) ? userRepository.getUsersOnline() : userRepository.getUsers();
         logger.info("montando json response");
 
-        return users.stream()
-                .map(user -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("id", user.getId());
-                    map.put("nickname", user.getNickname());
-                    map.put("online", user.getOnline());
-                    map.put("avatar", user.getAvatar());
-                    map.put("criando_em", user.getCriadoEm());
-                    return map;
-                })
-                .collect(Collectors.toList());
+        return users.stream().map((user) -> toJson(user, false)).collect(Collectors.toList());
     }
 
     @Override
     public String login(Optional<String> nickname, Optional<String> email, String senha) {
         logger.info("[INIT] login user | nickname={}, email={}", nickname, email);
-        if (nickname.isPresent() && email.isPresent()) {
-            throw new BadRequest("Envie apenas nickname ou email, não ambos.");
-        }
-
-        // Garante que pelo menos um foi enviado
-        if (nickname.isEmpty() && email.isEmpty()) {
-            throw new BadRequest("É necessário informar nickname ou email.");
-        }
+        if (nickname.isEmpty()) throw new BadRequest("Nickname não informado");
+        if (senha.isEmpty()) throw new BadRequest("Senha não informado");
 
         UserCore user = userRepository.getUserByNickname(nickname.get())
                 .orElseThrow(() -> new Forbidden("credenciais inválidas"));
@@ -94,19 +89,12 @@ public class UserApplication implements UserPortIn {
             throw new Forbidden("credenciais inválidas");
         }
 
-        user.setOnline(true);
-
         logger.info("Atualizando o usuario na base: online=true");
+        user.setOnline(true);
         userRepository.updateUser(user);
 
-        // Monta o mapa com os dados do usuário
-        logger.info("Montando json que será salvo no token do usuario");
-        Map<String, Object> payload = Map.of(
-                "id", user.getId(),
-                "nickname", user.getNickname() != null ? user.getNickname() : "",
-                "email", user.getEmail() != null ? user.getEmail() : ""
-        );
-        return jwtService.generateToken(payload);
+        logger.info("Gerando token JWT");
+        return jwtService.generateToken(toJson(user, false));
     }
 
     @Override
@@ -124,40 +112,19 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public Map<String, Object> getUsuario(String jwt) {
+    public Map<String, Object> getUserByToken(String jwt) {
         Long userId = getIdByToken(jwt);
 
-        UserCore user = userRepository.getUserById(userId)
+        return userRepository.getUserById(userId).map((user) -> toJson(user, false))
                 .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
-
-        Map<String, Object> jsonUser = Map.of(
-                "id", user.getId(),
-                "nickname", user.getNickname() != null ? user.getNickname() : "",
-                "email", user.getEmail() != null ? user.getEmail() : "",
-                "avatar", user.getAvatar(),
-                "online", user.getOnline(),
-                "criando_em", user.getCriadoEm()
-        );
-        return jsonUser;
     }
 
     @Override
     public Map<String, Object> getProfile(String jwt) {
         Long userId = getIdByToken(jwt);
 
-        UserCore user = userRepository.getProfileById(userId)
+        return userRepository.getProfileById(userId).map((user) -> toJson(user, true))
                 .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
-
-        Map<String, Object> jsonUser = Map.of(
-                "id", user.getId(),
-                "nickname", user.getNickname() != null ? user.getNickname() : "",
-                "email", user.getEmail() != null ? user.getEmail() : "",
-                "matchs", user.getTodasPartidas(),
-                "avatar", user.getAvatar(),
-                "online", user.getOnline(),
-                "criando_em", user.getCriadoEm()
-        );
-        return jsonUser;
     }
 
     @Override

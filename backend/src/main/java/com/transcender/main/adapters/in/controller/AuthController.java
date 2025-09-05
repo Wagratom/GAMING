@@ -66,11 +66,4 @@ public class AuthController {
         );
         return UserDtoRegister.toEntity(user);
     }
-
-    @GetMapping("/profile")
-    public ResponseEntity<Map<String, Object>> profile(@RequestHeader("Authorization") String authorizationHeader) {
-        return ResponseEntity.ok().body(
-                userApplication.getUsuario(authorizationHeader)
-        );
-    }
 }

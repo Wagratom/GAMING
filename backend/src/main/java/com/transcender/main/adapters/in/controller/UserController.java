@@ -22,6 +22,20 @@ public class UserController {
         this.userApplication = userApplication;
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, Object>> getMyUser(
+            @RequestHeader("Authorization") String jwt
+    ) {
+        return ResponseEntity.ok(userApplication.getUserByToken(jwt));
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<Map<String, Object>> getMyprofile(
+            @RequestHeader("Authorization") String jwt
+    ) {
+        return ResponseEntity.ok(userApplication.getProfile(jwt));
+    }
+
     @GetMapping
     public ResponseEntity<List<Map<String, Object>>> listUsers(
             @RequestParam(required = false) Boolean online,
@@ -32,7 +46,6 @@ public class UserController {
         );
     }
 
-    //POST -> /users
     @PostMapping
     public ResponseEntity<Map<String, Object>> registerUser(@Valid @RequestBody UserDtoRegister body) {
         UserCore user = userApplication.registerUser(new UserCore(
@@ -47,8 +60,8 @@ public class UserController {
 
     //GET -> users/1234
     @GetMapping("/{userId}")
-    public ResponseEntity<Map<String, Object>> getUserById(@PathVariable Long userId) {
-        return UserDtoRegister.toEntity(userApplication.getUserById(userId));
+    public ResponseEntity<Map<String, Object>> getUserById(@PathVariable @Valid Long userId) {
+        return ResponseEntity.ok(userApplication.getUserById(userId));
     }
 
     //DELETE -> users/1234

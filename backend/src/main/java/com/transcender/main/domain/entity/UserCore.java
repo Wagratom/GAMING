@@ -114,7 +114,6 @@ public class UserCore {
                 '}';
     }
 
-
     // Getters
     public Long getId() { return id; }
     public String getEmail() { return email; }
@@ -125,11 +124,6 @@ public class UserCore {
     public boolean getOnline() { return online; }
     public boolean getAtive() { return ative; }
 
-    public Set<FriendCore> getSolicitadas() {return solicitadas; }
-    public Set<FriendCore> getRecebidas() {return recebidas; }
-
-    public List<PartidaCore> getPartidasComoUsuario1() {return partidasComoUsuario1; }
-    public List<PartidaCore> getPartidasComoUsuario2() {return partidasComoUsuario2; }
     public List<PartidaCore> getPartidasVencidas() {return partidasVencidas; }
     public List<PartidaCore> getTodasPartidas() {
         List<PartidaCore> todas = new ArrayList<>();
@@ -155,6 +149,4 @@ public class UserCore {
     public void setAtive(boolean ative) { this.ative = ative; }
     public void setCriadoEm(Instant criadoEm) { this.criadoEm = criadoEm; }
     public void setAtualizadoEm(Instant atualizadoEm) { this.atualizadoEm = atualizadoEm; }
-    public void setSolicitadas(Set<FriendCore> solicitandas) { this.solicitadas = solicitadas; }
-    public void setRecebebidas(Set<FriendCore> recebebidas) { this.recebidas = recebidas; }
 }

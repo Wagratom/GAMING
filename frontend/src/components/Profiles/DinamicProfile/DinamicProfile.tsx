@@ -25,7 +25,6 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
 
 	const { rank, borderImg, borderWrite } = HandleRank(15);
 
-
 	return (
 		<div className="text-white h-75 w-75 position-fixed top-50 start-50 translate-middle" style={cssBackgroundTerra}>
 			<ButtonClosed backgroundColor="" backgroundShadow="" closed={props.openDinamicProfile} />

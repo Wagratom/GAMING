@@ -12,13 +12,13 @@ public interface UserPortIn {
 
     Long logout(String jwt);
 
-    UserCore getUserById(Long userId);
+    Map<String, Object> getUserByToken(String jwt);
 
     List<Map<String, Object>> getUsers(Boolean online, String jwt);
 
     Map<String, Object> getProfile(String jwt);
 
-    Map<String, Object> getUsuario(String jwt);
+    Map<String, Object> getUserById(Long userId);
 
     void deleteUser(Long userId);
 
