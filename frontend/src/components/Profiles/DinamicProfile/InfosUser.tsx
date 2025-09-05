@@ -25,7 +25,7 @@ export default function InfosUser({ nickName }: { nickName: string }): JSX.Eleme
 	// 	getProfile();
 	// }, []);
 
-	const { rank, borderImg, borderWrite } = HandleRank(35);
+	const { rank, borderImg, borderWrite } = HandleRank(15);
 
 	return (
 		<div className="h-100 position-absolute d-flex justify-content-center">
@@ -33,10 +33,12 @@ export default function InfosUser({ nickName }: { nickName: string }): JSX.Eleme
 				borderImg={borderImg}
 				avatar={user.avatar}
 				nickname={user.nickname}
+				rank={rank}
 			/>
 			{/* <div className='h-100'>
 				<img className='img-fluid h-100' src={rank} alt={`Foto do rank da pessoa`} />
-			</div>
+			</div> */}
+			{/*
 			<Pointer wins={10}
 				loses={5}
 				draws={3}

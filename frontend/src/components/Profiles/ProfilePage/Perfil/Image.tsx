@@ -1,9 +1,9 @@
-import background from '../../../../assets/rankLevel/banner.png'
 
 type propsImageProfile = {
 	borderImg: string;
 	avatar: string;
 	nickname: string;
+	rank: string;
 }
 
 export default function ProfilePhoto(props: propsImageProfile): JSX.Element {
@@ -15,6 +15,9 @@ export default function ProfilePhoto(props: propsImageProfile): JSX.Element {
 						<img src={props.avatar} alt='foto' />
 					</div>
 					<p className='letter-pixel fs-1'>{props.nickname}</p>
+					<div style={{ marginTop: "auto", paddingBottom: "160px" }}>
+						<img className='img-fluid h-100' src={props.rank} alt={`Foto do rank da pessoa`} />
+					</div>
 				</div>
 			)
 		}
