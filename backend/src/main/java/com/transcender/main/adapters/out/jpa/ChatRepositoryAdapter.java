@@ -16,9 +16,9 @@ import com.transcender.main.domain.enuns.MessageType;
 import com.transcender.main.domain.enuns.PermitionChat;
 import com.transcender.main.domain.enuns.StatusChat;
 import com.transcender.main.domain.port.out.ChatRepositoryPort;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class ChatRepositoryAdapter implements ChatRepositoryPort {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
@@ -34,19 +35,6 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     private final MessageRepository messageRepository;
     private final ChatUserRepository chatUserRepository;
     private final Logger logger = LoggerFactory.getLogger(UserRepositoryAdapter.class);
-
-    @Autowired
-    public ChatRepositoryAdapter(ChatRepository chatRepository,
-                                 UserRepository userRepository,
-                                 MessageRepository messageRepository,
-                                 ChatUserRepository chatUserRepository,
-                                 MapperToJpaEntity mapperToJpaEntiy) {
-        this.chatRepository = chatRepository;
-        this.userRepository = userRepository;
-        this.messageRepository = messageRepository;
-        this.mapperToJpaEntity = mapperToJpaEntiy;
-        this.chatUserRepository = chatUserRepository;
-    }
 
     public ChatCoreJpa createDirectChat(UserCoreJpa user1, UserCoreJpa user2) {
         ChatCoreJpa privateChat = ChatCoreJpa.newPrivateChat();

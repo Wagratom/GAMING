@@ -1,12 +1,12 @@
 package com.transcender.main.adapters.out.jpa;
 
-import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.adapters.out.jpa.mapper.MapperToJpaEntity;
+import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.domain.entity.UserCore;
+import com.transcender.main.domain.port.out.UserRepositoryPort;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.transcender.main.domain.port.out.UserRepositoryPort;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,16 +14,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
+
 public class UserRepositoryAdapter implements UserRepositoryPort {
     private final UserRepository userRepository;
     private final MapperToJpaEntity mapperToJpaEntity;
     private final Logger logger = LoggerFactory.getLogger(UserRepositoryAdapter.class);
-
-    @Autowired
-    public UserRepositoryAdapter(UserRepository usuarioRepository, MapperToJpaEntity mapperToJpaEntity) {
-        this.userRepository = usuarioRepository;
-        this.mapperToJpaEntity = mapperToJpaEntity;
-    }
 
     @Override
     public Optional<UserCore> getProfileById(Long userId) {

@@ -11,6 +11,7 @@ import com.transcender.main.domain.port.out.FriendsRepositoryPort;
 import com.transcender.main.domain.port.out.JwtService;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
 import io.jsonwebtoken.JwtException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,21 +22,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FriendsApplication implements FriendsPort {
-
-    private static final Logger logger = LoggerFactory.getLogger(FriendsApplication.class);
 
     private final UserRepositoryPort userRepository;
     private final FriendsRepositoryPort friendsRepository;
     private final JwtService jwtService;
 
-    public FriendsApplication(UserRepositoryPort userRepository,
-                              JwtService jwtService,
-                              FriendsRepositoryPort friendsRepository) {
-        this.userRepository = userRepository;
-        this.friendsRepository = friendsRepository;
-        this.jwtService = jwtService;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(FriendsApplication.class);
 
     private record UsersPair(UserCore requester, UserCore friend) {}
 

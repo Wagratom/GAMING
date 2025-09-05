@@ -13,15 +13,16 @@ import com.transcender.main.domain.port.out.FriendsRepositoryPort;
 import com.transcender.main.domain.port.out.JwtService;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
 import io.jsonwebtoken.ExpiredJwtException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ChatApplicationService implements ChatPort {
 
     private final ChatRepositoryPort chatRepository;
@@ -30,21 +31,7 @@ public class ChatApplicationService implements ChatPort {
     private final FriendsRepositoryPort friendRepository;
     private final Logger logger = LoggerFactory.getLogger(ChatApplicationService.class);
 
-    private record UsersPair(UserCore requester, UserCore friend) {
-    }
-
-    ;
-
-    @Autowired
-    public ChatApplicationService(ChatRepositoryPort chatRepository,
-                                  UserRepositoryPort userRepository,
-                                  FriendsRepositoryPort friendRepository,
-                                  JwtService jwtService) {
-        this.chatRepository = chatRepository;
-        this.userRepository = userRepository;
-        this.friendRepository = friendRepository;
-        this.jwtService = jwtService;
-    }
+    private record UsersPair(UserCore requester, UserCore friend) {}
 
     private Long getIdByToken(String jwt) {
         try {

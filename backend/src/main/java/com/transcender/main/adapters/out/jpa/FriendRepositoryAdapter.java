@@ -8,9 +8,9 @@ import com.transcender.main.domain.entity.FriendCore;
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.FriendStatus;
 import com.transcender.main.domain.port.out.FriendsRepositoryPort;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,17 +18,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
+@RequiredArgsConstructor
 public class FriendRepositoryAdapter implements FriendsRepositoryPort {
 
     private final FriendRepository friendsRepository;
     private final MapperToJpaEntity mapperToJpaEntity;
     private final Logger logger = LoggerFactory.getLogger(FriendRepositoryAdapter.class);
-
-    @Autowired
-    public FriendRepositoryAdapter(FriendRepository friendsRepository, MapperToJpaEntity mapperToJpaEntity) {
-        this.friendsRepository = friendsRepository;
-        this.mapperToJpaEntity = mapperToJpaEntity;
-    }
 
     @Override
     public List<FriendCore> getFriendsCore(Long userId, FriendStatus status) {
