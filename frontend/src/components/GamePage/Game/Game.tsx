@@ -3,7 +3,7 @@ import Phaser from "phaser";
 import GameScene from "./GameScene";
 
 import SettingsStore from "../SettingsStore/SettingsStore";
-import SettingsPath from "../SettingsGame/SettingsGame";
+import ChooseGameMode from "../SettingsGame/ChooseGameMode";
 import Ranking from "../../Rankingpage/Ranking";
 import PageChats from "../../PublicChatsPage/PublicChats";
 import DinamicProfile from "../../Profiles/DinamicProfile/DinamicProfile";
@@ -55,13 +55,14 @@ export default function Game() {
 				<div >
 					{collisionPnt === 'planetTerra' && <MiniProfile showMiniPerfil={setCollisionPnt} />}
 					{collisionPnt === 'planetLua' && <SettingsStore openSettingsStore={setCollisionPnt} />}
-					{collisionPnt === 'planetFire' && <SettingsPath openSettingsPath={setCollisionPnt} />}
+					{collisionPnt === 'planetFire' && <ChooseGameMode openSettingsPath={setCollisionPnt} />}
 					{collisionPnt === 'satelite' && <PageChats openPageChats={setCollisionPnt} />}
 					{collisionPnt === 'base' && <Ranking openStore={setCollisionPnt} />}
 					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} />}
 					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
 					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
-					<DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} />
+					{/* <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} /> */}
+					<ChooseGameMode openSettingsPath={setCollisionPnt} />
 				</div>
 			</div>
 		</div>
