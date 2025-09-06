@@ -99,7 +99,7 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public Map<String, Object> getProfile(String jwt) {
+    public UserCore getProfile(String jwt) {
         Long userId = getIdByToken(jwt);
         return userRepository.getProfileById(userId)
                 .orElseThrow(() -> new ResourceNotFound("Usuario", userId));

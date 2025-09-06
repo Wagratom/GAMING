@@ -28,20 +28,20 @@ public class ChatController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @PostMapping("")
-    public ResponseEntity<String> criarChat(@Valid @RequestBody ChatDtoCreate chatDto) {
-        ChatCore novoChat = chatService.createChat(new ChatCore(
-                        chatDto.getChatName(),
-                        chatDto.getChatOwner(),
-                        chatDto.getType(),
-                        chatDto.getDescricao(),
-                        chatDto.getAdms()
-                )
-        );
-
-        ChatCore criado = chatService.createChat(novoChat);
-        return ResponseEntity.ok().body("Sucesso");
-    }
+//    @PostMapping("")
+//    public ResponseEntity<String> criarChat(@Valid @RequestBody ChatDtoCreate chatDto) {
+//        ChatCore novoChat = chatService.createChat(new ChatCore(
+//                        chatDto.getChatName(),
+//                        chatDto.getChatOwner(),
+//                        chatDto.getType(),
+//                        chatDto.getDescricao(),
+//                        chatDto.getAdms()
+//                )
+//        );
+//
+//        ChatCore criado = chatService.createChat(novoChat);
+//        return ResponseEntity.ok().body("Sucesso");
+//    }
 
     @GetMapping("/directChats/{friendId}")
     public ResponseEntity<Map<String, Object>> getDirectChat(
