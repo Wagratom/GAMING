@@ -4,6 +4,8 @@ import com.transcender.main.domain.entity.PongGame;
 import com.transcender.main.domain.valueobject.PlayerMove;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +32,9 @@ public class GameApplicationService {
     private final Queue<Long> waitingPlayersRanquedGame = new ConcurrentLinkedQueue<>();
     private final Queue<Long> VsCoopGame = new ConcurrentLinkedQueue<>();
 
+    private final Logger logger = LoggerFactory.getLogger(GameApplicationService.class);
     public void addToQueue(Long playerId, String typeMode) {
+        logger.info("Adicionando novo player '{}' na fila '{}'", typeMode, playerId);
         Queue<Long> queue;
 
         switch (typeMode) {
@@ -56,10 +60,14 @@ public class GameApplicationService {
 
             String roomId = UUID.randomUUID().toString();
             createRoom(roomId, player1, player2, typeMode);
+
+        } else {
+            messagingTemplate.convertAndSend("/topic/addPlayer/" + playerId, "Player adicionado a fila");
         }
     }
 
     private void createRoom(String roomId, Long playerId1, Long playerId2, String mode) {
+        logger.info("Criando uma nova partida entre player1={} player2={}", playerId1, playerId2);
         PongGame game = games.computeIfAbsent(roomId, r -> new PongGame(roomId, mode));
         game.addPlayer(playerId1, playerId2);
 

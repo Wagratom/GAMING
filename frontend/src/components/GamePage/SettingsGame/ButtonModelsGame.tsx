@@ -14,7 +14,7 @@ export default function ButtonModelsGame({ photo, mode }: PropsButtonPlay): JSX.
 
 	// WebSocket para enviar a solicitação de entrar na fila de partida
 	const matchRequestClient = ConnectWebsocket("/game/addPlayer", () => {
-		console.log("Solicitação de partida enviada com sucesso");
+		alert("Solicitação de partida enviada com sucesso");
 	});
 
 	// WebSocket para receber notificação de partida encontrada
