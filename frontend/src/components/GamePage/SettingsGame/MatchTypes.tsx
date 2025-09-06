@@ -3,9 +3,9 @@ import playPong from '../../../assets/settingsGame/playPong.jpg'
 import playSpecialPong from '../../../assets/settingsGame/playSpecialPong.jpg'
 import bgFire from "../../../assets/game/planets/backgrounds/bgFire.jpg";
 import React, { useState } from "react";
-import { Modal } from "react-bootstrap";
+import ModalRules from "./ModalRules";
 
-export default function ModelsGame(): JSX.Element {
+export default function MatchTypes(): JSX.Element {
 
 	const cssDivFilhoSelectGame: React.CSSProperties = {
 		position: 'relative',
@@ -25,43 +25,10 @@ export default function ModelsGame(): JSX.Element {
 		setIsOpen(true);
 	};
 
-	const closeModal = () => {
-		setIsOpen(false);
-	};
-
 	return (
 		<div style={cssDivFilhoSelectGame}>
 			<button onClick={openModal}>Regras do Jogo!</button>
-
-			<Modal show={isOpen} onHide={closeModal}>
-				<Modal.Header closeButton>
-					<Modal.Title>Regras Gerais: </Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					<p>O jogador que fizer 10 pontos primeiro ganha.</p>
-					<p>Em caso de desconexão você perde automaticamente.</p>
-					<p>O modo normal game possui pooderes</p>
-					<p>O modo ranqueado é o padrão pong 1972</p>
-					<br></br>
-
-					<h6>Teclas:</h6>
-					<div className="d-flex">
-						<div className="w-50">
-							<p>Jogador da diretira</p>
-							<p><u>W</u>&nbsp;subir raquete</p>
-							<p><u>S</u>&nbsp;&nbsp;descer raquete </p>
-						</div>
-						<div >
-							<p>Jogador da esquerda</p>
-							<p>⬆️ subir raquete</p>
-							<p>⬇️ descer raquete </p>
-						</div>
-					</div>
-				</Modal.Body>
-				<Modal.Footer>
-					<button onClick={closeModal}>Close</button>
-				</Modal.Footer>
-			</Modal>
+			<ModalRules isOpen={isOpen} closeModal={setIsOpen} />
 
 			<div className="d-flex p-3" id='divOptionsStartGame'>
 				<ButtonModelsGame
