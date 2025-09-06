@@ -14,6 +14,7 @@ import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FriendsApplication implements FriendsPort {
 
+    private final SimpMessagingTemplate messagingTemplate;
     private final UserRepositoryPort userRepository;
     private final FriendsRepositoryPort friendsRepository;
     private final JwtService jwtService;
@@ -125,25 +127,29 @@ public class FriendsApplication implements FriendsPort {
     }
 
     @Override
-    public Map<String, Object> addFriend(String jwt, Long friendId) {
+    public void addFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Solicitação de amizade: solicitante={} | amigo={}", requesterId, friendId);
 
         UsersPair users = getAndValidateUsers(requesterId, friendId);
-        return notificationsToJson(friendsRepository.addFriend(users.requester(), users.friend()));
+        messagingTemplate.convertAndSend("/topic/friends/" + friendId,
+                notificationsToJson(friendsRepository.addFriend(users.requester(), users.friend()))
+        );
     }
 
     @Override
-    public Map<String, Object> acceptFriend(String jwt, Long friendId) {
+    public void acceptFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Aceitar amizade: solicitante={} | amigo={}", requesterId, friendId);
 
         UsersPair users = getAndValidateUsers(requesterId, friendId);
-        return notificationsToJson(friendsRepository.acceptFriend(users.requester(), users.friend()));
+        messagingTemplate.convertAndSend("/topic/friends/" + requesterId,
+                notificationsToJson(friendsRepository.acceptFriend(users.requester(), users.friend()))
+        );
     }
 
     @Override
-    public Map<String, Object> declineFriend(String jwt, Long friendId) {
+    public void declineFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Recusar amizade: solicitante={} | amigo={}", requesterId, friendId);
 
@@ -152,11 +158,13 @@ public class FriendsApplication implements FriendsPort {
                 .orElseThrow(() -> new BadRequest("Amizade não encontrada"));
 
         validateFriendShip(friendship, users.requester(), users.friend());
-        return notificationsToJson(friendsRepository.declineFriend(users.requester(), users.friend()));
+        messagingTemplate.convertAndSend("/topic/friends/" + requesterId,
+                notificationsToJson(friendsRepository.declineFriend(users.requester(), users.friend()))
+        );
     }
 
     @Override
-    public Map<String, Object> removeFriend(String jwt, Long friendId) {
+    public void removeFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Remover amizade: solicitante={} | amigo={}", requesterId, friendId);
 
@@ -165,11 +173,14 @@ public class FriendsApplication implements FriendsPort {
                 .orElseThrow(() -> new BadRequest("Amizade não encontrada"));
 
         validateFriendShip(friendship, users.requester(), users.friend());
-        return notificationsToJson(friendsRepository.removeFriend(users.requester(), users.friend()));
+        messagingTemplate.convertAndSend(
+                "/topic/friends/" + friendId,
+                notificationsToJson(friendsRepository.removeFriend(users.requester(), users.friend()))
+        );
     }
 
     @Override
-    public Map<String, Object> blockFriend(String jwt, Long friendId) {
+    public void blockFriend(String jwt, Long friendId) {
         Long requesterId = extractUserIdFromJwt(jwt);
         logger.info("Bloquear usuário: solicitante={} | amigo={}", requesterId, friendId);
 
@@ -181,6 +192,9 @@ public class FriendsApplication implements FriendsPort {
             throw new BadRequest("O usuário não pode bloquear a si mesmo");
         }
 
-        return notificationsToJson(friendsRepository.blockFriend(users.requester(), users.friend()));
+        messagingTemplate.convertAndSend(
+                "/topic/friends/" + friendId,
+                notificationsToJson(friendsRepository.removeFriend(users.requester(), users.friend()))
+        );
     }
 }

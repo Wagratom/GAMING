@@ -8,10 +8,10 @@ public interface FriendsPort {
     List<Map<String, Object>> getFriendsNotication(String jwt, FriendStatus status);
     List<Map<String, Object>> getFriends(String jwt, FriendStatus status);
 
-    Map<String, Object> addFriend(String jwt, Long friendId);
-    Map<String, Object> acceptFriend(String jwt, Long friendId);
-    Map<String, Object> declineFriend(String jwt, Long friendId);
+    void addFriend(String jwt, Long friendId);
+    void acceptFriend(String jwt, Long friendId);
+    void declineFriend(String jwt, Long friendId);
 
-    Map<String, Object> removeFriend(String jwt, Long friendId);
-    Map<String, Object> blockFriend(String jwt, Long friendId);
+    void removeFriend(String jwt, Long friendId);
+    void blockFriend(String jwt, Long friendId);
 }

@@ -18,17 +18,15 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class FriendsController {
     private final FriendsApplication friendsApplication;
-    private final SimpMessagingTemplate messagingTemplate;
     private static final Logger logger = LoggerFactory.getLogger(FriendsController.class);
 
     public FriendsController(FriendsApplication friendsApplication, SimpMessagingTemplate messagingTemplate) {
         this.friendsApplication = friendsApplication;
-        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping
     public ResponseEntity<?> getFriends(@RequestHeader("Authorization") String jwt,
-            @RequestParam(value = "status", required = false) String status) {
+                                        @RequestParam(value = "status", required = false) String status) {
 
         FriendStatus friendStatus;
 
@@ -54,43 +52,35 @@ public class FriendsController {
 
     @PostMapping
     public ResponseEntity<String> addFriend(@RequestHeader("Authorization") String jwt,
-            @Valid @RequestBody AddUserDto friend) {
+                                            @Valid @RequestBody AddUserDto friend) {
 
         logger.info("Iniciando controller para adicionar um amigo");
-        Map<String, Object> response = friendsApplication.addFriend(jwt, Long.parseLong(friend.friendId()));
-        long receiver = ((Number) ((Map<String, Object>) response.get("receiver")).get("id")).longValue();
-        messagingTemplate.convertAndSend("/topic/friends/" + receiver, response);
+        friendsApplication.addFriend(jwt, Long.parseLong(friend.friendId()));
         return ResponseEntity.ok("Success");
     }
 
     @PostMapping("{friendId}/accept")
     public ResponseEntity<String> acceptFriend(@RequestHeader("Authorization") String jwt,
-            @PathVariable Long friendId) {
-        Map<String, Object> response = friendsApplication.acceptFriend(jwt, friendId);
-        long sender = ((Number) ((Map<String, Object>) response.get("sender")).get("id")).longValue();
-        messagingTemplate.convertAndSend("/topic/friends/" + sender, response);
+                                               @PathVariable Long friendId) {
+
+        logger.info("Iniciando controller para aceitar um amigo");
+        friendsApplication.acceptFriend(jwt, friendId);
         return ResponseEntity.ok("Solicitação de amizade aceitada com sucesso.");
     }
 
     @PostMapping("{friendId}/decline")
     public ResponseEntity<String> declineFriend(@RequestHeader("Authorization") String jwt,
-            @PathVariable Long friendId) {
+                                                @PathVariable Long friendId) {
 
         logger.info("Iniciando controller para recusar um amigo");
-        Map<String, Object> response = friendsApplication.declineFriend(jwt, friendId);
-        long sender = ((Number) ((Map<String, Object>) response.get("sender")).get("id")).longValue();
-        messagingTemplate.convertAndSend("/topic/friends/" + sender, response);
+        friendsApplication.declineFriend(jwt, friendId);
         return ResponseEntity.ok("Solicitação de amizade recusada com sucesso.");
     }
 
     @PostMapping("{friendId}/remove")
     public ResponseEntity<String> removeFriend(@RequestHeader("Authorization") String jwt,
-            @PathVariable Long friendId) {
-
+                                               @PathVariable Long friendId) {
         logger.info("Iniciando controller para remover um amigo");
-        Map<String, Object> response = friendsApplication.removeFriend(jwt, friendId);
-        long receiver = ((Number) ((Map<String, Object>) response.get("receiver")).get("id")).longValue();
-        messagingTemplate.convertAndSend("/topic/friends/" + receiver, response);
         return ResponseEntity.ok("Amigo removido com sucesso.");
     }
 
@@ -98,9 +88,7 @@ public class FriendsController {
     public ResponseEntity<String> blockFriend(@RequestHeader("Authorization") String jwt, @PathVariable Long friendId) {
 
         logger.info("Iniciando controller para blockear um amigo");
-        Map<String, Object> response = friendsApplication.blockFriend(jwt, friendId);
-        long receiver = ((Number) ((Map<String, Object>) response.get("receiver")).get("id")).longValue();
-        messagingTemplate.convertAndSend("/topic/friends/" + receiver, response);
+        friendsApplication.blockFriend(jwt, friendId);
         return ResponseEntity.ok("Usuário bloqueado com sucesso.");
     }
 }

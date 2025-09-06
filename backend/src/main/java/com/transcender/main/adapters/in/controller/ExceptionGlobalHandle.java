@@ -15,7 +15,6 @@ import java.util.Map;
 
 @ControllerAdvice
 public class ExceptionGlobalHandle {
-
     // Exceções de validação do corpo da requisição (DTOs validados com @Valid)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
