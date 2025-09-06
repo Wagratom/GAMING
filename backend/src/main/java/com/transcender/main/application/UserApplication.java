@@ -44,7 +44,7 @@ public class UserApplication implements UserPortIn {
                 "nickname", user.getNickname(),
                 "online", user.getOnline(),
                 "avatar", user.getAvatar(),
-                "criando_em", user.getCriadoEm(),
+                "criando_em", user.getCriadoEm().toString(),
                 "matchs", includeMatchs ? user.getTodasPartidas() : "null"
         );
     }

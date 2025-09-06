@@ -1,3 +1,3 @@
 package com.transcender.main.domain.valueobject;
 
-public record PlayerMove(String playerId, int deltaY) {};
+public record PlayerMove(String playerId, int deltaY, String roomId) {};

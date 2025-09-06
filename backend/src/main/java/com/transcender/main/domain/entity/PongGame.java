@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PongGame {
     private final String roomId;
-    private final List<String> players = new ArrayList<>();
+    private final List<Long> players = new ArrayList<>();
     private int width = 600, height = 400;
     private int paddleHeight = 80, paddleWidth = 10;
     private int ballX = 300, ballY = 200, ballSize = 10;
@@ -16,10 +16,13 @@ public class PongGame {
     private int leftPaddleY = 160, rightPaddleY = 160;
     private int scoreLeft = 0, scoreRight = 0;
 
-    public void addPlayer(String playerId) {
-        if (!players.contains(playerId) && players.size() < 2) {
-            players.add(playerId);
-        }
+    public PongGame(String roomId) {
+        this.roomId = roomId;
+    }
+
+    public void addPlayer(Long playerId1, Long PlayerId2) {
+            players.add(playerId1);
+            players.add(PlayerId2);
     }
 
     public void movePlayer(PlayerMove move) {
@@ -72,5 +75,58 @@ public class PongGame {
         ballY = height / 2;
         ballVelX *= -1; // manda para o lado contrário de quem fez ponto
         ballVelY = 4;
+    }
+
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public List<Long> getPlayers() {
+        return players;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getBallX() {
+        return ballX;
+    }
+
+    public int getBallY() {
+        return ballY;
+    }
+
+    public int getBallSize() {
+        return ballSize;
+    }
+
+    public int getBallVelX() {
+        return ballVelX;
+    }
+
+    public int getBallVelY() {
+        return ballVelY;
+    }
+
+    public int getLeftPaddleY() {
+        return leftPaddleY;
+    }
+
+    public int getRightPaddleY() {
+        return rightPaddleY;
+    }
+
+    public int getScoreLeft() {
+        return scoreLeft;
+    }
+
+    public int getScoreRight() {
+        return scoreRight;
     }
 }
