@@ -66,20 +66,18 @@ CREATE TABLE IF NOT EXISTS amigos (
   FOREIGN KEY (usuario2_id) REFERENCES usuarios(id)
 );
 
--- Tabela de partidas (com vencedor)
+-- Tabela de partidas (MatchCoreJpa) simplificada, sem empate
 CREATE TABLE IF NOT EXISTS partidas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    usuario_1 BIGINT NOT NULL,
-    usuario_2 BIGINT NOT NULL,
-    score_usuario_1 INT NULL,
-    score_usuario_2 INT NULL,
-    vencedor BIGINT NULL COMMENT 'null = empate',
-    mapa VARCHAR(255) NULL,
+    mapa VARCHAR(100) NOT NULL COMMENT 'Nome do mapa da partida',
+    winner_id BIGINT NOT NULL COMMENT 'Usuário vencedor',
+    loser_id BIGINT NOT NULL COMMENT 'Usuário perdedor',
+    winner_score INT NOT NULL COMMENT 'Pontuação do vencedor',
+    loser_score INT NOT NULL COMMENT 'Pontuação do perdedor',
     criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_1) REFERENCES usuarios(id),
-    FOREIGN KEY (usuario_2) REFERENCES usuarios(id),
-    FOREIGN KEY (vencedor) REFERENCES usuarios(id)
+    FOREIGN KEY (winner_id) REFERENCES usuarios(id),
+    FOREIGN KEY (loser_id) REFERENCES usuarios(id)
 );
 
 -- Inserts de usuários (4 apenas)
@@ -96,13 +94,12 @@ CREATE TABLE IF NOT EXISTS partidas (
 --
 ---- Partidas exemplo
 ---- User1 ganhou de User2
---INSERT INTO partidas (usuario_1, usuario_2, score_usuario_1, score_usuario_2, vencedor, mapa)
---VALUES (1, 2, 10, 7, 1, 'arena_default');
+--INSERT INTO partidas (winner_id, loser_id, winner_score, loser_score, mapa)
+--VALUES (1, 2, 10, 7, 'arena_default');
 --
 ---- User3 ganhou de User1
---INSERT INTO partidas (usuario_1, usuario_2, score_usuario_1, score_usuario_2, vencedor, mapa)
---VALUES (1, 3, 5, 10, 3, 'arena_neon');
+--INSERT INTO partidas (winner_id, loser_id, winner_score, loser_score, mapa)
+--VALUES (1, 3, 10, 7, 'arena_space');
 --
----- Empate entre User2 e User4
---INSERT INTO partidas (usuario_1, usuario_2, score_usuario_1, score_usuario_2, vencedor, mapa)
---VALUES (2, 4, 8, 8, NULL, 'arena_space');
+--INSERT INTO partidas (winner_id, loser_id, winner_score, loser_score, mapa)
+--VALUES (3, 1, 10, 5, 'arena_neon');

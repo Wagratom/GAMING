@@ -62,17 +62,13 @@ public class UserCoreJpa {
     @OneToMany(mappedBy = "usuario2", fetch = FetchType.LAZY)
     private List<FriendCoreJpa> recebidas;
 
-    // Partidas em que o usuário foi registrado como "usuario1"
-    @OneToMany(mappedBy = "usuario1", fetch = FetchType.LAZY)
-    private List<PartidaCoreJpa> partidasComoUsuario1;
-
     // Partidas em que o usuário foi registrado como "usuario2"
-    @OneToMany(mappedBy = "usuario2", fetch = FetchType.LAZY)
-    private List<PartidaCoreJpa> partidasComoUsuario2;
+    @OneToMany(mappedBy = "loser", fetch = FetchType.LAZY)
+    private List<MatchCoreJpa> partidasPerdidas;
 
     // Partidas vencidas pelo usuário
-    @OneToMany(mappedBy = "vencedor", fetch = FetchType.LAZY)
-    private List<PartidaCoreJpa> partidasVencidas;
+    @OneToMany(mappedBy = "winner", fetch = FetchType.LAZY)
+    private List<MatchCoreJpa> partidasVencidas;
 
     // Data de criação do perfil
     @Column(name = "criado_em", nullable = false)
@@ -81,4 +77,27 @@ public class UserCoreJpa {
     // Última vez que o perfil foi atualizado
     @Column(name = "atualizado_em", nullable = false)
     private Instant atualizadoEm = Instant.now();
+
+    public UserCoreJpa(
+            Long id,
+            String email,
+            String senhaHash,
+            String nickname,
+            String telefone,
+            Boolean online,
+            Boolean ative,
+            Instant criadoEm,
+            Instant atualizadoEm
+    ) {
+        this.id = id;
+        this.email = email;
+        this.senhaHash = senhaHash;
+        this.nickname = nickname;
+        this.telefone = telefone;
+        this.online = online;
+        this.ative = ative;
+        this.criadoEm = criadoEm;
+        this.atualizadoEm = atualizadoEm;
+    }
+
 }

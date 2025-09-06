@@ -26,17 +26,4 @@ public class UserDtoRegister {
     private String email;
 
     private String telefone; // opcional
-
-
-    public static ResponseEntity<Map<String, Object>> toEntity(UserCore user) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("id", user.getId());
-        body.put("nickname", user.getNickname());
-        body.put("email", user.getEmail());
-        body.put("online", user.getOnline());
-        body.put("telefone", user.getTelefone());
-        body.put("atualizado_em", user.getAtualizadoEm());
-        body.put("criado_em", user.getCriadoEm());
-        return ResponseEntity.ok().body(body);
-    }
 }

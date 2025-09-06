@@ -29,11 +29,11 @@ public class MapperToJpaEntity {
                 ? user.getRecebidas().stream().map(this::toFriendCore).collect(Collectors.toSet())
                 : Set.of();
 
-        List<PartidaCore> partidasComoUsuario1 = includePatys
-                ? user.getPartidasComoUsuario1().stream().map(this::toPartidaCore).collect(Collectors.toUnmodifiableList()) : null;
-        List<PartidaCore> partidasComoUsuario2 = includePatys
-                ? user.getPartidasComoUsuario2().stream().map(this::toPartidaCore).collect(Collectors.toUnmodifiableList()) : null;
-        List<PartidaCore> partidasVencidas = includePatys
+        List<MatchCore> partidasComoUsuario1 = includePatys
+                ? user.getPartidasVencidas().stream().map(this::toPartidaCore).collect(Collectors.toUnmodifiableList()) : null;
+        List<MatchCore> partidasComoUsuario2 = includePatys
+                ? user.getPartidasPerdidas().stream().map(this::toPartidaCore).collect(Collectors.toUnmodifiableList()) : null;
+        List<MatchCore> partidasVencidas = includePatys
                 ? user.getPartidasVencidas().stream().map(this::toPartidaCore).collect(Collectors.toUnmodifiableList()) : null;
 
         return new UserCore(
@@ -54,21 +54,18 @@ public class MapperToJpaEntity {
         );
     }
 
-    public PartidaCore toPartidaCore(PartidaCoreJpa partidaJpa) {
-        logger.info("MapperToJpaEntity::toPartidaCore::exec, partidaId={}", partidaJpa.getId());
+    public MatchCore toPartidaCore(MatchCoreJpa match) {
+        logger.info("MapperToJpaEntity > toPartidaCore > exec, partidaId={}", match.getId());
 
-        return new PartidaCore(
-                partidaJpa.getId(),
-                toUserCore(partidaJpa.getUsuario1(), false, false), // converte jogador 1
-                toUserCore(partidaJpa.getUsuario2(), false, false), // converte jogador 2
-                partidaJpa.getScoreUsuario1(),
-                partidaJpa.getScoreUsuario2(),
-                partidaJpa.getVencedor() != null
-                        ? toUserCore(partidaJpa.getVencedor(), false, false)
-                        : null, // pode ser empate
-                partidaJpa.getMapa(),
-                partidaJpa.getCriadoEm(),
-                partidaJpa.getAtualizadoEm()
+        return new MatchCore(
+                match.getId(),
+                match.getMap(),
+                toUserCore(match.getWinner(), false, false),
+                toUserCore(match.getLoser(), false, false),
+                match.getWinnerScore(),
+                match.getLoserScore(),
+                match.getCriadoEm(),
+                match.getAtauzalidoEm()
         );
     }
 
@@ -83,13 +80,6 @@ public class MapperToJpaEntity {
                 user.getTelefone(),
                 user.getOnline(),
                 user.getAtive(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
                 user.getCriadoEm(),
                 user.getAtualizadoEm()
         );

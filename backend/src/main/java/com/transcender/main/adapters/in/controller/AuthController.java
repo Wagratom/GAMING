@@ -54,7 +54,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody UserDtoRegister body) {
+    public ResponseEntity<String> register(@Valid @RequestBody UserDtoRegister body) {
         UserCore user = userApplication.registerUser(
             new UserCore(
                 body.getEmail(),
@@ -64,6 +64,6 @@ public class AuthController {
                 Optional.empty()
             )
         );
-        return UserDtoRegister.toEntity(user);
+        return ResponseEntity.ok("usuário registrado com sucesso");
     }
 }

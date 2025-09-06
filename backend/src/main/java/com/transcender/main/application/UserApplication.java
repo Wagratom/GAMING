@@ -128,7 +128,7 @@ public class UserApplication implements UserPortIn {
 
         logger.info("Pegando usuário antigo DB");
         UserCore oldUser = userRepository.getUserById(userId)
-                .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
+                .orElseThrow(() -> new ResourceNotFound("usuário", userId));
 
         oldUser.setNickname(newNickname);
         logger.info("Atualizando usuário");

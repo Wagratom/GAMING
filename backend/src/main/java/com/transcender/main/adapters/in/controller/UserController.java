@@ -1,7 +1,8 @@
 package com.transcender.main.adapters.in.controller;
 
 import com.transcender.main.adapters.in.controller.dto.UserDtoRegister;
-import com.transcender.main.application.FriendsApplication;
+import com.transcender.main.adapters.in.controller.dto.responses.ProfileResponse;
+import com.transcender.main.adapters.in.controller.dto.responses.UserResponse;
 import com.transcender.main.application.UserApplication;
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.port.in.UserPortIn;
@@ -13,8 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -30,56 +31,46 @@ public class UserController {
 
     @GetMapping("/me")
     @Operation(summary = "Retorna os dados do usuário logado")
-    public ResponseEntity<UserApplication.UserResponse> getMyUser(
+    public ResponseEntity<UserResponse> getMyUser(
             @RequestHeader("Authorization")
             @Parameter(description = "Token JWT do usuário") String jwt
     ) {
-        return ResponseEntity.ok(userApplication.getUserByToken(jwt));
+        return ResponseEntity.ok(new UserResponse(userApplication.getUserByToken(jwt)));
     }
 
     @GetMapping("/profile")
     @Operation(summary = "Retorna o perfil detalhado do usuário logado")
-    public ResponseEntity<Map<String, Object>> getMyProfile(
+    public ResponseEntity<ProfileResponse> getMyProfile(
             @RequestHeader("Authorization")
             @Parameter(description = "Token JWT do usuário") String jwt
     ) {
-        return ResponseEntity.ok(userApplication.getProfile(jwt));
+        return ResponseEntity.ok(new ProfileResponse(userApplication.getProfile(jwt)));
     }
 
     @GetMapping
     @Operation(summary = "Lista todos os usuários, opcionalmente filtrando por online")
-    public ResponseEntity<List<Map<String, Object>>> listUsers(
+    public ResponseEntity<List<UserResponse>> listUsers(
             @RequestParam(required = false)
             @Parameter(description = "Filtrar apenas usuários online") Boolean online,
             @RequestHeader("Authorization")
             @Parameter(description = "Token JWT do usuário") String jwt
     ) {
-        return ResponseEntity.ok(userApplication.getUsers(online, jwt));
+        return ResponseEntity.ok(
+                userApplication.getUsers(online, jwt)
+                        .stream()
+                        .map((user) -> new UserResponse(user))
+                        .collect(Collectors.toList())
+        );
     }
 
-    @PostMapping
-    @Operation(summary = "Registra um novo usuário")
-    public ResponseEntity<Map<String, Object>> registerUser(
-            @Valid @RequestBody
-            @Parameter(description = "Dados do usuário a ser registrado") UserDtoRegister body
-    ) {
-        UserCore user = userApplication.registerUser(new UserCore(
-                body.getEmail(),
-                body.getPassword(),
-                body.getNickname(),
-                body.getTelefone(),
-                Optional.empty()
-        ));
-        return UserDtoRegister.toEntity(user);
-    }
 
     @GetMapping("/{userId}")
     @Operation(summary = "Retorna um usuário pelo ID")
-    public ResponseEntity<Map<String, Object>> getUserById(
+    public ResponseEntity<UserResponse> getUserById(
             @PathVariable
             @Parameter(description = "ID do usuário") Long userId
     ) {
-        return ResponseEntity.ok(userApplication.getUserById(userId));
+        return ResponseEntity.ok(new UserResponse(userApplication.getUserById(userId)));
     }
 
     @DeleteMapping("/{userId}")

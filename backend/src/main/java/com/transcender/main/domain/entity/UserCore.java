@@ -24,17 +24,18 @@ public class UserCore {
     private Set<FriendCore> recebidas;
 
 
-    private List<PartidaCore> partidasComoUsuario1;
-    private List<PartidaCore> partidasComoUsuario2;
-    private List<PartidaCore> partidasVencidas;
+    private List<MatchCore> partidasComoUsuario1;
+    private List<MatchCore> partidasComoUsuario2;
+    private List<MatchCore> partidasVencidas;
 
 
-    public UserCore() {}
+    public UserCore() {
+    }
 
     public UserCore(Long id, String email, String senha, String nickname, String telefone,
                     boolean online, boolean ative, Set<FriendCore> solicitadas, Set<FriendCore> recebidas,
-                    List<PartidaCore> partidasComoUsuario1, List<PartidaCore> partidasComoUsuario2,
-                    List<PartidaCore> partidasVencidas, Instant criadoEm, Instant atualizadoEm) {
+                    List<MatchCore> partidasComoUsuario1, List<MatchCore> partidasComoUsuario2,
+                    List<MatchCore> partidasVencidas, Instant criadoEm, Instant atualizadoEm) {
 
         if (id == null || id <= 0) throw new UsuarioArgumentInvalid("Id invalido");
         this.id = id;
@@ -73,7 +74,8 @@ public class UserCore {
 
     public void validateUpdateUser(Long solicitanteId) {
         this.validateCreateUser();
-        if (solicitanteId == null || solicitanteId <= 0) throw new UsuarioArgumentInvalid("Id inválido: deve ser positivo");
+        if (solicitanteId == null || solicitanteId <= 0)
+            throw new UsuarioArgumentInvalid("Id inválido: deve ser positivo");
         this.criadoEm = null;
     }
 
@@ -115,18 +117,52 @@ public class UserCore {
     }
 
     // Getters
-    public Long getId() { return id; }
-    public String getEmail() { return email; }
-    public String getSenhaHash() { return senhaHash; }
-    public String getNickname() { return nickname; }
-    public String getTelefone() { return telefone; }
-    public String getAvatar() { return avatar; }
-    public boolean getOnline() { return online; }
-    public boolean getAtive() { return ative; }
+    public Long getId() {
+        return id;
+    }
 
-    public List<PartidaCore> getPartidasVencidas() {return partidasVencidas; }
-    public List<PartidaCore> getTodasPartidas() {
-        List<PartidaCore> todas = new ArrayList<>();
+    public String getEmail() {
+        return email;
+    }
+
+    public String getSenhaHash() {
+        return senhaHash;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public boolean getOnline() {
+        return online;
+    }
+
+    public boolean getAtive() {
+        return ative;
+    }
+
+    public List<MatchCore> getWinnersMatches() {
+        return partidasVencidas;
+    }
+
+    public List<MatchCore> getLosesMatches() {
+        List<MatchCore> losses = new ArrayList<>(getTodasPartidas());
+        if (partidasVencidas != null) {
+            losses.removeAll(partidasVencidas);
+        }
+        return losses;
+    }
+
+    public List<MatchCore> getTodasPartidas() {
+        List<MatchCore> todas = new ArrayList<>();
         if (partidasComoUsuario1 != null) {
             todas.addAll(partidasComoUsuario1);
         }
@@ -136,17 +172,48 @@ public class UserCore {
         return todas;
     }
 
-    public Instant getCriadoEm() { return criadoEm; }
-    public Instant getAtualizadoEm() { return atualizadoEm; }
+    public Instant getCriadoEm() {
+        return criadoEm;
+    }
+
+    public Instant getAtualizadoEm() {
+        return atualizadoEm;
+    }
 
     // Setters
-    public void setId(Long id) { this.id = id; }
-    public void setEmail(String email) { this.email = email; }
-    public void setSenhaHash(String getSenhaHash) { this.senhaHash = getSenhaHash; }
-    public void setNickname(String nickname) { this.nickname = nickname; }
-    public void setTelefone(String telefone) { this.telefone = telefone; }
-    public void setOnline(boolean online) { this.online = online; }
-    public void setAtive(boolean ative) { this.ative = ative; }
-    public void setCriadoEm(Instant criadoEm) { this.criadoEm = criadoEm; }
-    public void setAtualizadoEm(Instant atualizadoEm) { this.atualizadoEm = atualizadoEm; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setSenhaHash(String getSenhaHash) {
+        this.senhaHash = getSenhaHash;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
+
+    public void setAtive(boolean ative) {
+        this.ative = ative;
+    }
+
+    public void setCriadoEm(Instant criadoEm) {
+        this.criadoEm = criadoEm;
+    }
+
+    public void setAtualizadoEm(Instant atualizadoEm) {
+        this.atualizadoEm = atualizadoEm;
+    }
 }
