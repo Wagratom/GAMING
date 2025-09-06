@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class GameController {
     private final GameApplicationService gameService;
-    public record CreateRoomMessage(String roomId, Long playerId1, Long playerId2) { }
+    public record CreateRoomMessage(Long playerId, String typeMode) { }
 
 
     @MessageMapping("/game/move") // Prefixo /app/game/move
@@ -24,12 +24,8 @@ public class GameController {
      *
      * @param createRoomMessage deve conter roomId e IDs dos dois jogadores
      */
-    @MessageMapping("/game/create")
+    @MessageMapping("/game/addPlayer")
     public void createRoom(@Payload CreateRoomMessage createRoomMessage) {
-        gameService.CreateRoom(
-                createRoomMessage.roomId(),
-                createRoomMessage.playerId1(),
-                createRoomMessage.playerId2()
-        );
+        gameService.addToQueue(createRoomMessage.playerId, createRoomMessage.typeMode);
     }
 }

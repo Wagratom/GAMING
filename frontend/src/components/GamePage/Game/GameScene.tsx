@@ -114,7 +114,9 @@ export default class GameScene extends Phaser.Scene {
         this.nave.y = containerHeight / 2;
 
         //redimecionar a nave
-        this.physics.world.setBounds(0, 0, containerWidth, containerHeight);
+        if (this.physics.world) {
+            this.physics.world.setBounds(0, 0, containerWidth, containerHeight);
+        }
     }
 
     setupColliders() {

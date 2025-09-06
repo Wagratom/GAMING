@@ -7,8 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -17,15 +21,52 @@ import java.util.concurrent.TimeUnit;
 public class GameApplicationService {
 
     private final SimpMessagingTemplate messagingTemplate;
+
+    //Map com as partidas que estão acontecendo no momento
     private final Map<String, PongGame> games = new ConcurrentHashMap<>();
 
-    public void CreateRoom(String roomId, Long playerId1, Long playerId2) {
-        PongGame game = games.computeIfAbsent(roomId, r -> new PongGame(roomId));
+    // Fila de espera para matchmaking
+    private final Queue<Long> waitingPlayersNomalGame = new ConcurrentLinkedQueue<>();
+    private final Queue<Long> waitingPlayersRanquedGame = new ConcurrentLinkedQueue<>();
+    private final Queue<Long> VsCoopGame = new ConcurrentLinkedQueue<>();
+
+    public void addToQueue(Long playerId, String typeMode) {
+        Queue<Long> queue;
+
+        switch (typeMode) {
+            case "Normal":
+                queue = waitingPlayersNomalGame;
+                break;
+            case "Ranqueado":
+                queue = waitingPlayersRanquedGame;
+                break;
+            case "VSCOOP":
+                queue = VsCoopGame;
+                break;
+            default:
+                throw new IllegalArgumentException("Tipo de jogo inválido: " + typeMode);
+        }
+
+        queue.add(playerId);
+
+        // Se houver pelo menos 2 jogadores, cria uma partida
+        if (queue.size() >= 2) {
+            Long player1 = queue.poll();
+            Long player2 = queue.poll();
+
+            String roomId = UUID.randomUUID().toString();
+            createRoom(roomId, player1, player2, typeMode);
+        }
+    }
+
+    private void createRoom(String roomId, Long playerId1, Long playerId2, String mode) {
+        PongGame game = games.computeIfAbsent(roomId, r -> new PongGame(roomId, mode));
         game.addPlayer(playerId1, playerId2);
 
-        // Envia estado inicial para todos
-        messagingTemplate.convertAndSend("/topic/game/" + roomId, game);
+        messagingTemplate.convertAndSend("/topic/matchmaking/" + playerId1, roomId);
+        messagingTemplate.convertAndSend("/topic/matchmaking/" + playerId2, roomId);
     }
+
 
     public void handleMove(PlayerMove move) {
         PongGame game = games.get(move.roomId());
@@ -35,7 +76,6 @@ public class GameApplicationService {
         }
     }
 
-    // Loop para mover a bola (thread separada)
     @PostConstruct
     public void startLoop() {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {

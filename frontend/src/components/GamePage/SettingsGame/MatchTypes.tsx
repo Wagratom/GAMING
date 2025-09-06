@@ -33,32 +33,30 @@ export default function MatchTypes(): JSX.Element {
 			<div className="d-flex p-3" id='divOptionsStartGame'>
 				<ButtonModelsGame
 					photo={playPong}
-					model="Normal"
-					isRanking={false}
+					mode="Normal"
 				/>
 				<ButtonModelsGame
 					photo={playPong}
-					model="Ranqueado"
-					isRanking={true}
+					mode="Ranqueado"
 				/>
 				<ButtonModelsGame
 					photo={playPong}
-					model="VS COOP"
+					mode="VS COOP"
 				/>
 			</div>
 
 			<div className="d-flex p-3">
 				<ButtonModelsGame
 					photo={playSpecialPong}
-					model="Normal"
+					mode="Normal"
 				/>
 				<ButtonModelsGame
 					photo={playSpecialPong}
-					model="Ranqueado"
+					mode="Ranqueado"
 				/>
 				<ButtonModelsGame
 					photo={playSpecialPong}
-					model="VS COOP"
+					mode="VS COOP"
 				/>
 			</div>
 		</div>

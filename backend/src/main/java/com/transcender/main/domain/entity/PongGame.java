@@ -8,6 +8,9 @@ import java.util.List;
 
 public class PongGame {
     private final String roomId;
+    private final String mode; // "Normal", "Ranqueado", "VSCOOP"
+
+
     private final List<Long> players = new ArrayList<>();
     private int width = 600, height = 400;
     private int paddleHeight = 80, paddleWidth = 10;
@@ -16,8 +19,9 @@ public class PongGame {
     private int leftPaddleY = 160, rightPaddleY = 160;
     private int scoreLeft = 0, scoreRight = 0;
 
-    public PongGame(String roomId) {
+    public PongGame(String roomId, String mode) {
         this.roomId = roomId;
+        this.mode = mode;
     }
 
     public void addPlayer(Long playerId1, Long PlayerId2) {
@@ -77,7 +81,7 @@ public class PongGame {
         ballVelY = 4;
     }
 
-
+    public String getMode() {return mode;}
     public String getRoomId() {
         return roomId;
     }

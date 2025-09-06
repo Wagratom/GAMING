@@ -3,7 +3,7 @@ import { Client, IMessage } from "@stomp/stompjs";
 import { useEffect, useState, useRef } from "react";
 import SockJS from "sockjs-client";
 
-export default function ConnectWebsocket(topic: string, callback: (msg: string ) => void, maxReconnects = 5) {
+export default function ConnectWebsocket(topic: string, callback: (msg: string) => void, maxReconnects = 5) {
     const [stompClient, setStompClient] = useState<Client | null>(null);
     const reconnectAttempts = useRef(0);
 
