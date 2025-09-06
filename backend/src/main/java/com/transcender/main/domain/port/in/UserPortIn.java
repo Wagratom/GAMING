@@ -3,7 +3,6 @@ package com.transcender.main.domain.port.in;
 import com.transcender.main.domain.entity.UserCore;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface UserPortIn {
@@ -12,13 +11,13 @@ public interface UserPortIn {
 
     Long logout(String jwt);
 
-    Map<String, Object> getUserByToken(String jwt);
+    UserCore getUserByToken(String jwt);
 
-    List<Map<String, Object>> getUsers(Boolean online, String jwt);
+    List<UserCore> getUsers(Boolean online, String jwt);
 
-    Map<String, Object> getProfile(String jwt);
+    UserCore getProfile(String jwt);
 
-    Map<String, Object> getUserById(Long userId);
+    UserCore getUserById(Long userId);
 
     void deleteUser(Long userId);
 

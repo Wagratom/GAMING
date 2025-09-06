@@ -48,7 +48,7 @@ public class FriendsApplication implements FriendsPort {
         }
     }
 
-    private UsersPair getAndValidateUsers(Long requesterId, Long friendId) {
+    public UsersPair getAndValidateUsers(Long requesterId, Long friendId) {
         UserCore requester = userRepository.getUserById(requesterId)
                 .orElseThrow(() -> new ResourceNotFound("UsuarioSolicitante", requesterId));
 
