@@ -45,8 +45,18 @@ export default function ModelsGame(): JSX.Element {
 					<br></br>
 
 					<h6>Teclas:</h6>
-					<p><u>W</u>  subir raquete</p>
-					<p><u>S</u>  descer raquete </p>
+					<div className="d-flex">
+						<div className="w-50">
+							<p>Jogador da diretira</p>
+							<p><u>W</u>&nbsp;subir raquete</p>
+							<p><u>S</u>&nbsp;&nbsp;descer raquete </p>
+						</div>
+						<div >
+							<p>Jogador da esquerda</p>
+							<p>⬆️ subir raquete</p>
+							<p>⬇️ descer raquete </p>
+						</div>
+					</div>
 				</Modal.Body>
 				<Modal.Footer>
 					<button onClick={closeModal}>Close</button>
