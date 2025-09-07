@@ -62,7 +62,7 @@ export default function Game() {
 					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
 					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
 					{/* <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} /> */}
-					{/* <ChooseGameMode openSettingsPath={setCollisionPnt} /> */}
+					<ChooseGameMode openSettingsPath={setCollisionPnt} />
 				</div>
 			</div>
 		</div>

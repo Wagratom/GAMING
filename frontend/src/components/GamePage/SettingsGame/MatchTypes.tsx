@@ -18,6 +18,10 @@ export default function MatchTypes(): JSX.Element {
 		({ message }: { message: string }) => alert(message)
 	)
 
+	useWebSocket(
+		user?.id ? `/topic/matchmaking/${user.id}` : undefined,
+		({ roomId }: { roomId: string }) => navigate(`game/${roomId}`)
+	)
 	function handleClick(mode: string) {
 		const client = matchRequestClientRef.current;
 		if (client && client.connected) {

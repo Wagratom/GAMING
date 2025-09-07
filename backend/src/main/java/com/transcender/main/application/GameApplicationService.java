@@ -1,7 +1,6 @@
 package com.transcender.main.application;
 
 import com.transcender.main.domain.entity.PongGame;
-import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.valueobject.PlayerMove;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +67,7 @@ public class GameApplicationService {
 
         } else {
             logger.info("topic name: {}", "/topic/addPlayer/" + playerId);
-            messagingTemplate.convertAndSend("/topic/addPlayer/" + playerId,  Map.of("message", "Player adicionado a fila"));
+            messagingTemplate.convertAndSend("/topic/addPlayer/" + playerId, Map.of("message", "Player adicionado a fila"));
         }
     }
 
@@ -77,8 +76,8 @@ public class GameApplicationService {
         PongGame game = games.computeIfAbsent(roomId, r -> new PongGame(roomId, mode));
         game.addPlayer(playerId1, playerId2);
 
-        messagingTemplate.convertAndSend("/topic/matchmaking/" + playerId1, roomId);
-        messagingTemplate.convertAndSend("/topic/matchmaking/" + playerId2, roomId);
+        messagingTemplate.convertAndSend("/topic/matchmaking/" + playerId1, Map.of("roomId", roomId));
+        messagingTemplate.convertAndSend("/topic/matchmaking/" + playerId2, Map.of("roomId", roomId));
     }
 
 
