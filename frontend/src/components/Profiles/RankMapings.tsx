@@ -4,7 +4,12 @@ import rank3 from '../../assets/rankLevel/rank3.png';
 import rank4 from '../../assets/rankLevel/rank4.png';
 import rank5 from '../../assets/rankLevel/rank5.png';
 import rank6 from '../../assets/rankLevel/rank6.png';
-import { RankFormating } from './typesProfile';
+
+export type RankFormating = {
+	rank: string;
+	borderImg: string;
+	borderWrite: string;
+}
 
 export const RankMappings = [
 	{ max: 5, rank: rank1, borderImg: 'borderDivFotoRank1', borderWrite: 'borderWriteRank1'},

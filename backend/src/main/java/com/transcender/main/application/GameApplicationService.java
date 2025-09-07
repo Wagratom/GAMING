@@ -1,6 +1,7 @@
 package com.transcender.main.application;
 
 import com.transcender.main.domain.entity.PongGame;
+import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.valueobject.PlayerMove;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
@@ -33,8 +33,8 @@ public class GameApplicationService {
     private final Queue<Long> VsCoopGame = new ConcurrentLinkedQueue<>();
 
     private final Logger logger = LoggerFactory.getLogger(GameApplicationService.class);
+
     public void addToQueue(Long playerId, String typeMode) {
-        logger.info("Adicionando novo player '{}' na fila '{}'", typeMode, playerId);
         Queue<Long> queue;
 
         switch (typeMode) {
@@ -48,12 +48,17 @@ public class GameApplicationService {
                 queue = VsCoopGame;
                 break;
             default:
-                throw new IllegalArgumentException("Tipo de jogo inválido: " + typeMode);
+                return;
         }
 
-        queue.add(playerId);
 
+        if (waitingPlayersNomalGame.contains(playerId)
+                || waitingPlayersRanquedGame.contains(playerId)
+                || VsCoopGame.contains(playerId)
+        ) return;
         // Se houver pelo menos 2 jogadores, cria uma partida
+        logger.info("Adicionando novo player '{}' na fila '{}'", typeMode, playerId);
+        queue.add(playerId);
         if (queue.size() >= 2) {
             Long player1 = queue.poll();
             Long player2 = queue.poll();
@@ -62,7 +67,8 @@ public class GameApplicationService {
             createRoom(roomId, player1, player2, typeMode);
 
         } else {
-            messagingTemplate.convertAndSend("/topic/addPlayer/" + playerId, "Player adicionado a fila");
+            logger.info("topic name: {}", "/topic/addPlayer/" + playerId);
+            messagingTemplate.convertAndSend("/topic/addPlayer/" + playerId,  Map.of("message", "Player adicionado a fila"));
         }
     }
 

@@ -1,3 +1,14 @@
+.miniprofile {
+    display: flex;
+    flex-direction: column;
+    background-image: url('https://s0.smartresize.com/wallpaper/400/885/HD-wallpaper-8-bit-moonlight-8bit-arcade-blue-cloud-moon-pixel.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100% !important;
+    width: 25vw;
+}
+
+
 ::-webkit-scrollbar {
 	width: 1px;
 }

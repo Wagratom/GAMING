@@ -5,7 +5,7 @@ import InputChats from '../InputChats';
 import { useContext, useEffect, useState } from 'react';
 import { MessageDto, PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts'
 import './ChatPrivate.css'
-import ConnectWebsocket from '../../Profiles/MineProfile/FriendWebsocket';
+import useWebSocket from '../../Profiles/MineProfile/useWebSocket';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -32,11 +32,11 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 			})
 	}, [])
 
-	const newMessageChat = (msg: string) => {
-		setMessages(prev => [...prev, msg as unknown as MessageDto]);
-	};
+	useWebSocket(
+		user?.id ? `/topic/directChats/${user.id}` : undefined,
+		(msg: string) => { setMessages(prev => [...prev, msg as unknown as MessageDto]) }
+	);
 
-	ConnectWebsocket(`/topic/directChats/${user.id}`, newMessageChat);
 
 	return (
 		<div className='text-white chat d-flex flex-column bg-degrader' style={{ zIndex: 2000 }}>
