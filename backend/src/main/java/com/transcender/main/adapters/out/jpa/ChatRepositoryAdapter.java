@@ -19,14 +19,14 @@ import com.transcender.main.domain.port.out.ChatRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Component
+@Repository
 @RequiredArgsConstructor
 public class ChatRepositoryAdapter implements ChatRepositoryPort {
     private final ChatRepository chatRepository;

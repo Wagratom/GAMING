@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 @Getter
 public class MatchesResponse {
-
     @Getter
     public static class Match {
         private final String map;

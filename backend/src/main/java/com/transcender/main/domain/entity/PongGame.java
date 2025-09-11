@@ -1,41 +1,42 @@
 package com.transcender.main.domain.entity;
 
-import com.transcender.main.domain.valueobject.PlayerMove;
-import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.transcender.main.domain.valueobject.PlayerMoveDto;
 
 public class PongGame {
+
     private final String roomId;
     private final String mode; // "Normal", "Ranqueado", "VSCOOP"
 
-
-    private final List<Long> players = new ArrayList<>();
+    private Long playerLeftId;
+    private Long playerRightId;
     private int width = 600, height = 400;
     private int paddleHeight = 80, paddleWidth = 10;
     private int ballX = 300, ballY = 200, ballSize = 10;
     private int ballVelX = 4, ballVelY = 4;
     private int leftPaddleY = 160, rightPaddleY = 160;
     private int scoreLeft = 0, scoreRight = 0;
+    private final int paddleSpeed = 5;
 
     public PongGame(String roomId, String mode) {
         this.roomId = roomId;
         this.mode = mode;
     }
 
-    public void addPlayer(Long playerId1, Long PlayerId2) {
-            players.add(playerId1);
-            players.add(PlayerId2);
+    public void addPlayer(Long playerLeftId, Long playerRightId) {
+        this.playerLeftId = playerLeftId;
+        this.playerRightId = playerRightId;
     }
 
-    public void movePlayer(PlayerMove move) {
-        if (players.size() < 2) return;
+    // Atualiza posição do paddle baseado no DTO
+    public void movePlayer(PlayerMoveDto move) {
+        int deltaY = move.isUp() ? -paddleSpeed : paddleSpeed;
 
-        if (players.get(0).equals(move.playerId())) {
-            leftPaddleY += move.deltaY();
-        } else if (players.get(1).equals(move.playerId())) {
-            rightPaddleY += move.deltaY();
+        if (move.isLeft()) {
+            leftPaddleY += deltaY;
+            leftPaddleY = Math.max(0, Math.min(height - paddleHeight, leftPaddleY));
+        } else {
+            rightPaddleY += deltaY;
+            rightPaddleY = Math.max(0, Math.min(height - paddleHeight, rightPaddleY));
         }
     }
 
@@ -65,37 +66,55 @@ public class PongGame {
         }
 
         // Pontuação
-        if (ballX < 0) {
+// Pontuação
+        if (ballX + ballSize < 0) {   // bola passou totalmente da esquerda
             scoreRight++;
             resetBall();
-        } else if (ballX > width) {
+        } else if (ballX > width) {   // bola passou da direita
             scoreLeft++;
             resetBall();
         }
+
     }
 
     private void resetBall() {
         ballX = width / 2;
         ballY = height / 2;
-        ballVelX *= -1; // manda para o lado contrário de quem fez ponto
+        ballVelX *= -1;
         ballVelY = 4;
     }
 
-    public String getMode() {return mode;}
+    // Getters
+    public boolean isFinished() {
+        return scoreLeft >= 3 || scoreRight >= 3;
+    }
+
+    public Long getWinnerId() {
+        return (scoreLeft >= 3) ? playerLeftId : playerRightId;
+    }
+
+    public Long getLoserId() {
+        return (scoreLeft < 3) ? playerLeftId : playerRightId;
+    }
+
+    public Integer getScoreWinner() {
+        return (scoreLeft > scoreRight) ? Integer.valueOf(scoreLeft) : Integer.valueOf(scoreRight);
+    }
+
+    public Integer getScoreLoser() {
+        return (scoreLeft < scoreRight) ? Integer.valueOf(scoreLeft) : Integer.valueOf(scoreRight);
+    }
+
     public String getRoomId() {
         return roomId;
     }
 
-    public List<Long> getPlayers() {
-        return players;
+    public int getScoreLeft() {
+        return scoreLeft;
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
+    public int getScoreRight() {
+        return scoreRight;
     }
 
     public int getBallX() {
@@ -110,14 +129,6 @@ public class PongGame {
         return ballSize;
     }
 
-    public int getBallVelX() {
-        return ballVelX;
-    }
-
-    public int getBallVelY() {
-        return ballVelY;
-    }
-
     public int getLeftPaddleY() {
         return leftPaddleY;
     }
@@ -126,11 +137,28 @@ public class PongGame {
         return rightPaddleY;
     }
 
-    public int getScoreLeft() {
-        return scoreLeft;
+    public int getPaddleHeight() {
+        return paddleHeight;
     }
 
-    public int getScoreRight() {
-        return scoreRight;
+    public int getPaddleWidth() {
+        return paddleWidth;
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public Long getPlayerLeftId() {
+        return playerLeftId;
+    }
+
+    public Long getPlayerRightId() {
+        return playerRightId;
+    }
+
 }

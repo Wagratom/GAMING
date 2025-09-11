@@ -1,7 +1,7 @@
 package com.transcender.main.adapters.in.websocket;
 
 import com.transcender.main.application.GameApplicationService;
-import com.transcender.main.domain.valueobject.PlayerMove;
+import com.transcender.main.domain.valueobject.PlayerMoveDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -11,11 +11,13 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class GameController {
     private final GameApplicationService gameService;
-    public record CreateRoomMessage(Long playerId, String typeMode) { }
+
+    public record CreateRoomMessage(Long playerId, String typeMode) {
+    }
 
 
     @MessageMapping("/game/move") // Prefixo /app/game/move
-    public void handlePlayerMove(@Payload PlayerMove move) {
+    public void handlePlayerMove(@Payload PlayerMoveDto move) {
         gameService.handleMove(move);
     }
 

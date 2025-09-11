@@ -1,134 +1,134 @@
-import React, { useContext, useEffect, useState } from "react"
-import BarDataUsers from "./BarDataUsers/BarDataUsers"
-import { useNavigate, useParams } from "react-router-dom"
-import { UserData } from "../../InitialPage/Contexts/Contexts"
-import winner from "../../../assets/game/winner.png"
-import losser from "../../../assets/game/losser.jpg"
+import React, { useContext, useEffect, useRef, useState } from "react";
+import BarDataUsers from "./BarDataUsers/BarDataUsers";
+import { useNavigate, useParams } from "react-router-dom";
+import { UserData } from "../../InitialPage/Contexts/Contexts";
+import winnerImg from "../../../assets/game/winner.png";
+import loserImg from "../../../assets/game/losser.jpg";
+import webSocketService from "../../webSocketService";
 
 type GamePongProps = {
-	ball: { positionX: number, positionY: number, size: number },
-	paddleLeft: { positionX: number, position_front: number, height: number, width: number, velocity: number }
-	paddleRight: { positionX: number, position_front: number, height: number, width: number, velocity: number }
-	placarLeft: number,
-	placarRight: number,
-	winner: string,
-	window: { height: number, width: number }
-	player_left: { id: string, status: boolean, nickname: string },
-	player_right: { id: string, status: boolean, nickname: string },
-	watchs: [],
-	power: { x: number, y: number, size: number }
-}
+	ball: { positionX: number; positionY: number; size: number };
+	paddleLeft: { positionX: number; positionFront: number; height: number; width: number; velocity: number };
+	paddleRight: { positionX: number; positionFront: number; height: number; width: number; velocity: number };
+	placarLeft: number;
+	placarRight: number;
+	winner: string;
+	window: { height: number; width: number };
+	player_left: { id: string; status: boolean; nickname: string };
+	player_right: { id: string; status: boolean; nickname: string };
+	watchs: string[];
+	power: { x: number; y: number; size: number };
+};
 
 export default function GameWW(): JSX.Element {
-	const userData = useContext(UserData).user;
+	const { user } = useContext(UserData);
+	const navigate = useNavigate();
 
-	const [fakeGame, setFakeGame] = useState<GamePongProps>({
-		ball: { positionX: 400, positionY: 300, size: 24 },
-		paddleLeft: { positionX: 20, position_front: 300, height: 120, width: 40, velocity: 5 },
-		paddleRight: { positionX: 780, position_front: 300, height: 120, width: 40, velocity: 5 },
+	const backendHeight = 400;
+	function scaleGame(gameFromServer: GamePongProps) {
+		const scaleFactor = (window.innerHeight * 0.6) / backendHeight;
+
+		return {
+			...gameFromServer,
+			window: {
+				width: gameFromServer.window.width * scaleFactor,
+				height: gameFromServer.window.height * scaleFactor,
+			},
+			ball: {
+				...gameFromServer.ball,
+				positionX: gameFromServer.ball.positionX * scaleFactor,
+				positionY: gameFromServer.ball.positionY * scaleFactor,
+				size: gameFromServer.ball.size * scaleFactor,
+			},
+			paddleLeft: {
+				...gameFromServer.paddleLeft,
+				positionX: gameFromServer.paddleLeft.positionX * scaleFactor,
+				positionFront: gameFromServer.paddleLeft.positionFront * scaleFactor,
+				height: gameFromServer.paddleLeft.height * scaleFactor,
+				width: gameFromServer.paddleLeft.width * scaleFactor,
+				velocity: gameFromServer.paddleLeft.velocity * scaleFactor,
+			},
+			paddleRight: {
+				...gameFromServer.paddleRight,
+				positionX: gameFromServer.paddleRight.positionX * scaleFactor,
+				positionFront: gameFromServer.paddleRight.positionFront * scaleFactor,
+				height: gameFromServer.paddleRight.height * scaleFactor,
+				width: gameFromServer.paddleRight.width * scaleFactor,
+				velocity: gameFromServer.paddleRight.velocity * scaleFactor,
+			},
+
+			power: {
+				...gameFromServer.power,
+				x: gameFromServer.power.x * scaleFactor,
+				y: gameFromServer.power.y * scaleFactor,
+				size: gameFromServer.power.size * scaleFactor,
+			}
+		}
+	}
+
+	const [game, setGame] = useState<GamePongProps>({
+		window: { height: 400, width: 600 }, // mesmo do backend
+		ball: { positionX: 300, positionY: 200, size: 10 }, // bola e tamanho iguais
+		paddleLeft: { positionX: 0, positionFront: 160, height: 80, width: 10, velocity: 5 },
+		paddleRight: { positionX: 590, positionFront: 160, height: 80, width: 10, velocity: 5 },
 		placarLeft: 0,
 		placarRight: 0,
 		winner: '',
-		window: { height: 600, width: 800 },
-		player_left: { id: '123', status: true, nickname: "Luffytaro" },
-		player_right: { id: '1234', status: true, nickname: "Zorotaro" },
+		player_left: { id: '', status: false, nickname: '' },
+		player_right: { id: '', status: false, nickname: '' },
 		watchs: [],
 		power: { x: 0, y: 0, size: 0 }
-	})
+	});
 
 	const room = useParams().room
-	const cssDivGame: React.CSSProperties = {
+	const socketRef = useRef<any>(null);
 
-		height: `${fakeGame.window.height}%`,
-		width: `${fakeGame.window.width}%`,
-		boxShadow: '0px 0px 15px 5px white',
-		position: 'relative',
-	}
+	useEffect(() => {
+		if (!user.id) return;
 
-	const divFilds: React.CSSProperties = {
-		height: `${fakeGame.window.height}%`,
-		width: '2%',
-		backgroundColor: 'white',
-		position: 'absolute',
-		top: 0,
-		left: '50%',
-	}
+		const socket = webSocketService(
+			`/topic/game/${room}`,
+			(gameUpdate: GamePongProps) => setGame(scaleGame(gameUpdate))
+		);
 
+		socketRef.current = webSocketService(
+			'/topic/game/move',
+			() => { })
 
-	// useEffect(() => {
-	// 	userData.socket?.on('updateGame', (data: GamePongProps) => {
-	// 		setFakeGame(data)
-	// 	})
-	// }, [])
+		return () => {
+			socketRef.current.deactivate();
+			socket.deactivate()
+		};
+	}, [user.id, room]);
 
-
-	// useEffect(() => {
-	// 	const intervalId = setInterval(() => {
-	// 		userData.socket?.emit('updateGame', room)
-	// 	},30);
-
-	// 	return () => {
-	// 		clearInterval(intervalId);
-	// 		userData.socket?.emit('disconnect-user', {room: room, id: userData.id});
-	// 	}
-	// }, [room])
-
-
-	const paddleLeft: React.CSSProperties = {
-		height: `${fakeGame.paddleLeft.height}%`,
-		width: `${fakeGame.paddleLeft.width}%`,
-		backgroundColor: 'white',
-		position: 'absolute',
-		top: `${fakeGame.paddleLeft.position_front}%`,
-		left: `${fakeGame.paddleLeft.positionX}%`,
-	}
-
-
-	const paddleRight: React.CSSProperties = {
-		height: `${fakeGame.paddleRight.height}%`,
-		width: `${fakeGame.paddleRight.width}%`,
-		backgroundColor: 'white',
-		position: 'absolute',
-		top: `${fakeGame.paddleRight.position_front}%`,
-		left: `${fakeGame.paddleRight.positionX}%`,
-	}
-
-
-	const ball: React.CSSProperties = {
-		height: `${window.innerHeight * 0.03}px`,
-		width: `${window.innerHeight * 0.03}px`,
-		backgroundColor: 'white',
-		position: 'absolute',
-		top: `${fakeGame.ball.positionY}%`,
-		left: `${fakeGame.ball.positionX}%`,
-		borderRadius: '50%',
-	}
-
-
-	function hadleMovie(key: string) {
-		if (key !== 'w' && key !== 's') return
-
-		let isLeft = fakeGame.player_left.id === userData.id ? true : false
-		let isUp = key === 'w' ? true : false
-		// userData.socket?.emit('updatePaddle', { roomID: room, isLeft: isLeft, isUp: isUp, pause: false })
-	}
-
-
-	const movePaddleLeft = (e: React.KeyboardEvent<HTMLDivElement>) => {
-		if (fakeGame.winner !== "") return null
-		if (fakeGame.watchs.find(id => id === userData.id)) return null
-
-		if (e.key === 'p') {
-			// userData.socket?.emit('updatePaddle', { roomID: room, isLeft: false, isUp: false, pause: true })
+	const handleMove = (key: string) => {
+		if (!socketRef.current) return;
+		if ((key === 'w' || key === 's') && game.player_left.id == user.id) {
+			socketRef.current?.publish({
+				destination: "/app/game/move",
+				body: JSON.stringify({
+					roomID: room,
+					isLeft: true,
+					isUp: (key === 'w')
+				}),
+			})
+		} else if ((key === 'ArrowUp' || key === 'ArrowDown') && game.player_right.id == user.id) {
+			socketRef.current?.publish({
+				destination: "/app/game/move",
+				body: JSON.stringify({
+					roomID: room,
+					isLeft: false,
+					isUp: (key === 'ArrowUp')
+				}),
+			})
 		}
-		else if (e.key === 'l') {
-			// userData.socket?.emit('updatePaddle', { roomID: room, isLeft: false, isUp: false, pause: false })
-		}
-		else {
-			hadleMovie(e.key)
-		}
-	}
+	};
 
+	const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		if (game.winner) return;
+		if (game.watchs.includes(user.id)) return;
+		handleMove(e.key);
+	};
 
 	const cssPage: React.CSSProperties = {
 		height: '100vh',
@@ -136,84 +136,78 @@ export default function GameWW(): JSX.Element {
 		overflow: 'hidden',
 		backgroundImage: `url(https://wallpaperaccess.com/full/2513478.jpg)`,
 		backgroundSize: 'cover',
+	};
+
+	const paddleStyle = (paddle: typeof game.paddleLeft) => ({
+		height: `${paddle.height}px`,
+		width: `${paddle.width}px`,
+		backgroundColor: 'white',
+		position: 'absolute' as 'absolute',
+		top: `${paddle.positionFront}px`,
+		left: `${paddle.positionX}px`,
+	});
+
+	const ballStyle: React.CSSProperties = {
+		height: `${game.ball.size}px`,
+		width: `${game.ball.size}px`,
+		backgroundColor: 'white',
+		position: 'absolute',
+		top: `${game.ball.positionY}px`,
+		left: `${game.ball.positionX}px`,
+		borderRadius: '50%',
+	};
+
+	const powerStyle: React.CSSProperties = game.power.size > 0 ? {
+		height: `${game.power.size}px`,
+		width: `${game.power.size}px`,
+		backgroundColor: 'white',
+		position: 'absolute',
+		top: `${game.power.y}px`,
+		left: `${game.power.x}px`,
+		borderRadius: '50%',
+	} : {};
+
+	if (game.winner) {
+		const winnerStyle: React.CSSProperties = {
+			backgroundImage: `url(${game.winner === user.id ? winnerImg : loserImg})`,
+			backgroundSize: 'cover',
+			backgroundPosition: 'center',
+			height: '100vh',
+			width: '100vw',
+			display: 'flex',
+			justifyContent: 'center',
+			alignItems: 'center',
+		};
+
+		return (
+			<div style={winnerStyle}>
+				<button className="btn btn-danger" onClick={() => navigate('/game')}>Exit Game</button>
+			</div>
+		);
 	}
-
-
-	let power: React.CSSProperties = {}
-	if (fakeGame.power) {
-		power = {
-			height: fakeGame.power.size,
-			width: fakeGame.power.size,
-			backgroundColor: 'white',
-			position: 'absolute',
-			top: fakeGame.power.y,
-			left: fakeGame.power.x,
-			borderRadius: '50%',
-		}
-	}
-
-
-	const cssWinner: React.CSSProperties = {
-		backgroundImage: `url(${winner})`,
-		backgroundSize: 'cover',
-		backgroundPosition: 'center',
-	}
-
-
-	const cssloser: React.CSSProperties = {
-		...cssWinner,
-		backgroundImage: `url(${losser})`,
-	}
-	const navigate = useNavigate()
-
-
-	if (fakeGame.winner !== "") {
-		if (fakeGame.winner === userData.id) {
-			return (
-				<div className="vh-100 p-5" style={cssWinner}>
-					<button className="btn btn-danger" onClick={() => navigate('/game')}>Exit Game</button>
-				</div>
-			)
-		} else {
-			return (
-				<div className="vh-100 p-5" style={cssloser}>
-					<button className="btn btn-danger" onClick={() => navigate('/game')}>Exit Game</button>
-				</div>
-			)
-		}
-	}
-
 
 	return (
-		<div style={cssPage} tabIndex={0} onKeyDown={movePaddleLeft}>
-
+		<div style={cssPage} tabIndex={0} onKeyDown={onKeyDown}>
 			<div className="d-flex flex-column justify-content-center align-items-center h-75 container">
 				<BarDataUsers
-					nicknameLeft={fakeGame.player_left.nickname}
-					nicknameRight={fakeGame.player_right.nickname}
-					gameWight={fakeGame.window.width}
+					nicknameLeft={game.player_left.nickname}
+					nicknameRight={game.player_right.nickname}
+					gameWight={game.window.width}
 				/>
 
-				{/* Componente */}
-				<div style={cssDivGame} >
-					<div style={divFilds}></div>
-					<div style={paddleLeft}></div>
-					<div style={paddleRight}></div>
-					<div style={ball}></div>
-					{fakeGame.power ? <div style={power}></div> : null}
+				<div style={{ height: game.window.height, width: game.window.width, position: 'relative', boxShadow: '0px 0px 15px 5px white' }}>
+					<div style={{ height: game.window.height, width: '2%', backgroundColor: 'white', position: 'absolute', top: 0, left: '50%' }}></div>
+					<div style={paddleStyle(game.paddleLeft)}></div>
+					<div style={paddleStyle(game.paddleRight)}></div>
+					<div style={ballStyle}></div>
+					{game.power.size > 0 && <div style={powerStyle}></div>}
 
-					<div className="d-flex">
-						<div className="w-50 text-white text-center">
-							<p className="fs-1">{fakeGame.placarLeft}</p>
-						</div>
-
-						<div className="w-50 text-white text-center">
-							<p className="fs-1">{fakeGame.placarRight}</p>
-						</div>
+					<div className="d-flex position-absolute" style={{ top: 0, width: '100%' }}>
+						<div className="w-50 text-white text-center"><p className="fs-1">{game.placarLeft}</p></div>
+						<div className="w-50 text-white text-center"><p className="fs-1">{game.placarRight}</p></div>
 					</div>
-
 				</div>
 			</div>
 		</div>
-	)
+	);
 }

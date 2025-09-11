@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-
 public class UserRepositoryAdapter implements UserRepositoryPort {
     private final UserRepository userRepository;
     private final MapperToJpaEntity mapperToJpaEntity;

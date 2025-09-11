@@ -15,7 +15,6 @@ export default function AlterPassword({ funcChange }: {
 
 	return (
 		<>
-
 			<h5 className="p-2 hover" onClick={hadleAlterPassword}>
 				<RiLockPasswordLine className="foto-list-friends bg-light text-black me-3 p-1 z-10" size={30} />
 				Alterar Senha

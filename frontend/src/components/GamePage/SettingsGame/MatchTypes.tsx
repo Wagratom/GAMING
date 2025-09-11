@@ -1,27 +1,35 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import ButtonModelsGame from "./ButtonModelsGame";
 import playPong from '../../../assets/settingsGame/playPong.jpg'
 import playSpecialPong from '../../../assets/settingsGame/playSpecialPong.jpg'
 import ModalRules from "./ModalRules";
 import { UserData } from "../../InitialPage/Contexts/Contexts";
 import { useNavigate } from "react-router-dom";
-import useWebSocket from "../../Profiles/MineProfile/useWebSocket";
+import webSocketService from "../../webSocketService";
 
 export default function MatchTypes(): JSX.Element {
 	const [isOpen, setIsOpen] = useState(false);
 	const { user } = useContext(UserData);
+	const matchRequestClientRef = useRef<any>(null);
 	const navigate = useNavigate();
 
 	// Só chama o hook depois que user.id estiver disponível
-	const matchRequestClientRef = useWebSocket(
-		user?.id ? `/topic/addPlayer/${user.id}` : undefined,
-		({ message }: { message: string }) => alert(message)
-	)
+	useEffect(() => {
+		matchRequestClientRef.current = webSocketService(
+			`/topic/addPlayer/${user.id}`,
+			({ message }: { message: string }) => alert(message)
+		)
 
-	useWebSocket(
-		user?.id ? `/topic/matchmaking/${user.id}` : undefined,
-		({ roomId }: { roomId: string }) => navigate(`game/${roomId}`)
-	)
+		const socket = webSocketService(
+			`/topic/matchmaking/${user.id}`,
+			({ roomId }: { roomId: string }) => navigate(`pong/${roomId}`)
+		)
+		return () => {
+			socket.deactivate();
+			matchRequestClientRef.current.deactivate();
+		}
+	}, [user.id])
+
 	function handleClick(mode: string) {
 		const client = matchRequestClientRef.current;
 		if (client && client.connected) {

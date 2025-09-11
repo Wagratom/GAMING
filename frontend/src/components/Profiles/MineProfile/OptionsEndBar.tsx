@@ -22,8 +22,6 @@ export default function OptionsEndBar({ setPlayersList, setResourcePlayer, allPl
 
     // Adiciona ou remove amigo
     async function handleRequestsBackend(method: "POST" | "DELETE", playerId: string) {
-        console.log("method: ", method)
-        console.log("playerId: ", playerId)
         try {
             const route = `${process.env.REACT_APP_API_URL}/friends`;
             await axios({

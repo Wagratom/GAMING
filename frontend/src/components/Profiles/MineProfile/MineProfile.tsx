@@ -7,7 +7,7 @@ import './MineProfile.css';
 import axios from 'axios';
 import { PlayerDto } from '../../InitialPage/Contexts/Contexts';
 import NotificacaoUX from './NotificacaoUX';
-import useWebSocket from './useWebSocket';
+import webSocketService from '../../webSocketService';
 
 type propsMiniProfile = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
@@ -31,7 +31,7 @@ export default function MiniProfile(props: propsMiniProfile) {
 			.catch(() => { });
 	}, [resoucePlayer,]);
 
-	useWebSocket("/topic/login", (nickname: string) => {
+	const socket2 = webSocketService("/topic/login", (nickname: string) => {
 		setPlayers((prev) =>
 			prev.map((player) =>
 				player.nickname === nickname ? { ...player, online: true } : player
@@ -40,13 +40,17 @@ export default function MiniProfile(props: propsMiniProfile) {
 
 	});
 
-	useWebSocket("/topic/logout", (userId: string) => {
+	const socket = webSocketService("/topic/logout", (userId: string) => {
 		// Marca como inativo em vez de remover
 		setPlayers((prev) =>
 			prev.map((player) =>
 				player.id === userId ? { ...player, online: false } : player
 			)
 		)
+		return () => {
+			socket.deactivate();
+			socket2.deactivate();
+		}
 	})
 
 	return (

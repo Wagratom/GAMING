@@ -6,7 +6,7 @@ import { ImCancelCircle } from "react-icons/im";
 import { LiaRobotSolid } from "react-icons/lia";
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import useWebSocket from './useWebSocket';
+import webSocketService from '../../webSocketService';
 
 
 type Notifications = {
@@ -31,19 +31,23 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 			headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 		})
 			.then((res) => {
-				console.log("Notificações recebidas:", res.data);
 				setFriendshipRequests(res.data.map((notification: Notifications) => notification.sender));
 			})
 			.catch(() => { });
 	}, [resoucePlayer]);
 
-	useWebSocket(
-		user?.id ? `/topic/friends/${user.id}` : undefined,
-		(msg: string) => {
-			const not = msg as unknown as Notifications
-			setFriendshipRequests((prev) => [...prev, not.sender])
-		}
-	)
+	useEffect(() => {
+		if (!user.id) return;
+
+		const socket = webSocketService(
+			`/topic/friends/${user.id}`,
+			(msg: string) => {
+				const not = msg as unknown as Notifications
+				setFriendshipRequests((prev) => [...prev, not.sender])
+			}
+		)
+		return () => void socket.deactivate();
+	}, [user.id])
 
 
 	if (friendshipRequests.length === 0) {
