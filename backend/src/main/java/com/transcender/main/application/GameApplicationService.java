@@ -107,9 +107,7 @@ public class GameApplicationService {
                         );
 
                         GamePongDto dto = toDto(game);
-                        messagingTemplate.convertAndSend("/topic/game/" + game.getRoomId(),
-                                Map.of("status", "finished", "match", dto, "matchCore", newMatch));
-
+                        messagingTemplate.convertAndSend("/topic/game/" + game.getRoomId(), toDto(game));
                         games.remove(game.getRoomId());
                     }
                 });

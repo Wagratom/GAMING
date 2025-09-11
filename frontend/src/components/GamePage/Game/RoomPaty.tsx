@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import BarDataUsers from "./BarDataUsers/BarDataUsers";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserData } from "../../InitialPage/Contexts/Contexts";
-import winnerImg from "../../../assets/game/winner.png";
-import loserImg from "../../../assets/game/losser.jpg";
+import winnerImg from "../../../assets/game/winner.jpg";
+import loserImg from "../../../assets/game/loser.jpg";
 import webSocketService from "../../webSocketService";
 
 type GamePongProps = {
@@ -168,8 +168,9 @@ export default function GameWW(): JSX.Element {
 	} : {};
 
 	if (game.winner) {
+		console.log('winner', game.winner, 'user', user.id, (game.winner == user.id));
 		const winnerStyle: React.CSSProperties = {
-			backgroundImage: `url(${game.winner === user.id ? winnerImg : loserImg})`,
+			backgroundImage: `url(${game.winner == user.id ? winnerImg : loserImg})`,
 			backgroundSize: 'cover',
 			backgroundPosition: 'center',
 			height: '100vh',

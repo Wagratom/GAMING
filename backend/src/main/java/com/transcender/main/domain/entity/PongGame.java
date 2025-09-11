@@ -54,7 +54,8 @@ public class PongGame {
                 ballY + ballSize >= leftPaddleY &&
                 ballY <= leftPaddleY + paddleHeight) {
             ballVelX *= -1;
-            ballX = paddleWidth; // evita bug de ficar preso
+            increaseSpeed(); // 🚀 aumenta a velocidade
+            ballX = paddleWidth;
         }
 
         // Colisão com paddle direito
@@ -62,11 +63,11 @@ public class PongGame {
                 ballY + ballSize >= rightPaddleY &&
                 ballY <= rightPaddleY + paddleHeight) {
             ballVelX *= -1;
+            increaseSpeed(); // 🚀 aumenta a velocidade
             ballX = width - paddleWidth - ballSize;
         }
 
-        // Pontuação
-// Pontuação
+
         if (ballX + ballSize < 0) {   // bola passou totalmente da esquerda
             scoreRight++;
             resetBall();
@@ -80,8 +81,21 @@ public class PongGame {
     private void resetBall() {
         ballX = width / 2;
         ballY = height / 2;
-        ballVelX *= -1;
+
+        // aumenta velocidade gradualmente
+        if (ballVelX > 0) ballVelX = Math.abs(ballVelX) + 1;
+        else ballVelX = -(Math.abs(ballVelX) + 1);
+
         ballVelY = 4;
+    }
+
+
+    private void increaseSpeed() {
+        if (ballVelX > 0) ballVelX++;
+        else ballVelX--;
+
+        if (ballVelY > 0) ballVelY++;
+        else ballVelY--;
     }
 
     // Getters
