@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import BarDataUsers from "./BarDataUsers/BarDataUsers";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { UserData } from "../../InitialPage/Contexts/Contexts";
 import winnerImg from "../../../assets/game/winner.jpg";
 import loserImg from "../../../assets/game/loser.jpg";
 import webSocketService from "../../webSocketService";
+
 
 type GamePongProps = {
 	ball: { positionX: number; positionY: number; size: number };
@@ -20,51 +21,58 @@ type GamePongProps = {
 	power: { x: number; y: number; size: number };
 };
 
+const backendHeight = 400;
+
+function scaleGame(gameFromServer: GamePongProps) {
+	const scaleFactor = (window.innerHeight * 0.6) / backendHeight;
+
+	return {
+		...gameFromServer,
+		window: {
+			width: gameFromServer.window.width * scaleFactor,
+			height: gameFromServer.window.height * scaleFactor,
+		},
+		ball: {
+			...gameFromServer.ball,
+			positionX: gameFromServer.ball.positionX * scaleFactor,
+			positionY: gameFromServer.ball.positionY * scaleFactor,
+			size: gameFromServer.ball.size * scaleFactor,
+		},
+		paddleLeft: {
+			...gameFromServer.paddleLeft,
+			positionX: gameFromServer.paddleLeft.positionX * scaleFactor,
+			positionFront: gameFromServer.paddleLeft.positionFront * scaleFactor,
+			height: gameFromServer.paddleLeft.height * scaleFactor,
+			width: gameFromServer.paddleLeft.width * scaleFactor,
+			velocity: gameFromServer.paddleLeft.velocity * scaleFactor,
+		},
+		paddleRight: {
+			...gameFromServer.paddleRight,
+			positionX: gameFromServer.paddleRight.positionX * scaleFactor,
+			positionFront: gameFromServer.paddleRight.positionFront * scaleFactor,
+			height: gameFromServer.paddleRight.height * scaleFactor,
+			width: gameFromServer.paddleRight.width * scaleFactor,
+			velocity: gameFromServer.paddleRight.velocity * scaleFactor,
+		},
+
+		power: {
+			...gameFromServer.power,
+			x: gameFromServer.power.x * scaleFactor,
+			y: gameFromServer.power.y * scaleFactor,
+			size: gameFromServer.power.size * scaleFactor,
+		}
+	}
+}
+
 export default function GameWW(): JSX.Element {
 	const { user } = useContext(UserData);
 	const navigate = useNavigate();
+	const room = useParams().room
+	const [searchParams] = useSearchParams();
 
-	const backendHeight = 400;
-	function scaleGame(gameFromServer: GamePongProps) {
-		const scaleFactor = (window.innerHeight * 0.6) / backendHeight;
+	const idLeft = searchParams.get("left");
+	const idRight = searchParams.get("right"); const socketRef = useRef<any>(null);
 
-		return {
-			...gameFromServer,
-			window: {
-				width: gameFromServer.window.width * scaleFactor,
-				height: gameFromServer.window.height * scaleFactor,
-			},
-			ball: {
-				...gameFromServer.ball,
-				positionX: gameFromServer.ball.positionX * scaleFactor,
-				positionY: gameFromServer.ball.positionY * scaleFactor,
-				size: gameFromServer.ball.size * scaleFactor,
-			},
-			paddleLeft: {
-				...gameFromServer.paddleLeft,
-				positionX: gameFromServer.paddleLeft.positionX * scaleFactor,
-				positionFront: gameFromServer.paddleLeft.positionFront * scaleFactor,
-				height: gameFromServer.paddleLeft.height * scaleFactor,
-				width: gameFromServer.paddleLeft.width * scaleFactor,
-				velocity: gameFromServer.paddleLeft.velocity * scaleFactor,
-			},
-			paddleRight: {
-				...gameFromServer.paddleRight,
-				positionX: gameFromServer.paddleRight.positionX * scaleFactor,
-				positionFront: gameFromServer.paddleRight.positionFront * scaleFactor,
-				height: gameFromServer.paddleRight.height * scaleFactor,
-				width: gameFromServer.paddleRight.width * scaleFactor,
-				velocity: gameFromServer.paddleRight.velocity * scaleFactor,
-			},
-
-			power: {
-				...gameFromServer.power,
-				x: gameFromServer.power.x * scaleFactor,
-				y: gameFromServer.power.y * scaleFactor,
-				size: gameFromServer.power.size * scaleFactor,
-			}
-		}
-	}
 
 	const [game, setGame] = useState<GamePongProps>({
 		window: { height: 400, width: 600 }, // mesmo do backend
@@ -80,9 +88,7 @@ export default function GameWW(): JSX.Element {
 		power: { x: 0, y: 0, size: 0 }
 	});
 
-	const room = useParams().room
-	//pegar id left/right
-	const socketRef = useRef<any>(null);
+
 
 	useEffect(() => {
 		if (!user.id) return;
