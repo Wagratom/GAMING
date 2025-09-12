@@ -24,6 +24,7 @@ export default function MatchTypes(): JSX.Element {
 			`/topic/matchmaking/${user.id}`,
 			({ roomId }: { roomId: string }) => navigate(`pong/${roomId}`)
 		)
+
 		return () => {
 			socket.deactivate();
 			matchRequestClientRef.current.deactivate();

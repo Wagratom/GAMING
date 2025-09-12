@@ -81,6 +81,7 @@ export default function GameWW(): JSX.Element {
 	});
 
 	const room = useParams().room
+	//pegar id left/right
 	const socketRef = useRef<any>(null);
 
 	useEffect(() => {
