@@ -1,9 +1,7 @@
 import { UserDto } from "../../../InitialPage/Contexts/Contexts"
-import PhotoLeftSide from "./PhotoLeftSide"
-import PhotoRightSide from "./PhotoRightSide"
 
 type BarDataUsersProps = {
-	gameWight: string;
+	gameWight: number;
 	userLeft: UserDto;
 	userRight: UserDto;
 }
@@ -12,13 +10,15 @@ export default function BarDataUsers({ gameWight, userLeft, userRight }: BarData
 	const divNicknamePlayers: React.CSSProperties = {
 		width: gameWight,
 	}
+
 	const cssDivPhoto: React.CSSProperties = {
 		width: '60px',
 		height: '60px',
 		objectFit: 'cover',
 	}
 	return (
-		<div className="d-flex text-white align-items-center pb-3" style={divNicknamePlayers}>
+		<div 
+			className="d-flex text-white align-items-center pb-3" style={divNicknamePlayers}>
 			<div className="d-flex w-50 justify-content-center align-items-center">
 				<img
 					style={cssDivPhoto}

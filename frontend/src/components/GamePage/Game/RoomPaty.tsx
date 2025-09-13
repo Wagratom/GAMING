@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import BarDataUsers from "./BarDataUsers/BarDataUsers";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { UserData } from "../../InitialPage/Contexts/Contexts";
-import winnerImg from "../../../assets/game/winner.jpg";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import loserImg from "../../../assets/game/loser.jpg";
+import winnerImg from "../../../assets/game/winner.jpg";
+import { UserData, UserDto } from "../../InitialPage/Contexts/Contexts";
 import webSocketService from "../../webSocketService";
+import BarDataUsers from "./BarDataUsers/BarDataUsers";
 
 
 type GamePongProps = {
@@ -25,7 +25,6 @@ const backendHeight = 400;
 
 function scaleGame(gameFromServer: GamePongProps) {
 	const scaleFactor = (window.innerHeight * 0.6) / backendHeight;
-
 	return {
 		...gameFromServer,
 		window: {
@@ -64,14 +63,15 @@ function scaleGame(gameFromServer: GamePongProps) {
 	}
 }
 
+type LocationState = {
+	playerLeft: UserDto;
+	playerRight: UserDto;
+};
+
 export default function GameWW(): JSX.Element {
 	const { user } = useContext(UserData);
+	const location = useLocation();
 	const navigate = useNavigate();
-	const room = useParams().room
-	const [searchParams] = useSearchParams();
-
-	const idLeft = searchParams.get("left");
-	const idRight = searchParams.get("right"); const socketRef = useRef<any>(null);
 
 
 	const [game, setGame] = useState<GamePongProps>({
@@ -89,7 +89,8 @@ export default function GameWW(): JSX.Element {
 	});
 
 
-
+	const socketRef = useRef<any>(null);
+	const room = useParams().room
 	useEffect(() => {
 		if (!user.id) return;
 
@@ -175,7 +176,6 @@ export default function GameWW(): JSX.Element {
 	} : {};
 
 	if (game.winner) {
-		console.log('winner', game.winner, 'user', user.id, (game.winner == user.id));
 		const winnerStyle: React.CSSProperties = {
 			backgroundImage: `url(${game.winner == user.id ? winnerImg : loserImg})`,
 			backgroundSize: 'cover',
@@ -194,12 +194,13 @@ export default function GameWW(): JSX.Element {
 		);
 	}
 
+	const { playerLeft, playerRight } = (location.state as LocationState) || {};
 	return (
 		<div style={cssPage} tabIndex={0} onKeyDown={onKeyDown}>
 			<div className="d-flex flex-column justify-content-center align-items-center h-75 container">
 				<BarDataUsers
-					nicknameLeft={game.player_left.nickname}
-					nicknameRight={game.player_right.nickname}
+					userLeft={playerLeft}
+					userRight={playerRight}
 					gameWight={game.window.width}
 				/>
 

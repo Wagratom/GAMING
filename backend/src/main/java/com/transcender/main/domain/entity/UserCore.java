@@ -3,10 +3,7 @@ package com.transcender.main.domain.entity;
 import com.transcender.main.domain.exceptions.UsuarioArgumentInvalid;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class UserCore {
     private Long id;
@@ -197,23 +194,24 @@ public class UserCore {
         this.nickname = nickname;
     }
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
     public void setOnline(boolean online) {
         this.online = online;
-    }
-
-    public void setAtive(boolean ative) {
-        this.ative = ative;
     }
 
     public void setCriadoEm(Instant criadoEm) {
         this.criadoEm = criadoEm;
     }
 
-    public void setAtualizadoEm(Instant atualizadoEm) {
-        this.atualizadoEm = atualizadoEm;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true; // mesmo objeto na memória
+        if (o == null || getClass() != o.getClass()) return false; // tipos diferentes
+        UserCore user = (UserCore) o;
+        return Objects.equals(id, user.id); // comparação só pelo id
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id); // usa só o id para calcular o hash
     }
 }

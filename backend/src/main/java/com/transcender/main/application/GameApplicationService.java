@@ -2,7 +2,9 @@ package com.transcender.main.application;
 
 import com.transcender.main.domain.entity.MatchCore;
 import com.transcender.main.domain.entity.PongGame;
+import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.port.out.MatchRepositoryPort;
+import com.transcender.main.domain.port.out.UserRepositoryPort;
 import com.transcender.main.domain.valueobject.PlayerMoveDto;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -11,10 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
@@ -25,12 +24,13 @@ import java.util.concurrent.TimeUnit;
 public class GameApplicationService {
 
     private final SimpMessagingTemplate messagingTemplate;
+    private final UserRepositoryPort userRepository;
 
     //Map com as partidas que estão acontecendo no momento
     private final Map<String, PongGame> games = new ConcurrentHashMap<>();
 
     // Fila de espera para matchmaking
-    private final Queue<Long> waitingPlayersNomalGame = new ConcurrentLinkedQueue<>();
+    private final Queue<UserCore> waitingPlayersNomalGame = new ConcurrentLinkedQueue<>();
     private final MatchRepositoryPort matchRepository;
 
     private final Logger logger = LoggerFactory.getLogger(GameApplicationService.class);
@@ -42,25 +42,26 @@ public class GameApplicationService {
             int placarRight,
             String winner,
             WindowDto window,
-            PlayerDto player_left,
-            PlayerDto player_right,
-            List<String> watchs,
             PowerDto power
     ) {
         public record BallDto(int positionX, int positionY, int size) {}
         public record PaddleDto(int positionX, int positionFront, int height, int width, int velocity) {}
         public record WindowDto(int height, int width) {}
-        public record PlayerDto(String id, boolean status, String nickname) {}
         public record PowerDto(int x, int y, int size) {}
     }
 
     public void addToQueue(Long playerId, String typeMode) {
-        if (waitingPlayersNomalGame.contains(playerId)) return;
+        Optional<UserCore> user = userRepository.getUserById(playerId);
+        logger.info("{}", user.isEmpty());
+        if (user.isEmpty()) return ;
+
+        if (waitingPlayersNomalGame.contains(user.get())) return;
+
         // Se houver pelo menos 2 jogadores, cria uma partida
-        waitingPlayersNomalGame.add(playerId);
+        waitingPlayersNomalGame.add(user.get());
         if (waitingPlayersNomalGame.size() >= 2) {
-            Long player1 = waitingPlayersNomalGame.poll();
-            Long player2 = waitingPlayersNomalGame.poll();
+            UserCore player1 = waitingPlayersNomalGame.poll();
+            UserCore player2 = waitingPlayersNomalGame.poll();
 
             String roomId = UUID.randomUUID().toString();
             createRoom(roomId, player1, player2, typeMode);
@@ -69,13 +70,17 @@ public class GameApplicationService {
         }
     }
 
-    private void createRoom(String roomId, Long playerId1, Long playerId2, String mode) {
-        logger.info("Criando uma nova partida entre player1={} player2={}", playerId1, playerId2);
+    private void createRoom(String roomId, UserCore player1, UserCore player2, String mode) {
+        logger.info("Criando uma nova partida entre player1={} player2={}", player1.getId(), player2.getId());
         PongGame game = games.computeIfAbsent(roomId, r -> new PongGame(roomId, mode));
-        game.addPlayer(playerId1, playerId2);
-
-        messagingTemplate.convertAndSend("/topic/matchmaking/" + playerId1, Map.of("roomId", roomId));
-        messagingTemplate.convertAndSend("/topic/matchmaking/" + playerId2, Map.of("roomId", roomId));
+        game.addPlayer(player1, player2);
+        Map<String, Object> response = Map.of(
+                "roomId", roomId,
+                "playerLeft", game.getPlayerLeft(),
+                "playerRight", game.getPlayerRight()
+        );
+        messagingTemplate.convertAndSend("/topic/matchmaking/" + player1.getId(), response);
+        messagingTemplate.convertAndSend("/topic/matchmaking/" + player2.getId(), response);
         logger.info("Games ativos no loop2: {}", games.size());
     }
 
@@ -106,7 +111,7 @@ public class GameApplicationService {
                                 game.getScoreLoser()
                         );
 
-                        GamePongDto dto = toDto(game);
+                        logger.info("cabouu");
                         messagingTemplate.convertAndSend("/topic/game/" + game.getRoomId(), toDto(game));
                         games.remove(game.getRoomId());
                     }
@@ -126,9 +131,6 @@ public class GameApplicationService {
                 game.getScoreRight(),
                 game.isFinished() ? String.valueOf(game.getWinnerId()) : "",
                 new GamePongDto.WindowDto(game.getHeight(), game.getWidth()),
-                new GamePongDto.PlayerDto(String.valueOf(game.getPlayerLeftId()), true, "nickname_left"),
-                new GamePongDto.PlayerDto(String.valueOf(game.getPlayerRightId()), true, "nickname_right"),
-                List.of(),
                 new GamePongDto.PowerDto(0, 0, 0)
         );
     }

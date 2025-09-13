@@ -7,8 +7,8 @@ public class PongGame {
     private final String roomId;
     private final String mode; // "Normal", "Ranqueado", "VSCOOP"
 
-    private Long playerLeftId;
-    private Long playerRightId;
+    private UserCore playerLeft;
+    private UserCore playerRight;
     private int width = 600, height = 400;
     private int paddleHeight = 80, paddleWidth = 10;
     private int ballX = 300, ballY = 200, ballSize = 10;
@@ -22,9 +22,9 @@ public class PongGame {
         this.mode = mode;
     }
 
-    public void addPlayer(Long playerLeftId, Long playerRightId) {
-        this.playerLeftId = playerLeftId;
-        this.playerRightId = playerRightId;
+    public void addPlayer(UserCore playerLeftId, UserCore playerRightId) {
+        this.playerLeft = playerLeftId;
+        this.playerRight = playerRightId;
     }
 
     // Atualiza posição do paddle baseado no DTO
@@ -89,7 +89,6 @@ public class PongGame {
         ballVelY = 4;
     }
 
-
     private void increaseSpeed() {
         if (ballVelX > 0) ballVelX++;
         else ballVelX--;
@@ -104,11 +103,11 @@ public class PongGame {
     }
 
     public Long getWinnerId() {
-        return (scoreLeft >= 3) ? playerLeftId : playerRightId;
+        return (scoreLeft >= 3) ? playerLeft.getId() : playerRight.getId();
     }
 
     public Long getLoserId() {
-        return (scoreLeft < 3) ? playerLeftId : playerRightId;
+        return (scoreLeft < 3) ? playerLeft.getId() : playerRight.getId();
     }
 
     public Integer getScoreWinner() {
@@ -167,12 +166,12 @@ public class PongGame {
         return height;
     }
 
-    public Long getPlayerLeftId() {
-        return playerLeftId;
+    public UserCore getPlayerLeft() {
+        return playerLeft;
     }
 
-    public Long getPlayerRightId() {
-        return playerRightId;
+    public UserCore getPlayerRight() {
+        return playerRight;
     }
 
 }

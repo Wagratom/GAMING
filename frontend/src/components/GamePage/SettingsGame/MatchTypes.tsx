@@ -3,9 +3,15 @@ import ButtonModelsGame from "./ButtonModelsGame";
 import playPong from '../../../assets/settingsGame/playPong.jpg'
 import playSpecialPong from '../../../assets/settingsGame/playSpecialPong.jpg'
 import ModalRules from "./ModalRules";
-import { UserData } from "../../InitialPage/Contexts/Contexts";
+import { UserData, UserDto } from "../../InitialPage/Contexts/Contexts";
 import { useNavigate } from "react-router-dom";
 import webSocketService from "../../webSocketService";
+
+type responseCreateMatch = {
+	roomId: string;
+	playerLeft: UserDto;
+	playerRight: UserDto;
+}
 
 export default function MatchTypes(): JSX.Element {
 	const [isOpen, setIsOpen] = useState(false);
@@ -22,8 +28,16 @@ export default function MatchTypes(): JSX.Element {
 
 		const socket = webSocketService(
 			`/topic/matchmaking/${user.id}`,
-			({ roomId }: { roomId: string }) => navigate(`pong/${roomId}`)
-		)
+			(response: responseCreateMatch) => {
+				navigate(`/pong/${response.roomId}`, {
+					state: {
+						playerLeft: response.playerLeft,
+						playerRight: response.playerRight
+					}
+				});
+			}
+		);
+
 
 		return () => {
 			socket.deactivate();
