@@ -75,3 +75,19 @@ body p {
 .c-pointer {
 	cursor: pointer;
 }
+
+
+
+.button-close {
+  position: absolute;
+  top: -1rem;
+  right: -1rem;
+  z-index: 3;
+
+  height: 3rem;
+  width: 3rem;
+  border-radius: 0.5rem;
+  box-shadow: 2px 2px 1px #FFF inset, -8px -8px 8px var(--background-shadow) inset;
+  cursor: pointer;
+}
+

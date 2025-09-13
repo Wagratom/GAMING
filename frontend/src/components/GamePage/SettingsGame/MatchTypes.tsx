@@ -29,7 +29,7 @@ export default function MatchTypes(): JSX.Element {
 		const socket = webSocketService(
 			`/topic/matchmaking/${user.id}`,
 			(response: responseCreateMatch) => {
-				navigate(`/pong/${response.roomId}`, {
+				navigate(`room/${response.roomId}`, {
 					state: {
 						playerLeft: response.playerLeft,
 						playerRight: response.playerRight

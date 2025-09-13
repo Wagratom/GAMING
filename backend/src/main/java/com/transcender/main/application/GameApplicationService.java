@@ -31,29 +31,42 @@ public class GameApplicationService {
 
     // Fila de espera para matchmaking
     private final Queue<UserCore> waitingPlayersNomalGame = new ConcurrentLinkedQueue<>();
+    private  final List<Long> playersInMatcher;
     private final MatchRepositoryPort matchRepository;
 
     private final Logger logger = LoggerFactory.getLogger(GameApplicationService.class);
+
     private record GamePongDto(
             BallDto ball,
             PaddleDto paddleLeft,
             PaddleDto paddleRight,
             int placarLeft,
             int placarRight,
-            String winner,
+            Long winner,
             WindowDto window,
-            PowerDto power
+            PowerDto power,
+            Long playerLeftId,
+            Long playerRightId
     ) {
-        public record BallDto(int positionX, int positionY, int size) {}
-        public record PaddleDto(int positionX, int positionFront, int height, int width, int velocity) {}
-        public record WindowDto(int height, int width) {}
-        public record PowerDto(int x, int y, int size) {}
+        public record BallDto(int positionX, int positionY, int size) {
+        }
+
+        public record PaddleDto(int positionX, int positionFront, int height, int width, int velocity) {
+        }
+
+        public record WindowDto(int height, int width) {
+        }
+
+        public record PowerDto(int x, int y, int size) {
+        }
     }
 
     public void addToQueue(Long playerId, String typeMode) {
+        if (playersInMatcher.contains(playerId)) return;
+
         Optional<UserCore> user = userRepository.getUserById(playerId);
         logger.info("{}", user.isEmpty());
-        if (user.isEmpty()) return ;
+        if (user.isEmpty()) return;
 
         if (waitingPlayersNomalGame.contains(user.get())) return;
 
@@ -62,6 +75,9 @@ public class GameApplicationService {
         if (waitingPlayersNomalGame.size() >= 2) {
             UserCore player1 = waitingPlayersNomalGame.poll();
             UserCore player2 = waitingPlayersNomalGame.poll();
+
+            playersInMatcher.add(player1.getId());
+            playersInMatcher.add(player2.getId());
 
             String roomId = UUID.randomUUID().toString();
             createRoom(roomId, player1, player2, typeMode);
@@ -88,7 +104,6 @@ public class GameApplicationService {
         logger.info("Move cheguei: {}", move);
         PongGame game = games.get(move.roomID());
         if (game != null) {
-            logger.info("Move passei");
             game.movePlayer(move);
             messagingTemplate.convertAndSend("/topic/game/" + move.roomID(), toDto(game));
         }
@@ -111,9 +126,10 @@ public class GameApplicationService {
                                 game.getScoreLoser()
                         );
 
-                        logger.info("cabouu");
                         messagingTemplate.convertAndSend("/topic/game/" + game.getRoomId(), toDto(game));
                         games.remove(game.getRoomId());
+                        playersInMatcher.remove(game.getPlayerLeft().getId());
+                        playersInMatcher.remove(game.getPlayerRight().getId());
                     }
                 });
             } catch (Exception e) {
@@ -129,10 +145,13 @@ public class GameApplicationService {
                 new GamePongDto.PaddleDto(game.getWidth() - game.getPaddleWidth(), game.getRightPaddleY(), game.getPaddleHeight(), game.getPaddleWidth(), 5),
                 game.getScoreLeft(),
                 game.getScoreRight(),
-                game.isFinished() ? String.valueOf(game.getWinnerId()) : "",
+                game.isFinished() ? game.getWinnerId() : null,
                 new GamePongDto.WindowDto(game.getHeight(), game.getWidth()),
-                new GamePongDto.PowerDto(0, 0, 0)
+                new GamePongDto.PowerDto(0, 0, 0),
+                game.getPlayerLeft().getId(),
+                game.getPlayerRight().getId()
         );
     }
+
 
 }

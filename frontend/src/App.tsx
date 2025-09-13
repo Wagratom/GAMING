@@ -1,8 +1,7 @@
 import './index.css';
 import { Login } from './components/LoginPage/Login';
 import InicialPage from './components/InitialPage/InitialPage';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LoginFake from './components/LoginPage/LoginFake';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Game from './components/GamePage/Game/Game';
 import GameWW from './components/GamePage/Game/RoomPaty';
 
@@ -11,12 +10,13 @@ export default function App() {
 		<div>
 			<BrowserRouter>
 				<Routes>
-					<Route path="/" element={<Login />} />
-					<Route path="/fake" element={<LoginFake />} />
-					<Route path="/game/" element={<InicialPage />}>
+					<Route path="/login" element={<Login />} />
+					<Route path="/" element={<InicialPage />}>
 						<Route index element={<Game />} />
-						<Route path="pong/:room" element={<GameWW />} />
+						<Route path="room/:room" element={<GameWW />} />
 					</Route>
+					<Route path="*" element={<Navigate to="/" replace />} />
+
 				</Routes>
 			</BrowserRouter>
 		</div>

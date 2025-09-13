@@ -1,24 +1,22 @@
-import { UserDto } from "../../InitialPage/Contexts/Contexts"
+import { UserDto } from "../../InitialPage/Contexts/Contexts";
 
 type BarDataUsersProps = {
-	gameWight: number;
 	userLeft: UserDto;
 	userRight: UserDto;
-}
+};
 
-export default function BarDataUsers({ gameWight, userLeft, userRight }: BarDataUsersProps): JSX.Element {
-	const divNicknamePlayers: React.CSSProperties = {
-		width: gameWight,
-	}
+export default function BarDataUsers({ userLeft, userRight }: BarDataUsersProps) {
+	if (!userLeft || !userLeft.avatar || !userRight || !userRight.avatar) return null;
 
 	const cssDivPhoto: React.CSSProperties = {
-		width: '60px',
-		height: '60px',
-		objectFit: 'cover',
-	}
+		width: "40px",
+		height: "40px",
+		objectFit: "cover",
+	};
+
+
 	return (
-		<div 
-			className="d-flex text-white align-items-center pb-3" style={divNicknamePlayers}>
+		<div className="d-flex text-white align-items-center mb-4" style={{ width: '600px' }}>
 			<div className="d-flex w-50 justify-content-center align-items-center">
 				<img
 					style={cssDivPhoto}
@@ -38,10 +36,10 @@ export default function BarDataUsers({ gameWight, userLeft, userRight }: BarData
 				<img
 					style={cssDivPhoto}
 					className="rounded-circle"
-					src={userLeft.avatar}
+					src={userRight.avatar}
 					alt={"Foto do usuário " + userRight.nickname}
 				/>
 			</div>
 		</div>
-	)
+	);
 }
