@@ -1,17 +1,16 @@
 import axios from 'axios';
-import FormatMessages from '../FormatMessagens/FormatMessagens';
-import TitleChatPrivate from './Title';
-import InputChats from '../InputChats';
 import { useContext, useEffect, useState } from 'react';
-import { MessageDto, PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts'
-import './ChatPrivate.css'
-import webSocketService from '../../webSocketService';
 import { useNavigate } from 'react-router-dom';
+import { MessageDto, PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts';
+import PhotoWithOnlineStatus from '../../Profiles/MineProfile/PhotoWithOnlineStatus';
+import webSocketService from '../../webSocketService';
+import FormatMessages from '../FormatMessagens/FormatMessagens';
+import InputChats from '../InputChats';
+import './ChatPrivate.css';
 
 
 export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 	const { user } = useContext(UserData)
-	const [messages, setMessages] = useState<MessageDto[]>([])
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -32,20 +31,48 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 			})
 	}, [])
 
+	const [online, setOnline] = useState<boolean>(friend.online)
+	const [messages, setMessages] = useState<MessageDto[]>([])
 	useEffect(() => {
 		if (user.id) return;
 
-		const socket = webSocketService(
+		const socket = webSocketService("/topic/login", (nickname: string) => {
+			if (friend.nickname === nickname) setOnline(true)
+		})
+
+		const socket2 = webSocketService("/topic/logout", (userId: string) => {
+			if (friend.id === userId) setOnline(false)
+		});
+
+		const socket3 = webSocketService(
 			`/topic/directChats/${user.id}`,
 			(msg: string) => { setMessages(prev => [...prev, msg as unknown as MessageDto]) }
 		);
-		return () => void socket.deactivate()
-	}, [user.id])
-
+		return () => {
+			socket.deactivate();
+			socket2.deactivate();
+			socket3.deactivate();
+		}
+	}, [])
 
 	return (
 		<div className='text-white chat d-flex flex-column bg-degrader' style={{ zIndex: 2000 }}>
-			<TitleChatPrivate friend={friend} />
+			
+			{/* cabeçario do chat */}
+			<div className="p-2 border-bottom d-flex align-items-center" style={{ height: '4rem' }}>
+				<PhotoWithOnlineStatus
+					online={online}
+					imgSrc={friend.avatar}
+					photoHeight='2rem'
+					photoWidth='2rem'
+					positionTop='61%'
+					positionEnd='40%'
+				/>
+				<span className='ms-1 fs-5'>{friend.nickname}</span>
+			</div>
+
+
+			
 			<div className='overflow-auto mt-auto text-black' id='messagens-chat'>
 				<FormatMessages messages={messages} />
 			</div>

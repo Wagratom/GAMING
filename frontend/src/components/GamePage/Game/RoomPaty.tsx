@@ -4,7 +4,7 @@ import loserImg from "../../../assets/game/loser.jpg";
 import winnerImg from "../../../assets/game/winner.jpg";
 import { UserData, UserDto } from "../../InitialPage/Contexts/Contexts";
 import webSocketService from "../../webSocketService";
-import BarDataUsers from "./BarDataUsers/BarDataUsers";
+import BarDataUsers from "./BarDataUsers";
 
 
 type GamePongProps = {

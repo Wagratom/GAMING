@@ -1,4 +1,4 @@
-import Bar from "./Bar/Bar";
+import Bar from "./Bar";
 import TopRank from "./TopRank/TopRank";
 import bgTerra from '../../assets/game/planets/backgrounds/bgTerra.jpg'
 import { SetStateAction } from "react";

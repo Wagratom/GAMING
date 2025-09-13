@@ -1,4 +1,4 @@
-import { UserDto } from "../../../InitialPage/Contexts/Contexts"
+import { UserDto } from "../../InitialPage/Contexts/Contexts"
 
 type BarDataUsersProps = {
 	gameWight: number;
