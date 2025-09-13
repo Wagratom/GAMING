@@ -1,9 +1,9 @@
 import React, { SetStateAction, useState } from "react";
-import ShowItemsStore from "./ShowItemsStore";
-import FakeApiStore from "./FakeApiStore";
+import { IoMdClose } from "react-icons/io";
 import bgLua from "../../../assets/game/planets/backgrounds/bgLua.jpg";
 import bgLua2 from "../../../assets/game/planets/backgrounds/bgLua2.jpg";
-import ButtonClosed from "../Game/ButtonClosed";
+import FakeApiStore from "./FakeApiStore";
+import ShowItemsStore from "./ShowItemsStore";
 
 type propsSettingsStore = {
 	openSettingsStore: React.Dispatch<SetStateAction<string>>;
@@ -75,9 +75,13 @@ export default function SettingsStore(props: propsSettingsStore): JSX.Element {
 				>
 					Bar Game
 				</button>
-				<ButtonClosed backgroundColor="#46668a"
-					backgroundShadow="#0c1d3b"
-					closed={props.openSettingsStore}
+				<IoMdClose
+					className="button-close"
+					style={{
+						backgroundColor: '#46668a',
+						boxShadow: `2px 2px 1px #FFF inset, -8px -8px 8px ${'#0c1d3b'} inset`
+					}}
+					onClick={() => props.openSettingsStore('')}
 				/>
 			</div>
 			<div style={firtdivSelectGame}>
