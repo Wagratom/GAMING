@@ -55,7 +55,6 @@ public class MapperToJpaEntity {
     }
 
     public MatchCore toPartidaCore(MatchCoreJpa match) {
-        logger.info("MapperToJpaEntity > toPartidaCore > exec, partidaId={}", match.getId());
 
         return new MatchCore(
                 match.getId(),
@@ -70,7 +69,6 @@ public class MapperToJpaEntity {
     }
 
     public UserCoreJpa toUserCoreJpa(UserCore user) {
-        logger.info("ChatRepositoryAdapter::toUserCoreJpa::exec");
 
         return new UserCoreJpa(
                 user.getId(),
@@ -86,7 +84,6 @@ public class MapperToJpaEntity {
     }
 
     public FriendCore toFriendCore(FriendCoreJpa friendjpa) {
-        logger.info("ChatRepositoryAdapter::toFriendCore::exec");
 
         return new FriendCore(
                 friendjpa.getId(),
@@ -112,7 +109,6 @@ public class MapperToJpaEntity {
     }
 
     public ChatCore toChatCore(ChatCoreJpa chatJpa) {
-        logger.info("transformando em uma entity da aplicação, chatid={}", chatJpa.getId());
         boolean isPrivate = chatJpa.getType() == ChatType.PRIVATE;
 
         Set<Long> adms = isPrivate
@@ -145,7 +141,6 @@ public class MapperToJpaEntity {
 
 
     public MessageCore toMessageCore(MessageCoreJpa messagesJpa) {
-        logger.info("ChatRepositoryAdapter::toMessageCore::exec");
 
         return new MessageCore(
                 messagesJpa.getId(),

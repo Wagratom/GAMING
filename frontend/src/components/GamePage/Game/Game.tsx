@@ -60,9 +60,9 @@ export default function Game() {
 					{collisionPnt === 'base' && <Ranking openStore={setCollisionPnt} />}
 					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} />}
 					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
-					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
+					<MiniProfile showMiniPerfil={setCollisionPnt} />
 					{/* <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} /> */}
-					<ChooseGameMode openSettingsPath={setCollisionPnt} />
+					{/* <ChooseGameMode openSettingsPath={setCollisionPnt} /> */}
 				</div>
 			</div>
 		</div>

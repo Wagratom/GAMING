@@ -13,7 +13,7 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 	const { user } = useContext(UserData)
 	const navigate = useNavigate()
 
-	useEffect(() => {
+	const getMessages = () => {
 		axios.get(`${process.env.REACT_APP_API_URL}/directChats/${friend.id}`, {
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -29,12 +29,14 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 					navigate('/')
 				}
 			})
-	}, [])
+	}
 
 	const [online, setOnline] = useState<boolean>(friend.online)
 	const [messages, setMessages] = useState<MessageDto[]>([])
 	useEffect(() => {
-		if (user.id) return;
+		if (!user?.id) return;
+
+		getMessages()
 
 		const socket = webSocketService("/topic/login", (nickname: string) => {
 			if (friend.nickname === nickname) setOnline(true)
@@ -53,11 +55,11 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 			socket2.deactivate();
 			socket3.deactivate();
 		}
-	}, [])
+	}, [user.id])
 
 	return (
 		<div className='text-white chat d-flex flex-column bg-degrader' style={{ zIndex: 2000 }}>
-			
+
 			{/* cabeçario do chat */}
 			<div className="p-2 border-bottom d-flex align-items-center" style={{ height: '4rem' }}>
 				<PhotoWithOnlineStatus
@@ -72,12 +74,11 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 			</div>
 
 
-			
+
 			<div className='overflow-auto mt-auto text-black' id='messagens-chat'>
 				<FormatMessages messages={messages} />
 			</div>
 			<InputChats
-				setMessages={setMessages}
 				resourceSend={`/directChats/${friend.id}`}
 			/>
 		</div>

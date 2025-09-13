@@ -7,6 +7,7 @@ import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.port.in.ChatPort;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class ChatController {
     private final ChatPort chatService;
-    private final SimpMessagingTemplate messagingTemplate;
     private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 
-    @Autowired
-    public ChatController(ChatApplicationService chatService, SimpMessagingTemplate messagingTemplate) {
-        this.chatService = chatService;
-        this.messagingTemplate = messagingTemplate;
-    }
 
 //    @PostMapping("")
 //    public ResponseEntity<String> criarChat(@Valid @RequestBody ChatDtoCreate chatDto) {
@@ -52,15 +48,14 @@ public class ChatController {
     }
 
     @PostMapping("/directChats/{friendId}")
-    public ResponseEntity<Map<String, Object>> postDirectChat(
+    public ResponseEntity<String> postDirectChat(
             @RequestHeader("Authorization") String jwt,
             @PathVariable("friendId") @Valid String friendId,
             @RequestBody @Valid NewMessageChat content
     ) {
         if (content.content().isBlank()) throw new BadRequest("Message empty");
         logger.info("[INIT] controller add new message direct chat friendId ={}", friendId);
-        Map<String, Object> message = chatService.postDirectChat(jwt, Long.parseLong(friendId), content.content());
-        messagingTemplate.convertAndSend("/topic/directChats/" + friendId, message);
-        return ResponseEntity.ok(message);
+        chatService.postDirectChat(jwt, Long.parseLong(friendId), content.content());
+        return ResponseEntity.ok("sucesso");
     }
 }

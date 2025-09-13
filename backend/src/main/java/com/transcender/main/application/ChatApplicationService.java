@@ -16,6 +16,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,9 +30,14 @@ public class ChatApplicationService implements ChatPort {
     private final UserRepositoryPort userRepository;
     private final JwtService jwtService;
     private final FriendsRepositoryPort friendRepository;
+    private final SimpMessagingTemplate messagingTemplate;
     private final Logger logger = LoggerFactory.getLogger(ChatApplicationService.class);
 
+    //records utilizados para gerar os objetos de resposta
     private record UsersPair(UserCore requester, UserCore friend) {}
+
+    private record SenderDto(Long id, String nickname, String avatar, Boolean online) {}
+    public record MessageDto(Long id, String content, String date, SenderDto sender) {}
 
     private Long getIdByToken(String jwt) {
         try {
@@ -56,18 +62,20 @@ public class ChatApplicationService implements ChatPort {
         return new UsersPair(user1, user2);
     }
 
-    private Map<String, Object> messageToJson(MessageCore messages) {
-        UserCore sender = messages.getSender();
-        return Map.of(
-                "id", messages.getId(),
-                "content", messages.getConteudo(),
-                "date", messages.getAtualizadoEm(),
-                "sender", Map.of(
-                        "id", sender.getId(),
-                        "nickname", sender.getNickname(),
-                        "avatar", sender.getAvatar(),
-                        "online", sender.getOnline()
-                ));
+    private MessageDto toMessageDto(MessageCore message) {
+        UserCore sender = message.getSender();
+        return new MessageDto(
+                message.getId(),
+                message.getConteudo(),
+                message.getAtualizadoEm().toString(),
+                new SenderDto(
+                        sender.getId(),
+                        sender.getNickname(),
+                        sender.getAvatar(),
+                        sender.getOnline()
+                )
+        );
+
     }
 
     @Override
@@ -85,14 +93,14 @@ public class ChatApplicationService implements ChatPort {
         Map<String, Object> chatJson = Map.of(
                 "chatId", chatCore.getId(),
                 "chatName", users.friend.getNickname(),
-                "messages", chatCore.getMessagens().stream().map(this::messageToJson)
+                "messages", chatCore.getMessagens().stream().map(this::toMessageDto)
         );
         logger.info("[END] Processo finalizado com sucesso");
         return chatJson;
     }
 
     @Override
-    public Map<String, Object> postDirectChat(String jwt, Long friendId, String content) {
+    public void postDirectChat(String jwt, Long friendId, String content) {
         Long userId = getIdByToken(jwt);
         UsersPair users = usersExists(userId, friendId);
 
@@ -102,8 +110,9 @@ public class ChatApplicationService implements ChatPort {
 
         MessageCore messageCore = chatRepository.addNewMessageDirectChat(users.requester(), users.friend(), content);
 
-        logger.info("[INFO] Montando json de resposta");
-        return messageToJson(messageCore);
+        logger.info("[END] enviando resposta");
+        messagingTemplate.convertAndSend("/topic/directChats/" + userId, toMessageDto(messageCore));
+        messagingTemplate.convertAndSend("/topic/directChats/" + friendId, toMessageDto(messageCore));
     }
 
     @Override

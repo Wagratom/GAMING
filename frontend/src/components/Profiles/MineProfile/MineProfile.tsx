@@ -31,27 +31,29 @@ export default function MiniProfile(props: propsMiniProfile) {
 			.catch(() => { });
 	}, [resoucePlayer,]);
 
-	const socket2 = webSocketService("/topic/login", (nickname: string) => {
-		setPlayers((prev) =>
-			prev.map((player) =>
-				player.nickname === nickname ? { ...player, online: true } : player
-			)
-		);
+	useEffect(() => {
+		const socket2 = webSocketService("/topic/login", (nickname: string) => {
+			setPlayers((prev) =>
+				prev.map((player) =>
+					player.nickname === nickname ? { ...player, online: true } : player
+				)
+			);
 
-	});
+		});
 
-	const socket = webSocketService("/topic/logout", (userId: string) => {
-		// Marca como inativo em vez de remover
-		setPlayers((prev) =>
-			prev.map((player) =>
-				player.id === userId ? { ...player, online: false } : player
+		const socket = webSocketService("/topic/logout", (userId: string) => {
+			// Marca como inativo em vez de remover
+			setPlayers((prev) =>
+				prev.map((player) =>
+					player.id === userId ? { ...player, online: false } : player
+				)
 			)
-		)
+		})
 		return () => {
 			socket.deactivate();
 			socket2.deactivate();
 		}
-	})
+	}, []);
 
 	return (
 		<div className="position-absolute top-0 end-0 h-100 miniprofile">

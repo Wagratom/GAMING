@@ -1,14 +1,12 @@
 import { useRef } from 'react';
 import { AiOutlineSend } from 'react-icons/ai';
-import { MessageDto } from '../InitialPage/Contexts/Contexts';
 import axios from 'axios';
 
 type PropsInputChats = {
-	setMessages: React.Dispatch<React.SetStateAction<MessageDto[]>>;
 	resourceSend: string;
 };
 
-export default function InputChats({ setMessages, resourceSend }: PropsInputChats) {
+export default function InputChats({ resourceSend }: PropsInputChats) {
 	const inputChat = useRef<HTMLInputElement>(null);
 
 	const sendMessageEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -31,10 +29,7 @@ export default function InputChats({ setMessages, resourceSend }: PropsInputChat
 				withCredentials: true,
 			}
 		)
-			.then((res) => {
-				const newMsg: MessageDto = res.data;
-				setMessages((prev) => [...prev, newMsg]);
-
+			.then(() => {
 				if (inputChat.current) {
 					inputChat.current.value = "";
 				}

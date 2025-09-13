@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface ChatPort {
     Map<String, Object> getDirectChat(String jwt, Long friendId);
-    Map<String, Object> postDirectChat(String jwt, Long friendId, String content);
+    void postDirectChat(String jwt, Long friendId, String content);
 
     ChatCore createChat(ChatCore chat);
     ChatCore updateChat(ChatCore user, Long solicitanteId);
