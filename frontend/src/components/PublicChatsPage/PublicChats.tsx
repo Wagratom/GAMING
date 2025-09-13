@@ -1,14 +1,14 @@
 import React, { SetStateAction, useContext, useEffect, useState } from 'react';
 // import bgChats from '../../assets/game/planets/backgrounds/bgChats.jpg'
-import ScreenCreateNewChat from './ScreemCreateNewChat';
-import BarOptions from './BarOptions';
-import ChatList from './ChatsList';
-import Cookies from 'js-cookie';
 import axios from 'axios';
-import './PublicChats.css';
-import ButtonClosed from '../GamePage/Game/ButtonClosed';
+import Cookies from 'js-cookie';
+import { IoMdClose } from "react-icons/io";
 import ChatPublic from '../ChatsGame/ChatPublic/ChatPublic';
 import { UserData } from '../InitialPage/Contexts/Contexts';
+import BarOptions from './BarOptions';
+import ChatList from './ChatsList';
+import './PublicChats.css';
+import ScreenCreateNewChat from './ScreemCreateNewChat';
 
 export type t_chat = {
 	id: string;
@@ -114,11 +114,15 @@ export default function PageChats(props: propsPageChats) {
 		<div className='rounded position-absolute top-50 start-50 translate-middle'
 			style={cssDivChats}
 		>
-			<ButtonClosed
-				backgroundColor="#46668a"
-				backgroundShadow="#0c1d3b"
-				closed={props.openPageChats}
+			<IoMdClose
+				className="button-close"
+				style={{
+					backgroundColor: '#46668a',
+					boxShadow: `2px 2px 1px #FFF inset, -8px -8px 8px ${'#0c1d3b'} inset`
+				}}
+				onClick={() => props.openPageChats('')}
 			/>
+
 			<div className='d-flex flex-column h-100'>
 				<BarOptions
 					handleSearchChats={handleSearchChats}

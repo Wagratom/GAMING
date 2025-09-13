@@ -1,10 +1,10 @@
-import MatchHistory from "../ProfilePage/MatchHistory";
-import '../ProfilePage/rank.css'
-import ButtonClosed from "../../GamePage/Game/ButtonClosed";
-import HandleRank from "../RankMapings";
 import { useContext } from "react";
+import { IoMdClose } from "react-icons/io";
 import { UserData } from "../../InitialPage/Contexts/Contexts";
 import BannerProfile from "../ProfilePage/BannerProfile";
+import MatchHistory from "../ProfilePage/MatchHistory";
+import '../ProfilePage/rank.css';
+import HandleRank from "../RankMapings";
 
 type propsDinamicProfile = {
 	nickName: string;
@@ -27,7 +27,7 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
 
 	return (
 		<div className="text-white h-75 w-75 position-fixed top-50 start-50 translate-middle" style={cssBackgroundTerra}>
-			<ButtonClosed backgroundColor="" backgroundShadow="" closed={props.openDinamicProfile} />
+			<IoMdClose className="button-close" onClick={() => props.openDinamicProfile('')} />
 			<BannerProfile
 				borderImg={borderImg}
 				avatar={user.avatar}
