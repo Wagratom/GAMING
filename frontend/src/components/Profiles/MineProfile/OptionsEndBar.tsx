@@ -89,7 +89,7 @@ export default function OptionsEndBar({ setPlayersList, setResourcePlayer, allPl
     const styleButton: React.CSSProperties = { margin: "5px", cursor: "pointer" };
     const placeholderText = openInputSearch.method === "POST" ? "Add Friend" : "Remove Friend";
     return (
-        <div className="d-flex align-items-center px-2" style={{ color: "#808287" }}>
+        <div className="d-flex align-items-center px-2 text-white">
             <MdOutlinePersonAddAlt1
                 style={styleButton}
                 title="Add Friend"

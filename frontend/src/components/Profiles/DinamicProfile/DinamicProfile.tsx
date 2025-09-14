@@ -20,7 +20,8 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
         backgroundSize: 'cover',
         backgroundPosition: 'contain',
         backgroundRepeat: 'no-repeat',
-        zIndex: 1000
+        zIndex: 1000,
+        border: "1px solid wheat"
     }
 
     const [profile, setProfile] = useState<ProfileDto | null>(null);
@@ -50,12 +51,12 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
         fetchGetProfile();
     }, [props.id]);
 
-
     function getPoints() {
         if (!profile) return 0;
         const points = profile.matches.wins.length - profile.matches.losses.length;
         return points >= 0 ? points : 0;
     }
+
     // const winRate = totalGames > 0 ? (winners / totalGames) * 100 : 0;
     const { rank, borderImg } = HandleRank(getPoints());
     const allMatches = profile ? profile.matches.wins.concat(profile.matches.losses) : []
