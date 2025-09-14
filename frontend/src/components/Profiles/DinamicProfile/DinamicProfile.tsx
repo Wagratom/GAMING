@@ -6,6 +6,7 @@ import BannerProfile from "../ProfilePage/BannerProfile";
 import MatchHistory from "../ProfilePage/MatchHistory";
 import '../ProfilePage/rank.css';
 import HandleRank from "../RankMapings";
+import { useNavigate } from "react-router-dom";
 
 type propsDinamicProfile = {
     nickName: string;
@@ -23,6 +24,7 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
     }
 
     const [profile, setProfile] = useState<ProfileDto | null>(null);
+    const navigate = useNavigate();
 
     function fetchGetProfile() {
         if (!props.id) return;
@@ -35,7 +37,13 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
             withCredentials: true
         })
             .then((res) => { setProfile(res.data as ProfileDto) })
-            .catch((err) => { });
+            .catch((err) => {
+                console.error("Erro ao buscar dados do usuário:", err.response);
+                if (err.response?.status === 401 || err.response?.status === 403) {
+                    alert("Sessão expirada ou não autorizada. Por favor, faça login novamente.");
+                    navigate('/login')
+                }
+            });
     }
 
     useEffect(() => {

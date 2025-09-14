@@ -16,7 +16,7 @@ export default function MiniPerfilUser(props: propsMiniProfile) {
 
 	if (user.nickname === '' || user.avatar === '') {
 		return (
-			<div className='d-flex p-3' style={{ height: '15vh' }}>
+			<div className='d-flex' style={{ height: '15vh' }}>
 				<div className="spinner-border text-primary m-auto h-75" role="status">
 					<span className="visually-hidden m-auto">Loading...</span>
 				</div>
@@ -25,7 +25,7 @@ export default function MiniPerfilUser(props: propsMiniProfile) {
 	}
 
 	return (
-		<div className='d-flex p-3 text-white'>
+		<div className='d-flex my-3 text-white'>
 			{/* toggle to open configuration profile */}
 			{showConfigurations ? <ConfigurationGame closed={setShowConfigurations} /> : null}
 

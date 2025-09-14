@@ -33,7 +33,7 @@ export default function ListFriends({ players, openChat }: { players: PlayerDto[
 	}
 
 	return (
-		<div className='p-2 text-white overflow-auto h-100'>
+		<div className='text-white overflow-auto h-100'>
 			{friendSelectedForDirect.nickname && <PrivateChat friend={friendSelectedForDirect} />}
 			{!dinamicProfile ? null :
 				<DinamicProfile

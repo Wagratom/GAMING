@@ -8,10 +8,10 @@ export default function ModalRules({ isOpen, closeModal }: propsModalRules): JSX
     return (
         <Modal show={isOpen} onHide={() => closeModal(false)}>
             <Modal.Header closeButton>
-                <Modal.Title>Regras Gerais: </Modal.Title>
+                <Modal.Title>Regras Gerais </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p>O jogador que fizer 10 pontos primeiro ganha.</p>
+                <p>O jogador que fizer 3 pontos primeiro ganha.</p>
                 <p>Em caso de desconexão você perde automaticamente.</p>
                 <p>O modo normal game possui pooderes</p>
                 <p>O modo ranqueado é o padrão pong 1972</p>

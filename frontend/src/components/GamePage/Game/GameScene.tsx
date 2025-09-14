@@ -132,7 +132,16 @@ export default class GameScene extends Phaser.Scene {
         colliders.forEach(([obj1, obj2, name]) => {
             // Usar collider, não overlap
             this.physics.add.collider(obj1, obj2, () => {
-                if (this.collisionCallback) this.collisionCallback(name);
+                if (this.collisionCallback) {
+                    this.collisionCallback(name);
+                    if (name === 'planetTerra') {
+                        //sumir o planeta lua
+                        this.pntLua.setVisible(false);
+                    } else {
+                        this.pntLua.setVisible(true);
+                    }
+
+                }
             });
         });
     }

@@ -8,6 +8,7 @@ import axios from 'axios';
 import { PlayerDto } from '../../InitialPage/Contexts/Contexts';
 import NotificacaoUX from './NotificacaoUX';
 import webSocketService from '../../webSocketService';
+import bgMineProfile from '../../../assets/game/bgMineProfile.png';
 
 type propsMiniProfile = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
@@ -56,7 +57,10 @@ export default function MiniProfile(props: propsMiniProfile) {
 	}, []);
 
 	return (
-		<div className="position-absolute top-0 end-0 h-100 miniprofile">
+		<div
+			style={{ backgroundImage: `url(${bgMineProfile})`, backgroundSize: '100% 100%' }}
+			className="position-absolute top-0 end-0 h-100 miniprofile p-4"
+		>
 			<MiniPerfilUser showMiniPerfil={props.showMiniPerfil} />
 			<hr className="m-0 w-100 text-white" />
 			<Social setResourcePlayer={setResourcePlayer} />

@@ -6,7 +6,6 @@ import React, { useState } from 'react';
 import DinamicProfile from '../../Profiles/DinamicProfile/DinamicProfile';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import bgChatPublic from '../../../assets/game/bgChatPublic.png';
 import RightSide from './RightSide';
 import ModalIsBanned from './ModalIsBanned';
 
@@ -127,7 +126,6 @@ export default function ChatPublic(props: propsPageChats) {
 	return (
 		<div className="rounded text-white
 			position-absolute top-50 start-50 translate-middle h-75 w-75"
-			style={{ backgroundImage: `url(${bgChatPublic})`, backgroundSize: 'cover' }}
 		>
 			{showModal.show ? <ModalIsBanned openPageChats={props.openPageChats} msg={showModal.msg} /> : null}
 			<div className="row g-0 h-100 p-2">
