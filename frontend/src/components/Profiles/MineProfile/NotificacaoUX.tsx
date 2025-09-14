@@ -81,7 +81,6 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 			{!dinamicProfile ? null :
 				<DinamicProfile
 					openDinamicProfile={setDinamicProfile}
-					nickName={profileData.nickname}
 					id={profileData.id}
 				/>
 			}

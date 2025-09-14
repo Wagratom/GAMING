@@ -11,11 +11,12 @@ import MiniProfile from "../../Profiles/MineProfile/MineProfile";
 import { UserData } from "../../InitialPage/Contexts/Contexts";
 import { ModalConvite } from "./ModalConvite";
 
+
 export default function Game() {
 	const gameContainerRef = useRef<HTMLDivElement>(null);
 	const userData = useContext(UserData).user;
-
 	const [collisionPnt, setCollisionPnt] = useState("");
+
 	const [openModalConvite, setOpenModalConvite] = useState(false);
 	const [dataConvite, setDataConvite] = useState({} as any);
 
@@ -58,9 +59,9 @@ export default function Game() {
 					{collisionPnt === 'planetFire' && <ChooseGameMode openSettingsPath={setCollisionPnt} />}
 					{collisionPnt === 'satelite' && <PageChats openPageChats={setCollisionPnt} />}
 					{collisionPnt === 'base' && <Ranking openStore={setCollisionPnt} />}
-					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} />}
+					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={setCollisionPnt} id={userData.id} />}
 					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
-					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
+					<MiniProfile showMiniPerfil={setCollisionPnt} />
 					{/* <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} /> */}
 					{/* <ChooseGameMode openSettingsPath={setCollisionPnt} /> */}
 				</div>

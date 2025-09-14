@@ -14,8 +14,7 @@ type propsMiniProfile = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
 };
 
-
-export default function MiniProfile(props: propsMiniProfile) {
+export default function MiniProfile({ showMiniPerfil }: propsMiniProfile) {
 	const [resoucePlayer, setResourcePlayer] = useState<string>("/friends?status=ACCEPTED");
 	const [players, setPlayers] = useState<PlayerDto[]>([]);
 
@@ -61,7 +60,7 @@ export default function MiniProfile(props: propsMiniProfile) {
 			style={{ backgroundImage: `url(${bgMineProfile})`, backgroundSize: '100% 100%' }}
 			className="position-absolute top-0 end-0 h-100 miniprofile p-4"
 		>
-			<MiniPerfilUser showMiniPerfil={props.showMiniPerfil} />
+			<MiniPerfilUser showMiniPerfil={showMiniPerfil} />
 			<hr className="m-0 w-100 text-white" />
 			<Social setResourcePlayer={setResourcePlayer} />
 			{

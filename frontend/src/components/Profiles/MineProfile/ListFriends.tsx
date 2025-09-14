@@ -38,7 +38,6 @@ export default function ListFriends({ players, openChat }: { players: PlayerDto[
 			{!dinamicProfile ? null :
 				<DinamicProfile
 					openDinamicProfile={setDinamicProfile}
-					nickName={profileData.nickname}
 					id={profileData.id}
 				/>
 			}
@@ -57,6 +56,7 @@ export default function ListFriends({ players, openChat }: { players: PlayerDto[
 									photoWidth='2.5rem'
 									positionTop='70%'
 									positionEnd='47%'
+									callback={() => { setProfileData({ id: play.id, nickname: play.nickname }); setDinamicProfile("open") }}
 								/>
 								<PlayerNicknameAndIcons
 									my_id={user.id}

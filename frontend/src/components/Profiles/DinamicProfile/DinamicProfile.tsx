@@ -9,7 +9,6 @@ import HandleRank from "../RankMapings";
 import { useNavigate } from "react-router-dom";
 
 type propsDinamicProfile = {
-    nickName: string;
     id: string;
     openDinamicProfile: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -24,7 +23,10 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
         border: "1px solid wheat"
     }
 
-    const [profile, setProfile] = useState<ProfileDto | null>(null);
+    const [profile, setProfile] = useState<ProfileDto>({
+        id: '', nickname: '', avatar: '', online: false, token: null, coins: 0, twoFA: false, criando_em: null,
+        matches: { wins: [], losses: [] },
+    });
     const navigate = useNavigate();
 
     function fetchGetProfile() {
@@ -69,7 +71,12 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
                     boxShadow: `2px 2px 1px #FFF inset, -8px -8px 8px ${'#2b2e42'} inset`
                 }}
                 onClick={() => props.openDinamicProfile('')} />
-            <BannerProfile rank={rank} borderImg={borderImg} />
+            <BannerProfile
+                rank={rank}
+                borderImg={borderImg}
+                avatar={profile.avatar}
+                nickname={profile.nickname}
+            />
             <div className="d-flex flex-column h-100 position-relative p-5 flex-grow-1">
                 <div className='overflow-auto h-100 '>
                     <div className="p-3 rounded h-100" id="MatchHistory">

@@ -5,18 +5,19 @@ import { UserData } from "../../InitialPage/Contexts/Contexts";
 type propsBannerProfile = {
 	rank: string;
 	borderImg: string;
+	avatar: string;
+	nickname: string;
 }
 
-export default function BannerProfile({ rank, borderImg }: propsBannerProfile) {
-	const { user } = useContext(UserData);
+export default function BannerProfile({ rank, borderImg, avatar, nickname }: propsBannerProfile) {
 
-	if (user.avatar) {
+	if (avatar) {
 		return (
 			<div className='banner-profile'>
 				<div className={`cssDefaultRanks ${borderImg}`}>
-					<img src={user.avatar} alt='foto' />
+					<img src={avatar} alt='foto' />
 				</div>
-				<p className='letter-pixel fs-1'>{user.nickname}</p>
+				<p className='letter-pixel fs-1'>{nickname}</p>
 				<div style={{ marginTop: "auto", paddingBottom: "160px" }}>
 					<img className='img-fluid h-100' src={rank} alt={`Foto do rank da pessoa`} />
 				</div>

@@ -153,7 +153,6 @@ export default function ChatPublic(props: propsPageChats) {
 			{!showDinamicProfile ? null :
 				<DinamicProfile
 					openDinamicProfile={setShowDinamicProfile}
-					nickName={dinamicProfile.nickName}
 					id={dinamicProfile.id}
 				/>
 			}
