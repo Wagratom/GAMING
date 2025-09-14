@@ -1,0 +1,25 @@
+.chat {
+	width: 30vw;
+	right: calc((100vw / 12) * 3);
+	bottom: 0px;
+	height: 45vh;
+	position: absolute;
+	font-size: 12px;
+}
+
+.bg-degrader {
+	background-image: linear-gradient(to right, #0e0036, #4c264b); /* Degrade de vermelho para verde */
+}
+
+.input-chat {
+	border: 1px gold solid;
+}
+
+::-webkit-scrollbar-track {
+	background-color: transparent !important;
+}
+
+::-webkit-scrollbar-thumb {
+	height: 5px !important;
+	border-radius: 0 !important;
+}

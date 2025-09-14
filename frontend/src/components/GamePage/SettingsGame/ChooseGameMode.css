@@ -1,0 +1,122 @@
+/* Botão de fechar customizado */
+.btn-close-custom {
+	position: absolute;
+	top: 0;
+	right: -0.6rem;
+	z-index: 3;
+
+	height: 3rem;
+	width: 3rem;
+	border-radius: 0.5rem;
+	background-color: #e56e23;
+	box-shadow: 2px 2px 1px #fff inset, -8px -8px 8px #d81716 inset;
+	cursor: pointer;
+}
+
+/* Botão selecionado */
+.btn-game-selected {
+	margin-left: 1.5rem;
+	padding: 1rem;
+	color: white;
+	font-size: 1.5rem;
+	font-weight: bold;
+
+	border: none;
+	border-top-left-radius: 1rem;
+	border-top-right-radius: 1rem;
+	box-shadow: 6px 4px 2px #d81716 inset, 2px 0px 2px #d81716;
+
+	background-image: url("../../../assets/game/planets/backgrounds/bgFireCima.jpg");
+	background-size: cover;
+}
+
+/* Botão não selecionado */
+.btn-game-unselected {
+	margin-left: 1rem;
+	margin-bottom: 2px;
+	padding: 1rem;
+	color: white;
+	font-size: 1.5rem;
+	font-weight: bold;
+
+	border: none;
+	border-top-left-radius: 0.5rem;
+	border-top-right-radius: 0.5rem;
+	box-shadow: 6px 4px 2px #d81716 inset, 2px 0px 2px #d81716;
+
+	background-image: url("../../../assets/game/planets/backgrounds/bgFireCima2.jpg");
+	background-size: cover;
+}
+
+/* Container principal */
+.game-container {
+	position: relative;
+	padding: 1.3rem;
+	border-radius: 1.5rem;
+	color: white;
+	background-image: url("../../../assets/game/planets/backgrounds/bgFire.jpg");
+	background-size: cover;
+}
+
+/* Overlay */
+.game-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+
+	height: calc(100% + 0.5rem);
+	width: 100%;
+	margin-left: 0.5rem;
+	border-radius: 1.5rem;
+	opacity: 0.7;
+	background-color: #e56e23;
+}
+
+
+
+/* Botoes para selecionar a partida */
+.button-models-game {
+	height: 8rem;
+	width: 8rem;
+	margin: 1rem;
+	background-color: #666;
+	padding: 0.5rem;
+	border-radius: 0.5rem;
+	transition: all 0.5s;
+	transform: scale(1);
+	cursor: pointer;
+}
+
+.button-models-game:hover {
+	transform: scale(1.1);
+}
+
+.button-models-game-photo {
+	height: 80%;
+	width: 100%;
+	margin-bottom: 0.5rem;
+	border-radius: 0.5rem;
+}
+
+.button-models-game-btn {
+	width: 100%;
+	height: 40%;
+	border: none;
+	border-radius: 0.5rem;
+	background-color: #ffbf00;
+}
+
+/* MatchTypes.css */
+.div-select-game {
+  position: relative;
+  z-index: 2;
+
+  background-color: #ed9121;
+  border-radius: 1rem;
+  box-shadow: 1px 2px 2px black inset, 0px -2px 2px #FFF inset;
+  opacity: 1 !important;
+
+  background-size: cover;
+  background-position: center;
+}

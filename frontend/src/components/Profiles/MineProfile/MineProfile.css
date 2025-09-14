@@ -1,0 +1,28 @@
+.miniprofile {
+    display: flex;
+    flex-direction: column;
+    background-image: url('https://s0.smartresize.com/wallpaper/400/885/HD-wallpaper-8-bit-moonlight-8bit-arcade-blue-cloud-moon-pixel.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100% !important;
+    width: 25vw;
+}
+
+
+::-webkit-scrollbar {
+	width: 1px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: gray;
+	border-radius: 50%;
+}
+
+  /* Mudança de cor quando você passa o mouse sobre a barra de rolagem */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
