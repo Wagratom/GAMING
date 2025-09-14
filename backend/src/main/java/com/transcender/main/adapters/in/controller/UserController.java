@@ -38,13 +38,14 @@ public class UserController {
         return ResponseEntity.ok(new UserResponse(userApplication.getUserByToken(jwt)));
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/profile/{userId}")
     @Operation(summary = "Retorna o perfil detalhado do usuário logado")
     public ResponseEntity<ProfileResponse> getMyProfile(
             @RequestHeader("Authorization")
-            @Parameter(description = "Token JWT do usuário") String jwt
+            @Parameter(description = "Token JWT do usuário") String jwt,
+            @PathVariable("userId") String userId
     ) {
-        return ResponseEntity.ok(new ProfileResponse(userApplication.getProfile(jwt)));
+        return ResponseEntity.ok(new ProfileResponse(userApplication.getProfile(jwt, Long.valueOf(userId))));
     }
 
     @GetMapping

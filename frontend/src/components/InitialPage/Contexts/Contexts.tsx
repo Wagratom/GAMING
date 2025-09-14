@@ -11,6 +11,31 @@ export type UserDto = {
   criando_em: string | null;
 };
 
+export type MatchInfo = {
+  id: string;
+  map: string;
+  winner: UserDto;
+  loser: UserDto;
+  winnerScore: number;
+  loserScore: number;
+  createdAt: string;
+};
+
+export type ProfileDto = {
+  id: string;
+  nickname: string;
+  avatar: string;
+  online: boolean;
+  token: string | null;
+  coins: number;
+  twoFA: boolean;
+  criando_em: string | null;
+  matches: {
+    wins: MatchInfo[];
+    losses: MatchInfo[];
+  }
+};
+
 export type PlayerDto = {
   id: string,
   nickname: string,

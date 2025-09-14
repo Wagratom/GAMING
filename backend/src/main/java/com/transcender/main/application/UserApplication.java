@@ -99,8 +99,9 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public UserCore getProfile(String jwt) {
-        Long userId = getIdByToken(jwt);
+    public UserCore getProfile(String jwt, Long userId) {
+        getIdByToken(jwt);
+        logger.info("[INIT] pegando profile do usuario {}", userId);
         return userRepository.getProfileById(userId)
                 .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
     }

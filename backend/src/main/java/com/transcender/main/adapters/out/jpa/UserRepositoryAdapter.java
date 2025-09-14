@@ -22,9 +22,9 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
 
     @Override
     public Optional<UserCore> getProfileById(Long userId) {
-        logger.info("UserRepositoryAdapter > getUserById > exec");
+        logger.info("[INFO] consultando usuario {} em nossa base", userId);
         return userRepository.findById(userId)
-                .map((user) -> (mapperToJpaEntity.toUserCore(user, false, false)));
+                .map((user) -> (mapperToJpaEntity.toUserCore(user, false, true)));
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 public class MatchesResponse {
     @Getter
     public static class Match {
+        private final Long id;
         private final String map;
         private final UserResponse winner;
         private final UserResponse loser;
@@ -20,6 +21,7 @@ public class MatchesResponse {
         private final Instant createdAt;
 
         public Match(MatchCore match) {
+            this.id = match.id();
             this.map = match.map();
             this.winner = new UserResponse(match.winner());
             this.loser = new UserResponse(match.loser());

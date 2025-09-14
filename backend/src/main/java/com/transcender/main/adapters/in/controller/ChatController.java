@@ -34,6 +34,7 @@ public class ChatController {
 //        return ResponseEntity.ok().body("Sucesso");
 //    }
 
+    //TODO ao invès de criar uma nova dto use a da aplicacao direct chat
     @GetMapping("/directChats/{friendId}")
     public ResponseEntity<DirectChatResponse> getDirectChat(
             @RequestHeader("Authorization") String jwt,

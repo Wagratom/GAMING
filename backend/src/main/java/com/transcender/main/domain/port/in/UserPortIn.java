@@ -15,7 +15,7 @@ public interface UserPortIn {
 
     List<UserCore> getUsers(Boolean online, String jwt);
 
-    UserCore getProfile(String jwt);
+    UserCore getProfile(String jwt, Long userId);
 
     UserCore getUserById(Long userId);
 

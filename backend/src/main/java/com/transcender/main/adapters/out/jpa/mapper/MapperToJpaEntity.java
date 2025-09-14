@@ -18,9 +18,8 @@ import java.util.stream.Collectors;
 public class MapperToJpaEntity {
     private final Logger logger = LoggerFactory.getLogger(MapperToJpaEntity.class);
 
-    public UserCore toUserCore(UserCoreJpa user, boolean includeFriends, boolean includePatys) {
-        logger.info("ChatRepositoryAdapter::toUserCore::exec");
-
+    public UserCore toUserCore(UserCoreJpa user, boolean includeFriends, boolean includeMatchs) {
+        logger.info("Parser UserJpa {} para Usercore. includeFriends {} includeMatchs {}", user.getId(), includeMatchs, includeMatchs);
         Set<FriendCore> solicitates = includeFriends
                 ? user.getSolicitadas().stream().map(this::toFriendCore).collect(Collectors.toSet())
                 : Set.of();
@@ -29,12 +28,12 @@ public class MapperToJpaEntity {
                 ? user.getRecebidas().stream().map(this::toFriendCore).collect(Collectors.toSet())
                 : Set.of();
 
-        List<MatchCore> partidasComoUsuario1 = includePatys
-                ? user.getPartidasVencidas().stream().map(this::toPartidaCore).collect(Collectors.toUnmodifiableList()) : null;
-        List<MatchCore> partidasComoUsuario2 = includePatys
-                ? user.getPartidasPerdidas().stream().map(this::toPartidaCore).collect(Collectors.toUnmodifiableList()) : null;
-        List<MatchCore> partidasVencidas = includePatys
-                ? user.getPartidasVencidas().stream().map(this::toPartidaCore).collect(Collectors.toUnmodifiableList()) : null;
+        List<MatchCore> partidasComoUsuario1 = includeMatchs
+                ? user.getPartidasVencidas().stream().map(this::toPartidaCore).collect(Collectors.toList()) : null;
+        List<MatchCore> partidasComoUsuario2 = includeMatchs
+                ? user.getPartidasPerdidas().stream().map(this::toPartidaCore).collect(Collectors.toList()) : null;
+        List<MatchCore> partidasVencidas = includeMatchs
+                ? user.getPartidasVencidas().stream().map(this::toPartidaCore).collect(Collectors.toList()) : null;
 
         return new UserCore(
                 user.getId(),
