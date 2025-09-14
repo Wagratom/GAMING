@@ -34,10 +34,14 @@ public class ChatApplicationService implements ChatPort {
     private final Logger logger = LoggerFactory.getLogger(ChatApplicationService.class);
 
     //records utilizados para gerar os objetos de resposta
-    private record UsersPair(UserCore requester, UserCore friend) {}
+    private record UsersPair(UserCore requester, UserCore friend) {
+    }
 
-    private record SenderDto(Long id, String nickname, String avatar, Boolean online) {}
-    public record MessageDto(Long id, String content, String date, SenderDto sender) {}
+    private record SenderDto(Long id, String nickname, String avatar, Boolean online) {
+    }
+
+    public record MessageDto(Long id, String content, String date, SenderDto sender) {
+    }
 
     private Long getIdByToken(String jwt) {
         try {
@@ -79,24 +83,19 @@ public class ChatApplicationService implements ChatPort {
     }
 
     @Override
-    public Map<String, Object> getDirectChat(String jwt, Long friendId) {
+    public ChatCore getDirectChat(String jwt, Long friendId) {
         Long userId = getIdByToken(jwt);
+
+        logger.info("[INIT] pegando as mensagens privadas entre user {} e user {}", userId, friendId);
         UsersPair users = usersExists(userId, friendId);
 
+        logger.info("[INFO] verificando se existe amizade entre os 2 usuarios");
         if (!friendRepository.existsFriends(users.requester.getId(), users.friend.getId())) {
             throw new Forbidden("Os usuarios não são amigos");
         }
 
-        ChatCore chatCore = chatRepository.getOrCreateDirectChat(users.requester, users.friend);
-
-        logger.info("[INFO] Montando json de resposta");
-        Map<String, Object> chatJson = Map.of(
-                "chatId", chatCore.getId(),
-                "chatName", users.friend.getNickname(),
-                "messages", chatCore.getMessagens().stream().map(this::toMessageDto)
-        );
         logger.info("[END] Processo finalizado com sucesso");
-        return chatJson;
+        return chatRepository.getOrCreateDirectChat(users.requester, users.friend);
     }
 
     @Override

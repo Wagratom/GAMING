@@ -1,13 +1,14 @@
 package com.transcender.main.domain.port.in;
 
 import com.transcender.main.domain.entity.ChatCore;
+import com.transcender.main.domain.entity.MessageCore;
 import com.transcender.main.domain.entity.UserCore;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ChatPort {
-    Map<String, Object> getDirectChat(String jwt, Long friendId);
+    ChatCore getDirectChat(String jwt, Long friendId);
     void postDirectChat(String jwt, Long friendId, String content);
 
     ChatCore createChat(ChatCore chat);

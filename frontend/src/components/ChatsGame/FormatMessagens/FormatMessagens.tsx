@@ -7,8 +7,21 @@ import { MessageDto, UserData } from "../../InitialPage/Contexts/Contexts";
 export default function FormatMessages({ messages }: { messages: MessageDto[] }): JSX.Element {
 	const { setDinamicProfile } = useContext(ChatContext);
 	const { user } = useContext(UserData);
-
 	const containerRef = useRef<HTMLDivElement>(null);
+
+	// Faz o scroll ir para o final sempre que as mensagens mudam
+	useEffect(() => {
+		if (containerRef.current) {
+			containerRef.current.scrollTop = containerRef.current.scrollHeight;
+		}
+	}, [messages]);
+
+
+	if (!messages || messages.length === 0) {
+		return <div ref={containerRef} className="h-100 text-black p-3 overflow-auto text-white">
+			<p className="text-center">Nenhuma mensagem ainda. Comece uma conversa!</p>
+		</div>;
+	}
 
 	const showDinamicProfile = (nickname: string, id: string) => {
 		setDinamicProfile({ nickName: nickname, id: id });
@@ -21,13 +34,7 @@ export default function FormatMessages({ messages }: { messages: MessageDto[] })
 		return `${horas}:${minutos}`;
 	}
 
-	// Faz o scroll ir para o final sempre que as mensagens mudam
-	useEffect(() => {
-		if (containerRef.current) {
-			containerRef.current.scrollTop = containerRef.current.scrollHeight;
-		}
-	}, [messages]);
-
+	console.log("messages:: ", messages);
 	return (
 		<div ref={containerRef} className="h-100 text-black p-3 overflow-auto">
 			{messages.map((notificacao: MessageDto) => {

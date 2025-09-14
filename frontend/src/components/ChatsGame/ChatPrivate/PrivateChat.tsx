@@ -13,6 +13,7 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 	const { user } = useContext(UserData)
 	const navigate = useNavigate()
 
+	const [messages, setMessages] = useState<MessageDto[]>([])
 	const getMessages = () => {
 		axios.get(`${process.env.REACT_APP_API_URL}/directChats/${friend.id}`, {
 			headers: {
@@ -21,6 +22,7 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 			withCredentials: true
 		})
 			.then((res) => {
+				console.log("res.data: ", res.data);
 				setMessages(res.data.messages);
 			})
 			.catch((err) => {
@@ -32,7 +34,6 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 	}
 
 	const [online, setOnline] = useState<boolean>(friend.online)
-	const [messages, setMessages] = useState<MessageDto[]>([])
 	useEffect(() => {
 		if (!user?.id) return;
 

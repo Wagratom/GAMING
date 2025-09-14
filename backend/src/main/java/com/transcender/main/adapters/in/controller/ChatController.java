@@ -1,8 +1,7 @@
 package com.transcender.main.adapters.in.controller;
 
-import com.transcender.main.adapters.in.controller.dto.ChatDtoCreate;
 import com.transcender.main.adapters.in.controller.dto.NewMessageChat;
-import com.transcender.main.application.ChatApplicationService;
+import com.transcender.main.adapters.in.controller.dto.responses.DirectChatResponse;
 import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.port.in.ChatPort;
@@ -10,12 +9,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,11 +35,12 @@ public class ChatController {
 //    }
 
     @GetMapping("/directChats/{friendId}")
-    public ResponseEntity<Map<String, Object>> getDirectChat(
+    public ResponseEntity<DirectChatResponse> getDirectChat(
             @RequestHeader("Authorization") String jwt,
             @PathVariable("friendId") @Valid String friendId
     ) {
-        return ResponseEntity.ok(chatService.getDirectChat(jwt, Long.valueOf(friendId)));
+        ChatCore directChat = chatService.getDirectChat(jwt, Long.valueOf(friendId));
+        return ResponseEntity.ok(new DirectChatResponse(directChat.getMessagens()));
     }
 
     @PostMapping("/directChats/{friendId}")
