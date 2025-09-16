@@ -63,6 +63,15 @@ export type ChatDataDto = {
   message: MessageDto[],
 }
 
+export type chatDto = {
+	id: string;
+	name: string;
+	owner_nickname: string;
+	photoUrl: string;
+	password: string;
+	type: string;
+	onlines: number;
+};
 
 
 // Tipo do contexto

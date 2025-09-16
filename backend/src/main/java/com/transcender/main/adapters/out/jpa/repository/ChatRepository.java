@@ -24,4 +24,13 @@ public interface ChatRepository extends JpaRepository<ChatCoreJpa, Long> {
     Optional<ChatCoreJpa> findPrivateChatBetweenUsers(@Param("usuarios") Collection<Long> usuarios,
                                                       @Param("size") long size);
 
+
+    @Query("""
+        SELECT c
+        FROM ChatCoreJpa c
+        WHERE c.type != com.transcender.main.domain.enuns.ChatType.PRIVATE
+        """)
+    List<ChatCoreJpa> getCreatedChats();
+
+
 }

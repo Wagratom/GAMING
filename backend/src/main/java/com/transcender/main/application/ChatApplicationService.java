@@ -13,6 +13,7 @@ import com.transcender.main.domain.port.out.FriendsRepositoryPort;
 import com.transcender.main.domain.port.out.JwtService;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,8 @@ public class ChatApplicationService implements ChatPort {
             return ((Number) userInfo.get("id")).longValue();
         } catch (ExpiredJwtException err) {
             throw new Unauthorized("Token expirado amigo!");
+        } catch (JwtException ex) {
+            throw new Forbidden("Token inválido amigo!");
         }
     }
 
@@ -158,8 +161,9 @@ public class ChatApplicationService implements ChatPort {
     }
 
     @Override
-    public List<ChatCore> getAllChats() {
-        return chatRepository.getAllChats();
+    public List<ChatCore> getPublicsChats(String jwt) {
+        getIdByToken(jwt);
+        return chatRepository.getPublicChats();
     }
 
     @Override

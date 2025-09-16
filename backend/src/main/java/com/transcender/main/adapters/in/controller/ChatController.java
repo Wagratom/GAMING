@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
@@ -54,5 +56,12 @@ public class ChatController {
         logger.info("[INIT] controller add new message direct chat friendId ={}", friendId);
         chatService.postDirectChat(jwt, Long.parseLong(friendId), content.content());
         return ResponseEntity.ok("sucesso");
+    }
+
+    @GetMapping("/publicChats")
+    public ResponseEntity<List<ChatCore>> getPublicChats(
+            @RequestHeader("Authorization") String jwt
+    ) {
+        return ResponseEntity.ok(chatService.getPublicsChats(jwt));
     }
 }

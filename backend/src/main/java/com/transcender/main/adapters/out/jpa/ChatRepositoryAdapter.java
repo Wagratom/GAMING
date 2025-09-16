@@ -121,12 +121,12 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     @Override
-    public List<ChatCore> getAllChats() {
+    public List<ChatCore> getPublicChats() {
         logger.info("ChatRepositoryAdapter > getAllChats > exec");
 
-        return chatRepository.findAll()
+        return chatRepository.getCreatedChats()
                 .stream()
-                .map((chatJpa) -> mapperToJpaEntity.toChatCore(chatJpa))
+                .map(mapperToJpaEntity::toChatCore)
                 .collect(Collectors.toList());
     }
 

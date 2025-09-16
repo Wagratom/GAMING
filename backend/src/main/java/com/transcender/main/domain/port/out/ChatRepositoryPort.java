@@ -15,7 +15,7 @@ public interface ChatRepositoryPort {
     ChatCore updateChat(ChatCore chat);
     boolean deleteChat(Long chatId);
 
-    List<ChatCore> getAllChats();
+    List<ChatCore> getPublicChats();
     boolean addUserChat(Long userId, Long chatId);
     boolean bloquearUsuarioChat(Long userId, Long chatId);
     boolean banirUsuarioChat(Long userId, Long chatId);

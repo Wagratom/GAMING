@@ -21,7 +21,7 @@ public class ChatCoreJpa {
     private String chatName;
 
     @ManyToOne
-    @JoinColumn(name = "owner") // corrigido!
+    @JoinColumn(name = "owner")
     private UserCoreJpa owner;
 
     @Enumerated(EnumType.STRING)

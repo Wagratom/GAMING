@@ -1,13 +1,13 @@
 import { BiSolidLock } from 'react-icons/bi';
-import { t_chat } from './PublicChats';
 import { ReactElement, useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import BannedWarningModal from './BannedWarningModal';
+import { chatDto } from '../InitialPage/Contexts/Contexts';
 
 type propsChatList = {
-	listChats: t_chat[];
+	listChats: chatDto[];
 	clickedChat: (chatName: string) => void;
 }
 
@@ -73,7 +73,7 @@ export default function ChatList(props: propsChatList) {
 		)
 	}
 
-	const divPublicChats = (chat: t_chat): ReactElement => {
+	const divPublicChats = (chat: chatDto): ReactElement => {
 		return (
 			<div className="border-bottom border-end hover"
 				key={chat.id}
@@ -93,7 +93,7 @@ export default function ChatList(props: propsChatList) {
 		)
 	}
 
-	const divProtectChats = (chat: t_chat): ReactElement => {
+	const divProtectChats = (chat: chatDto): ReactElement => {
 		return (
 			<div className="border-bottom border-end hover"
 				onClick={() => showModal(chat.name)}

@@ -5,7 +5,7 @@ import GameScene from "./GameScene";
 import SettingsStore from "../SettingsStore/SettingsStore";
 import ChooseGameMode from "../SettingsGame/ChooseGameMode";
 import Ranking from "../../Rankingpage/Ranking";
-import PageChats from "../../PublicChatsPage/PublicChats";
+import PublicsChats from "../../PublicChatsPage/PublicChats";
 import DinamicProfile from "../../Profiles/DinamicProfile/DinamicProfile";
 import MiniProfile from "../../Profiles/MineProfile/MineProfile";
 import { UserData } from "../../InitialPage/Contexts/Contexts";
@@ -57,11 +57,12 @@ export default function Game() {
 					{collisionPnt === 'planetTerra' && <MiniProfile showMiniPerfil={setCollisionPnt} />}
 					{collisionPnt === 'planetLua' && <SettingsStore openSettingsStore={setCollisionPnt} />}
 					{collisionPnt === 'planetFire' && <ChooseGameMode openSettingsPath={setCollisionPnt} />}
-					{collisionPnt === 'satelite' && <PageChats openPageChats={setCollisionPnt} />}
+					{collisionPnt === 'satelite' && <PublicsChats openPageChats={setCollisionPnt} />}
 					{collisionPnt === 'base' && <Ranking openStore={setCollisionPnt} />}
 					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={setCollisionPnt} id={userData.id} />}
 					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
-					<MiniProfile showMiniPerfil={setCollisionPnt} />
+					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
+					<PublicsChats openPageChats={setCollisionPnt} />
 					{/* <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} /> */}
 					{/* <ChooseGameMode openSettingsPath={setCollisionPnt} /> */}
 				</div>

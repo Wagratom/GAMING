@@ -19,3 +19,14 @@
 .modal-class:checked {
 	color: aliceblue;
 }
+
+.public-chats-screen {
+		/* // backgroundImage: `url(${bgChats})`, */
+		/* backgroundSize: '100% 100%', */
+		/* backgroundRepeat: 'no-repeat', */
+		color: white;
+		height: 75%;
+		width: 75%;
+		padding: 7%;
+		border: 1px solid white;
+	}
