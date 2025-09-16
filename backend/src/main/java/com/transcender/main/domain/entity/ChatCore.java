@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 public class ChatCore {
-
     private Long id;
     private String chatName;
     private Long chatOwner;

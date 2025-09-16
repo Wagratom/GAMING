@@ -3,10 +3,7 @@ import { CiUnlock, CiLock } from "react-icons/ci";
 import React, { ReactElement, useState } from 'react';
 
 type BarOptionsProps = {
-	handleSearchChats: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	setShowCreateChat: React.Dispatch<React.SetStateAction<boolean>>;
-	getListPublicChats: () => void;
-	getListPrivateChats: () => void;
 };
 
 export default function BarOptions(props: BarOptionsProps) {
@@ -18,11 +15,11 @@ export default function BarOptions(props: BarOptionsProps) {
 				className='d-flex shadow-grounps align-items-center'
 				onClick={() => {
 					setShowTypeChat('public');
-					props.getListPrivateChats()
+					// props.getListPrivateChats()
 				}}
 			>
 				<CiLock size={30} />
-				<p className='mx-2 fw-bold'>Chats Privados</p>
+				<p className='mx-2 fw-bold'>Grupos Privados</p>
 			</button>
 		)
 	}
@@ -33,31 +30,40 @@ export default function BarOptions(props: BarOptionsProps) {
 				className='d-flex shadow-grounps align-items-center'
 				onClick={() => {
 					setShowTypeChat('private');
-					props.getListPublicChats()
+					// props.getListPublicChats()
 				}}
 			>
 				<CiUnlock size={30} />
-				<p className='mx-2 fw-bold'>Chats Publicos</p>
+				<p className='mx-2 fw-bold'>Grupos Publicos</p>
 			</button>
 		)
 	}
 	return (
-		<div className='d-flex shadow-grounps rounded p-2' id='BarChats'>
-			<div className='d-flex align-items-center shadow-grounps w-25'>
-				<BiSearchAlt size={30} style={{ padding: '5px', color: '#0e0036', transform: 'scaleX(-1)' }} />
+		<div className='d-flex w-100' id='BarChats'>
+			{/* barra de pesquisa */}
+			<div className='d-flex align-items-center w-50 inputFindChat'>
+				<BiSearchAlt size={28} style={{ marginRight: '8px', color: '#aaa' }} />
 				<input
-					onChange={props.handleSearchChats}
 					type='text'
-					placeholder='Procurar grupo'
+					placeholder='Procurar grupo...'
 					id='inputFindChat'
+				// onChange={props.handleSearchChats}
 				/>
 			</div>
-			<button className='d-flex shadow-grounps ms-auto me-5 align-items-center' onClick={() => props.setShowCreateChat(true)}>
-				<BiMessageAltAdd size={30} color='black' />
-				<p className='mx-2 fw-bold'>Criar Grupo</p>
+
+			{/* botão criar grupo */}
+			<button
+				className='d-flex align-items-center ms-auto'
+				onClick={() => props.setShowCreateChat(true)}
+			>
+				<BiMessageAltAdd size={26} style={{ marginRight: '6px' }} />
+				<p>Criar Grupo</p>
 			</button>
+
+			{/* toggle público/privado */}
 			{showTypeChat === 'private' ? buttonPrivateChat() : buttonPublicChat()}
 		</div>
+
 	)
 }
 

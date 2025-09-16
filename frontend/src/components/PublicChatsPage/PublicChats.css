@@ -1,32 +1,243 @@
-.shadow-grounps {
-	background-color: white;
-	box-shadow: inset 0 0 10px #000;
-	border-radius: 5px;
-}
-
-#BarChats input {
-	width: 100%;
-	height: 100%;
-	border: none;
-	outline: none !important;
-	background-color: transparent;
-}
-
-.modal-class   {
-	color: aliceblue;
-}
-
-.modal-class:checked {
-	color: aliceblue;
-}
-
 .public-chats-screen {
-		/* // backgroundImage: `url(${bgChats})`, */
-		/* backgroundSize: '100% 100%', */
-		/* backgroundRepeat: 'no-repeat', */
-		color: white;
-		height: 75%;
-		width: 75%;
-		padding: 7%;
-		border: 1px solid white;
-	}
+  /* // backgroundImage: `url(${bgChats})`, */
+  /* backgroundSize: '100% 100%', */
+  /* backgroundRepeat: 'no-repeat', */
+  color: white;
+  height: 75%;
+  width: 75%;
+  border: 1px solid white;
+}
+
+
+/* point CSS lista de chats */
+.chat-card {
+  background: #1e1e2f;
+  color: #fff;
+  border-radius: 12px;
+  margin: 10px;
+  padding: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.chat-card:hover {
+  transform: scale(1.03);
+  background: #27293d;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chat-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.chat-owner {
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 4px;
+  color: #cfcfcf;
+}
+
+.chat-onlines {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  color: #a3e635;
+  /* verde chamativo */
+}
+
+.lock-icon {
+  margin-left: 6px;
+  color: #ff4757;
+  /* vermelho pro cadeado */
+}
+
+
+/* point CSS modal create chat */
+/* container principal */
+.create-chat-container {
+  background: rgba(30, 30, 47, 0.95);
+  border-radius: 16px;
+  padding: 20px;
+  width: 350px;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  animation: fadeInScale 0.3s ease-in-out;
+}
+
+/* animação suave de entrada */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* botão de fechar */
+.create-chat-close {
+  cursor: pointer;
+  color: #bbb;
+  transition: color 0.2s ease;
+}
+
+.create-chat-close:hover {
+  color: #ff4757;
+}
+
+/* avatar */
+.create-chat-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #4cafef;
+  cursor: pointer;
+  transition: transform 0.3s ease, border 0.3s ease;
+}
+
+.create-chat-avatar:hover {
+  transform: scale(1.05);
+  border-color: #1abc9c;
+}
+
+/* inputs */
+.create-chat-input {
+  background: #2b2b3d;
+  border: 1px solid #444;
+  border-radius: 10px;
+  color: #fff;
+  padding: 10px;
+  margin-bottom: 12px;
+  transition: border 0.2s ease;
+}
+
+.create-chat-input:focus {
+  border: 1px solid #1abc9c;
+  outline: none;
+  box-shadow: 0 0 6px #1abc9c;
+}
+
+/* checkboxes */
+.form-check-label {
+  color: #ddd;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.form-check-input {
+  cursor: pointer;
+  accent-color: #1abc9c;
+}
+
+.form-check-label:hover {
+  color: #1abc9c;
+}
+
+/* botão */
+.create-chat-btn {
+  background: linear-gradient(90deg, #1abc9c, #4cafef);
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.create-chat-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+
+
+/* point CSS barra de pesquisa */
+#BarChats {
+  background: rgba(30, 30, 47, 0.95);
+  border-radius: 14px;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+/* input search */
+.inputFindChat {
+  background: #2b2b3d;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  width: 100%;
+  font-size: 0.95rem;
+  padding-left: 10px;
+  transition: all 0.3s ease;
+}
+
+#inputFindChat {
+  background: transparent;
+  border: none;
+  color: #fff;
+  width: 100%;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  padding: 10px 0 10px 0;
+  outline: none;
+  box-shadow: none;
+}
+
+.inputFindChat:focus {
+  outline: none;
+  box-shadow: 0 0 6px #1abc9c;
+  background: #35354a;
+}
+
+/* search icon */
+#BarChats svg {
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+#BarChats svg:hover {
+  transform: scale(1.1);
+  color: #1abc9c !important;
+}
+
+/* botões */
+#BarChats button {
+  background: #1e1e2f;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 8px 14px;
+  margin-left: 8px;
+  transition: all 0.3s ease;
+}
+
+#BarChats button:hover {
+  background: #1abc9c;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ícone + texto alinhados */
+#BarChats button p {
+  margin: 0;
+  font-weight: 600;
+}

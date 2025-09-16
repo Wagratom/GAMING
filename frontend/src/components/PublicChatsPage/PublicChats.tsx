@@ -1,21 +1,113 @@
-import React, { SetStateAction, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import React, { SetStateAction, useContext, useEffect, useState } from 'react';
 import { IoMdClose } from "react-icons/io";
 import ChatPublic from '../ChatsGame/ChatPublic/ChatPublic';
 import { chatDto, UserData } from '../InitialPage/Contexts/Contexts';
 import ChatList from './ChatsList';
 import './PublicChats.css';
 import ScreenCreateNewChat from './ScreenCreateNewChat';
+import BarOptions from './BarOptions';
 
 type propsPageChats = {
 	openPageChats: React.Dispatch<SetStateAction<string>>;
 }
 
 export default function PublicsChats({ openPageChats }: propsPageChats) {
-	const userData = useContext(UserData).user;
+	const { user } = useContext(UserData);
 	const [showCreateChat, setShowCreateChat] = useState(false);
 	const [selectedChat, setSelectedChat] = useState({ click: false, chatName: '' });
-	const [listChats, setListChats] = useState<chatDto[]>([]);
+	const [listChats, setListChats] = useState<chatDto[]>([
+		{
+			id: "1",
+			name: "Cinema Lovers",
+			owner_nickname: "alice",
+			photoUrl: "https://picsum.photos/200/200?1",
+			password: "",
+			type: "PUBLIC",
+			onlines: 12,
+		},
+		{
+			id: "2",
+			name: "Gamers Unite",
+			owner_nickname: "bob",
+			photoUrl: "https://picsum.photos/200/200?2",
+			password: "1234",
+			type: "PROTECT",
+			onlines: 8,
+		},
+		{
+			id: "3",
+			name: "Música ao Vivo",
+			owner_nickname: "carol",
+			photoUrl: "https://picsum.photos/200/200?3",
+			password: "",
+			type: "PUBLIC",
+			onlines: 21,
+		},
+		{
+			id: "4",
+			name: "Café & Código",
+			owner_nickname: "david",
+			photoUrl: "https://picsum.photos/200/200?4",
+			password: "coffee",
+			type: "PROTECT",
+			onlines: 5,
+		},
+		{
+			id: "5",
+			name: "Viagem pelo Mundo",
+			owner_nickname: "eve",
+			photoUrl: "https://picsum.photos/200/200?5",
+			password: "",
+			type: "PUBLIC",
+			onlines: 18,
+		},
+		{
+			id: "6",
+			name: "Estudos Dev",
+			owner_nickname: "frank",
+			photoUrl: "https://picsum.photos/200/200?6",
+			password: "springboot",
+			type: "PROTECT",
+			onlines: 7,
+		},
+		{
+			id: "7",
+			name: "Clube do Livro",
+			owner_nickname: "grace",
+			photoUrl: "https://picsum.photos/200/200?7",
+			password: "",
+			type: "PUBLIC",
+			onlines: 14,
+		},
+		{
+			id: "8",
+			name: "Fitness Life",
+			owner_nickname: "henry",
+			photoUrl: "https://picsum.photos/200/200?8",
+			password: "gym2025",
+			type: "PROTECT",
+			onlines: 9,
+		},
+		{
+			id: "9",
+			name: "Fotografia Criativa",
+			owner_nickname: "isabel",
+			photoUrl: "https://picsum.photos/200/200?9",
+			password: "",
+			type: "PUBLIC",
+			onlines: 16,
+		},
+		{
+			id: "10",
+			name: "DevOps Masters",
+			owner_nickname: "jack",
+			photoUrl: "https://picsum.photos/200/200?10",
+			password: "awsrocks",
+			type: "PROTECT",
+			onlines: 11,
+		},
+	]);
 
 	const getListChats = () => {
 		axios.get(`${process.env.REACT_APP_API_URL}/publicChats`, {
@@ -30,26 +122,27 @@ export default function PublicsChats({ openPageChats }: propsPageChats) {
 
 	function createNewChat(form: FormData) {
 		setShowCreateChat(false);
-		const nameChatValue = form.get('nameChat');
-		const name = nameChatValue?.toString() || '';
 
-		if (name.length <= 0) {
-			return;
-		}
+		// verifica qual checkbox foi marcado
+		const type =
+			form.get("privateChat")?.toString() || // se público
+			form.get("protectChat")?.toString() || // se protegido
+			"PUBLIC"; // default caso nenhum marcado
+
 		const obj = {
-			my_id: userData.id,
-			name: form.get('nameChat'),
-			type: 'public',
-			password: form.get('passwordChat'),
+			name: form.get("nameChat")?.toString() || "",
+			owner: user.id,
+			type, // vai ser "PRIVATE" ou "PROTECT"
+			descricao: "",
+			password: form.get("passwordChat")?.toString() || null,
 			photoUrl: "https://photografos.com.br/wp-content/uploads/2020/09/fotografia-para-perfil.jpg",
-		}
+		};
 
-		if (form.get('privateChat') === 'private') obj.type = 'private'
-		else if (form.get('protectChat') === 'protected') obj.type = 'protected'
+		console.log(obj);
 	}
 
 	useEffect(() => {
-		getListChats();
+		// getListChats();
 	}, []);
 
 	if (selectedChat.click === true) return <ChatPublic
@@ -59,26 +152,10 @@ export default function PublicsChats({ openPageChats }: propsPageChats) {
 
 	return (
 		<div className='rounded position-fixed top-50 start-50 translate-middle public-chats-screen'>
-			<IoMdClose
-				className="button-close"
-				style={{
-					backgroundColor: '#46668a',
-					boxShadow: `2px 2px 1px #FFF inset, -8px -8px 8px ${'#0c1d3b'} inset`
-				}}
-				onClick={() => openPageChats('')}
-			/>
-
-			<ScreenCreateNewChat
-				setShowCreateChat={setShowCreateChat}
-				createNewChat={createNewChat}
-			/>
 			<div className='d-flex flex-column h-100'>
-				{/* <BarOptions
-					handleSearchChats={handleSearchChats}
+				<BarOptions
 					setShowCreateChat={setShowCreateChat}
-					getListPublicChats={getListPublicChats}
-					getListPrivateChats={getListPrivateChats}
-				/>*/}
+				/>
 
 				{!showCreateChat ? null :
 					<ScreenCreateNewChat

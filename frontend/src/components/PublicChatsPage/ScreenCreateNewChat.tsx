@@ -1,4 +1,4 @@
-import { FormEvent, useState, useRef } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { GrFormClose } from 'react-icons/gr';
 import bgPhotoEmpty from '../../assets/game/bgPhotoEmpty.png';
 
@@ -31,29 +31,39 @@ export default function CreateNewChat({ setShowCreateChat, createNewChat }: func
 		if (name.length <= 0) {
 			return;
 		}
+		createNewChat(formData);
 	}
 
 	return (
-		<div className='position-absolute rounded top-50 start-50 p-3 shadow-grounps text-black translate-middle' style={{width: '300px'}}>
+		<div className='position-absolute top-50 start-50 translate-middle create-chat-container'>
 			<form onSubmit={handleSubmit}>
-				<GrFormClose className='position-absolute top-0 end-0 m-1' size={25} onClick={() => setShowCreateChat(false)} />
+				<GrFormClose
+					className='position-absolute top-0 end-0 m-2 create-chat-close'
+					size={25}
+					onClick={() => setShowCreateChat(false)}
+				/>
 
-				{/* logica para selecionar a imagem */}
+				{/* imagem/avatar */}
 				<div className='d-flex justify-content-center'>
-					<img className='rounded-circle hover mb-3'
+					<img
+						className='create-chat-avatar mb-3'
 						src={bgPhotoEmpty}
-						style={{ width: '100px', height: '100px' }}
-						alt='foto para mostra que esta sem foto de perfil'
-						onClick={() => inputPhotoChat.current ? inputPhotoChat.current.click() : null}
+						alt='foto do grupo'
+						onClick={() => inputPhotoChat.current?.click()}
 					/>
 				</div>
 				<input type='file' name='photoChat' className='d-none' ref={inputPhotoChat} />
 
-				{/* input nome do chat */}
-				<input type='text' name='nameChat' className='form-control shadow-grounps mb-3' placeholder='Nome do grupo' />
+				{/* nome */}
+				<input
+					type='text'
+					name='nameChat'
+					className='form-control create-chat-input'
+					placeholder='Nome do grupo'
+				/>
 
-				{/* checkbox para selecionar o tipo do chat */}
-				<div className='d-flex justify-content-between'>
+				{/* checkboxes */}
+				<div className='d-flex justify-content-between mb-3'>
 					<div className="form-check">
 						<input
 							id="checkboxPrivate"
@@ -61,11 +71,10 @@ export default function CreateNewChat({ setShowCreateChat, createNewChat }: func
 							value="PRIVATE"
 							type="checkbox"
 							ref={checkboxPublic}
-							className="form-check-input shadow-grounps mb-3-1"
+							className="form-check-input"
 							onClick={() => { checkboxProtect.current!.checked = false; handleShowInputPassword() }}
-						>
-						</input>
-						<label className="form-check-label" htmlFor="checkboxPrivate">Publico </label>
+						/>
+						<label className="form-check-label" htmlFor="checkboxPrivate">Público</label>
 					</div>
 					<div className="form-check">
 						<input
@@ -74,16 +83,23 @@ export default function CreateNewChat({ setShowCreateChat, createNewChat }: func
 							value="PUBLIC"
 							type="checkbox"
 							ref={checkboxProtect}
-							className="form-check-input shadow-grounps"
-							onClick={() => { checkboxPublic.current!.checked = false; handleShowInputPassword() }}>
-						</input>
-						<label className="form-check-label" htmlFor="checkboxProtect">Privado</label>
+							className="form-check-input"
+							onClick={() => { checkboxPublic.current!.checked = false; handleShowInputPassword() }}
+						/>
+						<label className="form-check-label" htmlFor="checkboxProtect">Protegido</label>
 					</div>
 				</div>
+
 				{ShowInputPassword && (
-					<input type='text' name='passwordChat' className='form-control shadow-grounps' placeholder='Senha do grupo' />
+					<input
+						type='text'
+						name='passwordChat'
+						className='form-control create-chat-input'
+						placeholder='Senha do grupo'
+					/>
 				)}
-				<button className='btn btn-primary d-flex mt-4 justify-content-center w-100' type='submit'>Criar Grupo</button>
+
+				<button className='w-100 mt-3 create-chat-btn' type='submit'>Criar Grupo</button>
 			</form>
 		</div>
 	);
