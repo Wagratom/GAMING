@@ -1,6 +1,8 @@
 package com.transcender.main.adapters.in.controller;
 
+import com.transcender.main.adapters.in.controller.dto.ChatDtoCreate;
 import com.transcender.main.adapters.in.controller.dto.NewMessageChat;
+import com.transcender.main.adapters.in.controller.dto.responses.ChatResponse;
 import com.transcender.main.adapters.in.controller.dto.responses.DirectChatResponse;
 import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.exceptions.BadRequest;
@@ -58,10 +60,22 @@ public class ChatController {
         return ResponseEntity.ok("sucesso");
     }
 
-    @GetMapping("/publicChats")
+    @GetMapping("/grupos")
     public ResponseEntity<List<ChatCore>> getPublicChats(
             @RequestHeader("Authorization") String jwt
     ) {
         return ResponseEntity.ok(chatService.getPublicsChats(jwt));
+    }
+
+    @PostMapping("/grupos")
+    public ResponseEntity<ChatResponse> createPublicChats(
+            @RequestHeader("Authorization") String jwt,
+            @Valid @RequestBody ChatDtoCreate chatDto
+    ) {
+        if (!chatDto.getType().equals("PUBLIC") && !chatDto.getType().equals("PROTECT")) {
+            throw new BadRequest("Tipo de chat invalido, deve ser PROTECT ou PUBLIC");
+        }
+        ChatCore chats = chatService.createChat(chatDto.toChatCore());
+        return ResponseEntity.ok(new ChatResponse(chats));
     }
 }

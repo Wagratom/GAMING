@@ -64,7 +64,6 @@ public class UserController {
         );
     }
 
-
     @GetMapping("/{userId}")
     @Operation(summary = "Retorna um usuário pelo ID")
     public ResponseEntity<UserResponse> getUserById(

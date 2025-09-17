@@ -1,12 +1,11 @@
 import axios from 'axios';
 import React, { SetStateAction, useContext, useEffect, useState } from 'react';
-import { IoMdClose } from "react-icons/io";
 import ChatPublic from '../ChatsGame/ChatPublic/ChatPublic';
 import { chatDto, UserData } from '../InitialPage/Contexts/Contexts';
+import BarOptions from './BarOptions';
 import ChatList from './ChatsList';
 import './PublicChats.css';
 import ScreenCreateNewChat from './ScreenCreateNewChat';
-import BarOptions from './BarOptions';
 
 type propsPageChats = {
 	openPageChats: React.Dispatch<SetStateAction<string>>;
