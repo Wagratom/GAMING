@@ -22,7 +22,6 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 			withCredentials: true
 		})
 			.then((res) => {
-				console.log("res.data: ", res.data);
 				setMessages(res.data.messages);
 			})
 			.catch((err) => {

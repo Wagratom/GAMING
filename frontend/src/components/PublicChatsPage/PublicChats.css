@@ -49,6 +49,9 @@
   margin-top: 8px;
   font-size: 0.95rem;
   color: #a3e635;
+  display: flex;
+  line-height: 17px;
+  /* align-items: center; */
   /* verde chamativo */
 }
 

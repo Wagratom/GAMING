@@ -107,6 +107,7 @@ export default function PublicsChats({ openPageChats }: propsPageChats) {
 			type: "PROTECT",
 			onlines: 11,
 		},
+		
 	]);
 
 	const getListChats = () => {
@@ -155,6 +156,8 @@ export default function PublicsChats({ openPageChats }: propsPageChats) {
 			<div className='d-flex flex-column h-100'>
 				<BarOptions
 					setShowCreateChat={setShowCreateChat}
+					chatList={listChats}
+					setChatList={setListChats}
 				/>
 
 				{!showCreateChat ? null :
