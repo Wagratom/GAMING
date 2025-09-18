@@ -1,6 +1,6 @@
-import { BiSearchAlt, BiMessageAltAdd } from 'react-icons/bi';
-import { CiUnlock, CiLock } from "react-icons/ci";
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { BiMessageAltAdd, BiSearchAlt } from 'react-icons/bi';
+import { CiLock } from "react-icons/ci";
 import { chatDto } from '../InitialPage/Contexts/Contexts';
 
 type BarOptionsProps = {
