@@ -75,6 +75,11 @@
   animation: fadeInScale 0.3s ease-in-out;
 }
 
+.create-chat-input::placeholder {
+  color: #aaa;
+  opacity: 0.8;
+}
+
 /* animação suave de entrada */
 @keyframes fadeInScale {
   from {
@@ -204,7 +209,7 @@
   box-shadow: none;
 }
 
-.inputFindChat:focus {
+.inputFindChat:hover {
   outline: none;
   box-shadow: 0 0 6px #1abc9c;
   background: #35354a;
@@ -243,4 +248,8 @@
 #BarChats button p {
   margin: 0;
   font-weight: 600;
+}
+
+.color-aaa{
+  color: #aaa;
 }

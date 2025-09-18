@@ -48,8 +48,8 @@ export default function BarOptions({ chatList, setChatList, setShowCreateChat }:
 	return (
 		<div className='d-flex w-100' id='BarChats'>
 			{/* barra de pesquisa */}
-			<div className='d-flex align-items-center w-50 inputFindChat'>
-				<BiSearchAlt size={28} style={{ marginRight: '8px', color: '#aaa' }} />
+			<div className='d-flex align-items-center w-50 inputFindChat color-aaa'>
+				<BiSearchAlt size={28} style={{ marginRight: '8px'}} />
 				<input
 					type='text'
 					placeholder='Procurar grupo...'
@@ -63,8 +63,8 @@ export default function BarOptions({ chatList, setChatList, setShowCreateChat }:
 				className='d-flex align-items-center ms-auto'
 				onClick={() => setShowCreateChat(true)}
 			>
-				<BiMessageAltAdd size={26} style={{ marginRight: '6px' }} />
-				<p>Criar Grupo</p>
+				<BiMessageAltAdd className='color-aaa' size={26} style={{ marginRight: '6px' }} />
+				<p className='color-aaa'>Criar Grupo</p>
 			</button>
 
 			{/* toggle público/privado */}
@@ -75,8 +75,8 @@ export default function BarOptions({ chatList, setChatList, setShowCreateChat }:
 					// props.getListPrivateChats()
 				}}
 			>
-				<CiLock size={30} />
-				<p className='mx-2 fw-bold'>{chatsType.current[index]}</p>
+				<CiLock className='color-aaa' size={30} />
+				<p className='mx-2 fw-bold color-aaa'>{chatsType.current[index]}</p>
 			</button>
 		</div>
 	)
