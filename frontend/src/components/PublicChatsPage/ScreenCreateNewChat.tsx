@@ -68,7 +68,7 @@ export default function CreateNewChat({ setShowCreateChat, createNewChat }: func
 						<input
 							id="checkboxPrivate"
 							name="privateChat"
-							value="PRIVATE"
+							value="PROTECT"
 							type="checkbox"
 							ref={checkboxPublic}
 							className="form-check-input"

@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,10 +62,14 @@ public class ChatController {
     }
 
     @GetMapping("/grupos")
-    public ResponseEntity<List<ChatCore>> getPublicChats(
+    public ResponseEntity<List<ChatResponse>> getPublicChats(
             @RequestHeader("Authorization") String jwt
     ) {
-        return ResponseEntity.ok(chatService.getPublicsChats(jwt));
+        return ResponseEntity.ok(
+                chatService.getPublicsChats(jwt)
+                .stream().map(ChatResponse::new)
+                .collect(Collectors.toList())
+        );
     }
 
     @PostMapping("/grupos")
@@ -72,7 +77,10 @@ public class ChatController {
             @RequestHeader("Authorization") String jwt,
             @Valid @RequestBody ChatDtoCreate chatDto
     ) {
-        if (!chatDto.getType().equals("PUBLIC") && !chatDto.getType().equals("PROTECT")) {
+        logger.info("[INIT] controller create grupo chat name {}", chatDto.getChatName());
+        logger.info("chatDto.getType().name().equals(\"PUBLIC\"): {}", chatDto.getType().name().equals("PUBLIC"));
+        logger.info("!chatDto.getType().name().equals(\"PROTECT\"): {}", chatDto.getType().name().equals("PROTECT"));
+        if (!chatDto.getType().name().equals("PUBLIC") && !chatDto.getType().name().equals("PROTECT")) {
             throw new BadRequest("Tipo de chat invalido, deve ser PROTECT ou PUBLIC");
         }
         ChatCore chats = chatService.createChat(chatDto.toChatCore());

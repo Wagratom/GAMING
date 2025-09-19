@@ -93,20 +93,18 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     @Override
-    public ChatCore createChat(ChatCore chat) {
-        logger.info("ChatRepositoryAdapter > createChat > exec");
-
-        ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
+    public ChatCore createChat(ChatCore chat, UserCore owner) {
+        ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat, owner));
         return mapperToJpaEntity.toChatCore(chatJpa); // toChatCore que recebe diretamente o objeto, não Optional
     }
 
-    @Override
-    public ChatCore updateChat(ChatCore chat) {
-        logger.info("ChatRepositoryAdapter > updateChat > exec");
-
-        ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
-        return mapperToJpaEntity.toChatCore(chatJpa);
-    }
+//    @Override
+//    public ChatCore updateChat(ChatCore chat) {
+//        logger.info("ChatRepositoryAdapter > updateChat > exec");
+//
+//        ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
+//        return mapperToJpaEntity.toChatCore(chatJpa);
+//    }
 
     @Override
     public boolean deleteChat(Long chatId) {
@@ -145,15 +143,17 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         return false;
     }
 
-    public ChatCoreJpa toChatCoreJpa(ChatCore chat) {
-        UserCoreJpa owner = userRepository.findById(chat.getChatOwner()).orElseThrow(() -> new RuntimeException("error"));
-        ChatCoreJpa chatJpa = new ChatCoreJpa();
-        chatJpa.setId(chat.getId());
-        chatJpa.setChatName(chat.getChatName());
-        chatJpa.setOwner(owner);
-        chatJpa.setDescricao(chat.getDescricao());
-        chatJpa.setCriadoEm(chat.getCriadoEm());
-        chatJpa.setAtualizadoEm(chat.getAtualizadoEm());
-        return chatJpa;
+    public ChatCoreJpa toChatCoreJpa(ChatCore chat, UserCore owner) {
+        return new ChatCoreJpa(
+                chat.getId(),
+                chat.getChatName(),
+                mapperToJpaEntity.toUserCoreJpa(owner),
+                chat.getType(),
+                chat.getDescricao(),
+                null,
+                null,
+                Instant.now(),
+                Instant.now()
+        );
     }
 }

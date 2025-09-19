@@ -2,7 +2,9 @@ package com.transcender.main.adapters.out.jpa.entity;
 
 import com.transcender.main.domain.enuns.ChatType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -12,6 +14,8 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "chat")
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class ChatCoreJpa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,14 +39,14 @@ public class ChatCoreJpa {
     @OrderBy("atualizadoEm ASC")
     private List<MessageCoreJpa> mensagens;
 
+    @OneToMany(mappedBy = "chat")
+    private List<ChatUserCoreJpa> usuarios;
+
     @Column(name = "criado_em", nullable = false)
     private Instant criadoEm = Instant.now();
 
     @Column(name = "atualizado_em", nullable = false)
     private Instant atualizadoEm = Instant.now();
-
-    @OneToMany(mappedBy = "chat")
-    private List<ChatUserCoreJpa> usuarios;
 
     public static ChatCoreJpa newPrivateChat() {
         ChatCoreJpa chat = new ChatCoreJpa();

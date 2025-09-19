@@ -15,6 +15,7 @@ public class ChatCore {
     private Long chatOwner;
     private ChatType type;
     private String descricao;
+    private String password;
     private Set<Long> adms;
     private List<MessageCore> messages;
     private Instant criadoEm;
@@ -22,7 +23,7 @@ public class ChatCore {
 
 
     // Construtor de criação com validações e inicialização de admins
-    public ChatCore(String chatName, Long chatOwner, ChatType type, String descricao, Set<Long> adms) {
+    public ChatCore(String chatName, Long chatOwner, ChatType type, String descricao, String password, Set<Long> adms) {
         this.chatName = chatName;
         this.chatOwner = chatOwner;
         this.type = type;
@@ -63,11 +64,16 @@ public class ChatCore {
             throw new ChatArgumentInvalid("Descrição deve ter no máximo 100 caracteres");
         }
 
-        if (!"PUBLIC".equals(type) && !"PROTECT".equals(type) && !"PRIVATE".equals(type)) {
+        String typeStr = type.name();
+        if (!"PUBLIC".equals(typeStr) && !"PROTECT".equals(typeStr) && !"PRIVATE".equals(typeStr)) {
             throw new ChatArgumentInvalid("Tipo de chat inválido");
         }
         if (chatOwner == null || chatOwner <= 0) {
             throw new ChatArgumentInvalid("Id do proprietário inválido");
+        }
+
+        if ("PROTECT".equals(typeStr) && password.isBlank()) {
+            throw new ChatArgumentInvalid("Chats protegidos devem possuir senha. Campo password empty");
         }
     }
 

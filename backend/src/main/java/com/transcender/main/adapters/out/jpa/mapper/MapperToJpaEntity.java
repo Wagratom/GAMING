@@ -109,22 +109,26 @@ public class MapperToJpaEntity {
 
     public ChatCore toChatCore(ChatCoreJpa chatJpa) {
         boolean isPrivate = chatJpa.getType() == ChatType.PRIVATE;
-
+        logger.info("1");
         Set<Long> adms = isPrivate
                 ? Collections.emptySet()
-                : chatJpa.getUsuarios().stream()
+                : Optional.ofNullable(chatJpa.getUsuarios())
+                .orElse(Collections.emptyList())
+                .stream()
                 .filter(u -> u.getPermitionChat() == PermitionChat.ADM)
                 .map(u -> u.getUsuario().getId())
                 .collect(Collectors.toSet());
 
+        logger.info("1");
         Long ownerId = isPrivate ? null : chatJpa.getOwner().getId();
 
+        logger.info("1");
         List<MessageCore> mensagens = Optional.ofNullable(chatJpa.getMensagens())
                 .orElse(Collections.emptyList())
                 .stream()
                 .map(this::toMessageCore)
                 .collect(Collectors.toList());
-
+        logger.info("1");
         return new ChatCore(
                 chatJpa.getId(),
                 chatJpa.getChatName(),

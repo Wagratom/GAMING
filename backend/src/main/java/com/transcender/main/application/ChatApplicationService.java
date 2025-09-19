@@ -121,10 +121,10 @@ public class ChatApplicationService implements ChatPort {
     public ChatCore createChat(ChatCore chat) {
         chat.validateCreateChat();
 
-        userRepository.getUserById(chat.getChatOwner())
+        UserCore owner = userRepository.getUserById(chat.getChatOwner())
                 .orElseThrow(() -> new ResourceNotFound("Usuário", chat.getChatOwner()));
 
-        return chatRepository.createChat(chat);
+        return chatRepository.createChat(chat, owner);
     }
 
     @Override
@@ -144,21 +144,21 @@ public class ChatApplicationService implements ChatPort {
         return chatRepository.deleteChat(chatId);
     }
 
-    @Override
-    public ChatCore updateChat(ChatCore chatUpdate, Long solicitanteId) {
-        ChatCore oldChat = chatRepository.findChatById(chatUpdate.getId())
-                .orElseThrow(() -> new ResourceNotFound("Chat", chatUpdate.getId()));
-
-        oldChat.validateUpdateChat(solicitanteId);
-
-        // Atualizações encapsuladas
-        oldChat.updateChatName(chatUpdate.getChatName());
-        oldChat.updateDescricao(chatUpdate.getDescricao());
-        oldChat.updateType(chatUpdate.getType());
-
-        chatRepository.updateChat(oldChat);
-        return oldChat;
-    }
+//    @Override
+//    public ChatCore updateChat(ChatCore chatUpdate, Long solicitanteId) {
+//        ChatCore oldChat = chatRepository.findChatById(chatUpdate.getId())
+//                .orElseThrow(() -> new ResourceNotFound("Chat", chatUpdate.getId()));
+//
+//        oldChat.validateUpdateChat(solicitanteId);
+//
+//        // Atualizações encapsuladas
+//        oldChat.updateChatName(chatUpdate.getChatName());
+//        oldChat.updateDescricao(chatUpdate.getDescricao());
+//        oldChat.updateType(chatUpdate.getType());
+//
+//        chatRepository.updateChat(oldChat);
+//        return oldChat;
+//    }
 
     @Override
     public List<ChatCore> getPublicsChats(String jwt) {

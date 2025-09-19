@@ -15,102 +15,10 @@ export default function PublicsChats({ openPageChats }: propsPageChats) {
 	const { user } = useContext(UserData);
 	const [showCreateChat, setShowCreateChat] = useState(false);
 	const [selectedChat, setSelectedChat] = useState({ click: false, chatName: '' });
-	const [listChats, setListChats] = useState<chatDto[]>([
-		{
-			id: "1",
-			name: "Cinema Lovers",
-			owner_nickname: "alice",
-			photoUrl: "https://picsum.photos/200/200?1",
-			password: "",
-			type: "PUBLIC",
-			onlines: 12,
-		},
-		{
-			id: "2",
-			name: "Gamers Unite",
-			owner_nickname: "bob",
-			photoUrl: "https://picsum.photos/200/200?2",
-			password: "1234",
-			type: "PROTECT",
-			onlines: 8,
-		},
-		{
-			id: "3",
-			name: "Música ao Vivo",
-			owner_nickname: "carol",
-			photoUrl: "https://picsum.photos/200/200?3",
-			password: "",
-			type: "PUBLIC",
-			onlines: 21,
-		},
-		{
-			id: "4",
-			name: "Café & Código",
-			owner_nickname: "david",
-			photoUrl: "https://picsum.photos/200/200?4",
-			password: "coffee",
-			type: "PROTECT",
-			onlines: 5,
-		},
-		{
-			id: "5",
-			name: "Viagem pelo Mundo",
-			owner_nickname: "eve",
-			photoUrl: "https://picsum.photos/200/200?5",
-			password: "",
-			type: "PUBLIC",
-			onlines: 18,
-		},
-		{
-			id: "6",
-			name: "Estudos Dev",
-			owner_nickname: "frank",
-			photoUrl: "https://picsum.photos/200/200?6",
-			password: "springboot",
-			type: "PROTECT",
-			onlines: 7,
-		},
-		{
-			id: "7",
-			name: "Clube do Livro",
-			owner_nickname: "grace",
-			photoUrl: "https://picsum.photos/200/200?7",
-			password: "",
-			type: "PUBLIC",
-			onlines: 14,
-		},
-		{
-			id: "8",
-			name: "Fitness Life",
-			owner_nickname: "henry",
-			photoUrl: "https://picsum.photos/200/200?8",
-			password: "gym2025",
-			type: "PROTECT",
-			onlines: 9,
-		},
-		{
-			id: "9",
-			name: "Fotografia Criativa",
-			owner_nickname: "isabel",
-			photoUrl: "https://picsum.photos/200/200?9",
-			password: "",
-			type: "PUBLIC",
-			onlines: 16,
-		},
-		{
-			id: "10",
-			name: "DevOps Masters",
-			owner_nickname: "jack",
-			photoUrl: "https://picsum.photos/200/200?10",
-			password: "awsrocks",
-			type: "PROTECT",
-			onlines: 11,
-		},
-		
-	]);
+	const [listChats, setListChats] = useState<chatDto[]>([])
 
 	const getListChats = () => {
-		axios.get(`${process.env.REACT_APP_API_URL}/publicChats`, {
+		axios.get(`${process.env.REACT_APP_API_URL}/grupos`, {
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`
 			},
@@ -127,22 +35,32 @@ export default function PublicsChats({ openPageChats }: propsPageChats) {
 		const type =
 			form.get("privateChat")?.toString() || // se público
 			form.get("protectChat")?.toString() || // se protegido
-			"PUBLIC"; // default caso nenhum marcado
+			alert("Você deve selecionar um tipo de chat!"); // se nenhum
 
-		const obj = {
-			name: form.get("nameChat")?.toString() || "",
-			owner: user.id,
-			type, // vai ser "PRIVATE" ou "PROTECT"
+		const data = {
+			chatName: form.get("nameChat")?.toString() || "",
 			descricao: "",
+			type, // vai ser "PRIVATE" ou "PROTECT"
+			chatOwner: user.id,
 			password: form.get("passwordChat")?.toString() || null,
 			photoUrl: "https://photografos.com.br/wp-content/uploads/2020/09/fotografia-para-perfil.jpg",
 		};
 
-		console.log(obj);
+		console.log(data);
+		axios.post(`${process.env.REACT_APP_API_URL}/grupos`, data, {
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem("token")}`
+			},
+		}).then((res) => {
+			console.log(res.data);
+			setListChats(prev => [...prev, res.data]);
+		}).catch((err) => {
+			console.log(err);
+		});
 	}
 
 	useEffect(() => {
-		// getListChats();
+		getListChats();
 	}, []);
 
 	if (selectedChat.click === true) return <ChatPublic

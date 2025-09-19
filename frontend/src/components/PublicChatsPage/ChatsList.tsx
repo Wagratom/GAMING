@@ -116,7 +116,14 @@ export default function ChatList(props: propsChatList) {
 		)
 	}
 
-
+	if (props.listChats.length === 0) {
+		return (
+			<div className='w-100 text-center mt-4'>
+				<h4 style={{ color: '#ccc' }}>Nenhum chat público disponível no momento.</h4>
+				<p style={{ color: '#777' }}>Crie um novo chat ou aguarde até que outros usuários criem chats públicos.</p>
+			</div>
+		);
+	}
 	return (
 		<div className='row g-0 w-100'>
 			{showWarningBan ? <BannedWarningModal showWarningBan={setShowWarningBan} messageError={messageErro} /> : null}

@@ -19,12 +19,16 @@ public class ChatDtoCreate {
         @NotNull(message = "O id do proprietário não pode ser nulo.")
         private Long chatOwner;
 
+        private String password;
+
+
         public ChatCore toChatCore() {
                 return new ChatCore(
                         chatName,
                         chatOwner,
                         type,
                         descricao,
+                        password,
                         null
                 );
         }

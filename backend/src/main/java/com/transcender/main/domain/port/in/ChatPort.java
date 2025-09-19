@@ -12,7 +12,7 @@ public interface ChatPort {
     void postDirectChat(String jwt, Long friendId, String content);
 
     ChatCore createChat(ChatCore chat);
-    ChatCore updateChat(ChatCore user, Long solicitanteId);
+//    ChatCore updateChat(ChatCore user, Long solicitanteId);
     boolean deleteChat(Long chatId, Long userId);
 
     List<ChatCore> getPublicsChats(String jwt);
