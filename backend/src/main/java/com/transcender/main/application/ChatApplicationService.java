@@ -12,6 +12,7 @@ import com.transcender.main.domain.port.out.ChatRepositoryPort;
 import com.transcender.main.domain.port.out.FriendsRepositoryPort;
 import com.transcender.main.domain.port.out.JwtService;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
+import com.transcender.main.domain.valueobject.CreateChatDto;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -118,13 +119,14 @@ public class ChatApplicationService implements ChatPort {
     }
 
     @Override
-    public ChatCore createChat(ChatCore chat) {
-        chat.validateCreateChat();
+    public ChatCore createChat(CreateChatDto chat, String jwt) {
+        Long ownerId = getIdByToken(jwt);
 
-        UserCore owner = userRepository.getUserById(chat.getChatOwner())
-                .orElseThrow(() -> new ResourceNotFound("Usuário", chat.getChatOwner()));
+        UserCore user1 = userRepository.getUserById(ownerId)
+                .orElseThrow(() -> new ResourceNotFound("Usuario", ownerId));
 
-        return chatRepository.createChat(chat, owner);
+        ChatCore newChat = new ChatCore(chat, user1);
+        return chatRepository.createChat(newChat);
     }
 
     @Override

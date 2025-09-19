@@ -66,7 +66,7 @@ export type ChatDataDto = {
 export type chatDto = {
 	id: string;
 	name: string;
-	owner_nickname: string;
+	owner: UserDto;
 	photoUrl: string;
 	password: string;
 	type: string;

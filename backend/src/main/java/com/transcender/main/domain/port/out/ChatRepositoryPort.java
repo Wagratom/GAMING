@@ -11,7 +11,7 @@ public interface ChatRepositoryPort {
     ChatCore getOrCreateDirectChat(UserCore user1, UserCore user2);
     MessageCore addNewMessageDirectChat(UserCore sender, UserCore friendId, String content);
     Optional<ChatCore> findChatById(Long chatId);
-    ChatCore createChat(ChatCore chat, UserCore owner);
+    ChatCore createChat(ChatCore chat);
 //    ChatCore updateChat(ChatCore chat);
     boolean deleteChat(Long chatId);
 

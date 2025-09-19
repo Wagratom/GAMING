@@ -67,8 +67,8 @@ public class ChatController {
     ) {
         return ResponseEntity.ok(
                 chatService.getPublicsChats(jwt)
-                .stream().map(ChatResponse::new)
-                .collect(Collectors.toList())
+                        .stream().map(ChatResponse::new)
+                        .collect(Collectors.toList())
         );
     }
 
@@ -78,12 +78,11 @@ public class ChatController {
             @Valid @RequestBody ChatDtoCreate chatDto
     ) {
         logger.info("[INIT] controller create grupo chat name {}", chatDto.getChatName());
-        logger.info("chatDto.getType().name().equals(\"PUBLIC\"): {}", chatDto.getType().name().equals("PUBLIC"));
-        logger.info("!chatDto.getType().name().equals(\"PROTECT\"): {}", chatDto.getType().name().equals("PROTECT"));
         if (!chatDto.getType().name().equals("PUBLIC") && !chatDto.getType().name().equals("PROTECT")) {
             throw new BadRequest("Tipo de chat invalido, deve ser PROTECT ou PUBLIC");
         }
-        ChatCore chats = chatService.createChat(chatDto.toChatCore());
+
+        ChatCore chats = chatService.createChat(chatDto.toChatCore(), jwt);
         return ResponseEntity.ok(new ChatResponse(chats));
     }
 }

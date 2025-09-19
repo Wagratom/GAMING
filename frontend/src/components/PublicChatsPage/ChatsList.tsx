@@ -90,7 +90,7 @@ export default function ChatList(props: propsChatList) {
 						<p className="chat-name">{chat.name}</p>
 						<span className="chat-onlines">Onlines: {chat.onlines}</span>
 					</div>
-					<p className="chat-owner">👑 Dono: {chat.owner_nickname}</p>
+					<p className="chat-owner">👑 Dono: {chat.owner.nickname}</p>
 				</div>
 			</div>
 		)
@@ -110,7 +110,7 @@ export default function ChatList(props: propsChatList) {
 							<BiSolidLock className="lock-icon" />
 						</span>
 					</div>
-					<p className="chat-owner">👑 Dono: {chat.owner_nickname}</p>
+					<p className="chat-owner">👑 Dono: {chat.owner.nickname}</p>
 				</div>
 			</div>
 		)

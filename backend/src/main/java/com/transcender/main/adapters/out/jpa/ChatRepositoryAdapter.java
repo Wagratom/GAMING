@@ -93,8 +93,8 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     @Override
-    public ChatCore createChat(ChatCore chat, UserCore owner) {
-        ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat, owner));
+    public ChatCore createChat(ChatCore chat) {
+        ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
         return mapperToJpaEntity.toChatCore(chatJpa); // toChatCore que recebe diretamente o objeto, não Optional
     }
 
@@ -143,11 +143,11 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         return false;
     }
 
-    public ChatCoreJpa toChatCoreJpa(ChatCore chat, UserCore owner) {
+    public ChatCoreJpa toChatCoreJpa(ChatCore chat) {
         return new ChatCoreJpa(
                 chat.getId(),
                 chat.getChatName(),
-                mapperToJpaEntity.toUserCoreJpa(owner),
+                mapperToJpaEntity.toUserCoreJpa(chat.getChatOwner()),
                 chat.getType(),
                 chat.getDescricao(),
                 null,
