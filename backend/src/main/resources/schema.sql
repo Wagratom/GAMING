@@ -15,14 +15,20 @@ CREATE TABLE IF NOT EXISTS usuarios (
 -- Tabela de chats (ChatCoreJpa)
 CREATE TABLE IF NOT EXISTS chat (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    chatname VARCHAR(20) NULL COMMENT 'Nome do chat',
-    owner BIGINT NULL COMMENT 'ID do dono do chat',
-    type VARCHAR(10) NOT NULL COMMENT 'PUBLIC, PRIVATE, PROTECT',
-    descricao TEXT NULL,
-    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (owner) REFERENCES usuarios(id)
+    chatname VARCHAR(20),
+    owner BIGINT,
+    type VARCHAR(10) NOT NULL,
+    descricao TEXT,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    chatname_unique VARCHAR(20) GENERATED ALWAYS AS (
+        CASE WHEN type IN ('PUBLIC','PROTECT') THEN LOWER(chatname) ELSE NULL END
+    ),
+    FOREIGN KEY (owner) REFERENCES usuarios(id),
+    UNIQUE (chatname_unique)
 );
+
+
 
 -- Tabela intermediária: usuários no chat (ChatUserCoreJpa)
 CREATE TABLE IF NOT EXISTS chat_usuarios (

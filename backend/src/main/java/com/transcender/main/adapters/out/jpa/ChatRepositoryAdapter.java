@@ -98,6 +98,14 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         return mapperToJpaEntity.toChatCore(chatJpa); // toChatCore que recebe diretamente o objeto, não Optional
     }
 
+    @Override
+    public List<ChatCore> getChatByName(String chatName) {
+        return chatRepository.findByChatName(chatName)
+                .stream()
+                .map(mapperToJpaEntity::toChatCore)
+                .collect(Collectors.toList());
+    }
+
 //    @Override
 //    public ChatCore updateChat(ChatCore chat) {
 //        logger.info("ChatRepositoryAdapter > updateChat > exec");

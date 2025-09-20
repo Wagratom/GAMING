@@ -61,7 +61,7 @@ public class ChatController {
         return ResponseEntity.ok("sucesso");
     }
 
-    @GetMapping("/grupos")
+    @GetMapping("/groups")
     public ResponseEntity<List<ChatResponse>> getPublicChats(
             @RequestHeader("Authorization") String jwt
     ) {
@@ -72,8 +72,22 @@ public class ChatController {
         );
     }
 
-    @PostMapping("/grupos")
+    @PostMapping("/groups")
     public ResponseEntity<ChatResponse> createPublicChats(
+            @RequestHeader("Authorization") String jwt,
+            @Valid @RequestBody ChatDtoCreate chatDto
+    ) {
+        logger.info("[INIT] controller create grupo chat name {}", chatDto.getChatName());
+        if (!chatDto.getType().name().equals("PUBLIC") && !chatDto.getType().name().equals("PROTECT")) {
+            throw new BadRequest("Tipo de chat invalido, deve ser PROTECT ou PUBLIC");
+        }
+
+        ChatCore chats = chatService.createChat(chatDto.toChatCore(), jwt);
+        return ResponseEntity.ok(new ChatResponse(chats));
+    }
+
+    @PostMapping("/open-groups")
+    public ResponseEntity<ChatResponse> openGruops(
             @RequestHeader("Authorization") String jwt,
             @Valid @RequestBody ChatDtoCreate chatDto
     ) {

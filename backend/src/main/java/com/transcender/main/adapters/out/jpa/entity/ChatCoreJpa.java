@@ -13,9 +13,14 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "chat")
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Table(
+        name = "chat",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"chatname", "type"})
+        }
+)
 public class ChatCoreJpa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

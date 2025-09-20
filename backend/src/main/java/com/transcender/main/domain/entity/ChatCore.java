@@ -27,7 +27,7 @@ public class ChatCore {
     public ChatCore(CreateChatDto chatCreateDto, UserCore owner) {
         this.chatName = chatCreateDto.getChatName();
         this.chatOwner = owner;
-        this.type = chatCreateDto.ChatType();
+        this.type = chatCreateDto.getChatType();
         this.descricao = chatCreateDto.getDescricao();
         this.password = chatCreateDto.getPassword();
     }

@@ -32,5 +32,5 @@ public interface ChatRepository extends JpaRepository<ChatCoreJpa, Long> {
         """)
     List<ChatCoreJpa> getCreatedChats();
 
-
+    List<ChatCoreJpa> findByChatName(String name);
 }

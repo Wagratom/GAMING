@@ -18,7 +18,7 @@ export default function PublicsChats({ openPageChats }: propsPageChats) {
 	const [listChats, setListChats] = useState<chatDto[]>([])
 
 	const getListChats = () => {
-		axios.get(`${process.env.REACT_APP_API_URL}/grupos`, {
+		axios.get(`${process.env.REACT_APP_API_URL}/groups`, {
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`
 			},
@@ -47,16 +47,13 @@ export default function PublicsChats({ openPageChats }: propsPageChats) {
 		};
 
 		console.log(data);
-		axios.post(`${process.env.REACT_APP_API_URL}/grupos`, data, {
+		axios.post(`${process.env.REACT_APP_API_URL}/groups`, data, {
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`
 			},
 		}).then((res) => {
-			console.log(res.data);
 			setListChats(prev => [...prev, res.data]);
-		}).catch((err) => {
-			console.log(err);
-		});
+		}).catch(() => { });
 	}
 
 	useEffect(() => {

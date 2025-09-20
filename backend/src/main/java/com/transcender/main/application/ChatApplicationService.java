@@ -8,10 +8,7 @@ import com.transcender.main.domain.exceptions.Forbidden;
 import com.transcender.main.domain.exceptions.ResourceNotFound;
 import com.transcender.main.domain.exceptions.Unauthorized;
 import com.transcender.main.domain.port.in.ChatPort;
-import com.transcender.main.domain.port.out.ChatRepositoryPort;
-import com.transcender.main.domain.port.out.FriendsRepositoryPort;
-import com.transcender.main.domain.port.out.JwtService;
-import com.transcender.main.domain.port.out.UserRepositoryPort;
+import com.transcender.main.domain.port.out.*;
 import com.transcender.main.domain.valueobject.CreateChatDto;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -23,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +31,7 @@ public class ChatApplicationService implements ChatPort {
     private final JwtService jwtService;
     private final FriendsRepositoryPort friendRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final EncriptyService encriptyService;
     private final Logger logger = LoggerFactory.getLogger(ChatApplicationService.class);
 
     //records utilizados para gerar os objetos de resposta
@@ -121,12 +120,27 @@ public class ChatApplicationService implements ChatPort {
     @Override
     public ChatCore createChat(CreateChatDto chat, String jwt) {
         Long ownerId = getIdByToken(jwt);
-
+        chat.validateChat();
         UserCore user1 = userRepository.getUserById(ownerId)
                 .orElseThrow(() -> new ResourceNotFound("Usuario", ownerId));
 
+        if (chat.getChatType().name().equals("PROTECT")) {
+            chat.setPassword(encriptyService.encryptPassword(chat.getPassword()));
+        }
+
         ChatCore newChat = new ChatCore(chat, user1);
         return chatRepository.createChat(newChat);
+    }
+
+    @Override
+    public ChatCore openChat(String jwt, String chatName, String password) {
+        getIdByToken(jwt);
+        List<ChatCore> chat = chatRepository.getChatByName(chatName);
+        if (chat.isEmpty()) throw new BadRequest("Chat não existe");
+        if (encriptyService.checkPassword(password, chat.getFirst().getChatName())) {
+            throw new Forbidden("Password invalido");
+        }
+        return chat.getFirst();
     }
 
     @Override
