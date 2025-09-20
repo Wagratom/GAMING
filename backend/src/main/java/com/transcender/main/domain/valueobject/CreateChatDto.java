@@ -1,16 +1,16 @@
 package com.transcender.main.domain.valueobject;
 
+import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.ChatType;
 import com.transcender.main.domain.exceptions.BadRequest;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @AllArgsConstructor
 public class CreateChatDto {
     private final String chatName;
     private final String descricao;
     private final ChatType type;
-    private Long chatOwner;
+    private UserCore chatOwner;
     private String password;
 
     public String getChatName() {
@@ -25,7 +25,7 @@ public class CreateChatDto {
         return type;
     }
 
-    public Long getChatOwner() {
+    public UserCore getChatOwner() {
         return chatOwner;
     }
 
@@ -37,7 +37,7 @@ public class CreateChatDto {
         this.password = password;
     }
 
-    public void setOwner(Long ownerId) {
+    public void setOwner(UserCore ownerId) {
         this.chatOwner = ownerId;
     }
 

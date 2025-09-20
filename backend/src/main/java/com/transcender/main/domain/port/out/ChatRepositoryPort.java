@@ -8,16 +8,26 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChatRepositoryPort {
-    ChatCore getOrCreateDirectChat(UserCore user1, UserCore user2);
-    MessageCore addNewMessageDirectChat(UserCore sender, UserCore friendId, String content);
+    record responsePrivateChat(ChatCore chat, UserCore sender) {};
+
+    responsePrivateChat getOrCreateDirectChat(Long requester, UserCore user2);
+
+    MessageCore addNewMessageDirectChat(responsePrivateChat addMessageDto, String content);
+
     Optional<ChatCore> findChatById(Long chatId);
+
     ChatCore createChat(ChatCore chat);
-//    ChatCore updateChat(ChatCore chat);
+
+    //    ChatCore updateChat(ChatCore chat);
     boolean deleteChat(Long chatId);
+
     List<ChatCore> getChatByName(String chatName);
 
     List<ChatCore> getPublicChats();
+
     boolean addUserChat(Long userId, Long chatId);
+
     boolean bloquearUsuarioChat(Long userId, Long chatId);
+
     boolean banirUsuarioChat(Long userId, Long chatId);
 }

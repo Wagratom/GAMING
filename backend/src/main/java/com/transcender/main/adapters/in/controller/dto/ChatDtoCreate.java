@@ -26,7 +26,7 @@ public class ChatDtoCreate {
                 chatName,
                 descricao,
                 type,
-                chatOwner,
+                null,
                 password
         );
     }

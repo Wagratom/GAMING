@@ -56,28 +56,31 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     @Override
-    public ChatCore getOrCreateDirectChat(UserCore user1, UserCore user2) {
-        var ids = List.of(user1.getId(), user2.getId());
+    public ChatRepositoryPort.responsePrivateChat getOrCreateDirectChat(Long requester, UserCore user2) {
+        var ids = List.of(requester, user2.getId());
         logger.info("Get direct chat | IDS={}", ids);
+
+        Optional<UserCoreJpa> request = userRepository.findById(requester);
         ChatCoreJpa chatCoreJpa = chatRepository
                 .findPrivateChatBetweenUsers(ids, ids.size())
                 .orElseGet(() -> createDirectChat(
-                        mapperToJpaEntity.toUserCoreJpa(user1),
+                        request.get(),
                         mapperToJpaEntity.toUserCoreJpa(user2)
                 ));
 
-        return mapperToJpaEntity.toChatCore(chatCoreJpa);
+        return new responsePrivateChat(
+                mapperToJpaEntity.toChatCore(chatCoreJpa),
+                mapperToJpaEntity.toUserCore(request.get(), false, false)
+        );
     }
 
     @Override
-    public MessageCore addNewMessageDirectChat(UserCore sender, UserCore friend, String content) {
-        var ids = List.of(sender.getId(), friend.getId());
-        logger.info("add new message direct chat | IDS={}", ids);
-        ChatCoreJpa directChat = mapperToJpaEntity.toChatCoreJpa(getOrCreateDirectChat(sender, friend), null);
+    public MessageCore addNewMessageDirectChat(ChatRepositoryPort.responsePrivateChat addMessageDto, String content) {
+        logger.info("add new message direct chat | IDS={}", addMessageDto.sender().getId());
 
         MessageCoreJpa mensagem = messageRepository.save(new MessageCoreJpa(
-                directChat,
-                mapperToJpaEntity.toUserCoreJpa(sender),
+                toChatCoreJpa(addMessageDto.chat()),
+                mapperToJpaEntity.toUserCoreJpa(addMessageDto.sender()),
                 content,
                 MessageType.TEXT,
                 false,
@@ -96,7 +99,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     @Override
     public ChatCore createChat(ChatCore chat) {
         ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
-        return mapperToJpaEntity.toChatCore(chatJpa); // toChatCore que recebe diretamente o objeto, não Optional
+        return mapperToJpaEntity.toChatCore(chatJpa);
     }
 
     @Override
@@ -153,11 +156,10 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     public ChatCoreJpa toChatCoreJpa(ChatCore chat) {
-        UserCoreJpa owner = userRepository.findById(chat.getChatOwner()).orElseThrow(() -> new BadRequest("Owner não existe"));
         return new ChatCoreJpa(
                 chat.getId(),
                 chat.getChatName(),
-                owner,
+                mapperToJpaEntity.toUserCoreJpa(chat.getChatOwner()),
                 chat.getType(),
                 chat.getDescricao(),
                 null,
