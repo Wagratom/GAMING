@@ -15,6 +15,7 @@ import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.MessageType;
 import com.transcender.main.domain.enuns.PermitionChat;
 import com.transcender.main.domain.enuns.StatusChat;
+import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.port.out.ChatRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -152,10 +153,11 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     public ChatCoreJpa toChatCoreJpa(ChatCore chat) {
+        UserCoreJpa owner = userRepository.findById(chat.getChatOwner()).orElseThrow(() -> new BadRequest("Owner não existe"));
         return new ChatCoreJpa(
                 chat.getId(),
                 chat.getChatName(),
-                mapperToJpaEntity.toUserCoreJpa(chat.getChatOwner()),
+                owner,
                 chat.getType(),
                 chat.getDescricao(),
                 null,

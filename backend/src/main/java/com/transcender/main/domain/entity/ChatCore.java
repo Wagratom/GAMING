@@ -13,7 +13,7 @@ import java.util.Set;
 public class ChatCore {
     private Long id;
     private String chatName;
-    private UserCore chatOwner;
+    private Long chatOwner;
     private ChatType type;
     private String descricao;
     private String password;
@@ -24,16 +24,16 @@ public class ChatCore {
 
 
     // Construtor de criação com validações e inicialização de admins
-    public ChatCore(CreateChatDto chatCreateDto, UserCore owner) {
+    public ChatCore(CreateChatDto chatCreateDto) {
         this.chatName = chatCreateDto.getChatName();
-        this.chatOwner = owner;
+        this.chatOwner = chatCreateDto.getChatOwner();
         this.type = chatCreateDto.getChatType();
         this.descricao = chatCreateDto.getDescricao();
         this.password = chatCreateDto.getPassword();
     }
 
     // Construtor restrito para reconstrução a partir do banco de dados
-    public ChatCore(Long id, String chatName, UserCore chatOwner, ChatType type, String descricao,
+    public ChatCore(Long id, String chatName, Long chatOwner, ChatType type, String descricao,
                     Set<Long> adms, List<MessageCore> messages, Instant criadoEm, Instant atualizadoEm) {
         if (id == null || id <= 0) {
             throw new ChatArgumentInvalid("Id inválido");
@@ -67,7 +67,7 @@ public class ChatCore {
         if (!"PUBLIC".equals(typeStr) && !"PROTECT".equals(typeStr) && !"PRIVATE".equals(typeStr)) {
             throw new ChatArgumentInvalid("Tipo de chat inválido");
         }
-        if (chatOwner == null || chatOwner.getId() <= 0) {
+        if (chatOwner == null || chatOwner <= 0) {
             throw new ChatArgumentInvalid("Id do proprietário inválido");
         }
 
@@ -159,7 +159,7 @@ public class ChatCore {
         return chatName;
     }
 
-    public UserCore getChatOwner() {
+    public Long getChatOwner() {
         return chatOwner;
     }
 

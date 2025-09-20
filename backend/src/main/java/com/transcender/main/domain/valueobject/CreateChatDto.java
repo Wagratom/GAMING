@@ -10,7 +10,7 @@ public class CreateChatDto {
     private final String chatName;
     private final String descricao;
     private final ChatType type;
-    private final Long chatOwner;
+    private Long chatOwner;
     private String password;
 
     public String getChatName() {
@@ -37,7 +37,14 @@ public class CreateChatDto {
         this.password = password;
     }
 
+    public void setOwner(Long ownerId) {
+        this.chatOwner = ownerId;
+    }
+
     public void validateChat() {
-        if (type.name().equals("PROTECT") && password.isBlank()) throw new BadRequest("Chat protegido deve ter senha");
+        if (type.equals(ChatType.PROTECT) && password.isBlank()) throw new BadRequest("Chat protegido deve ter senha");
+        if ((type.equals(ChatType.PROTECT) || type.equals(ChatType.PUBLIC)) && chatOwner == null) {
+            throw new BadRequest("O chat não possui um owner");
+        }
     }
 }

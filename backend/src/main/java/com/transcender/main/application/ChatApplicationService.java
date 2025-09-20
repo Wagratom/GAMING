@@ -3,10 +3,8 @@ package com.transcender.main.application;
 import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.entity.MessageCore;
 import com.transcender.main.domain.entity.UserCore;
-import com.transcender.main.domain.exceptions.BadRequest;
-import com.transcender.main.domain.exceptions.Forbidden;
-import com.transcender.main.domain.exceptions.ResourceNotFound;
-import com.transcender.main.domain.exceptions.Unauthorized;
+import com.transcender.main.domain.enuns.ChatType;
+import com.transcender.main.domain.exceptions.*;
 import com.transcender.main.domain.port.in.ChatPort;
 import com.transcender.main.domain.port.out.*;
 import com.transcender.main.domain.valueobject.CreateChatDto;
@@ -15,6 +13,7 @@ import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -120,16 +119,18 @@ public class ChatApplicationService implements ChatPort {
     @Override
     public ChatCore createChat(CreateChatDto chat, String jwt) {
         Long ownerId = getIdByToken(jwt);
+        chat.setOwner(ownerId);
         chat.validateChat();
-        UserCore user1 = userRepository.getUserById(ownerId)
-                .orElseThrow(() -> new ResourceNotFound("Usuario", ownerId));
 
-        if (chat.getChatType().name().equals("PROTECT")) {
+        if (chat.getChatType() == ChatType.PROTECT) {
             chat.setPassword(encriptyService.encryptPassword(chat.getPassword()));
         }
 
-        ChatCore newChat = new ChatCore(chat, user1);
-        return chatRepository.createChat(newChat);
+        try {
+            return chatRepository.createChat(new ChatCore(chat));
+        } catch (DataIntegrityViolationException e) {
+            throw new Conflict("Nome de chat já existe");
+        }
     }
 
     @Override
