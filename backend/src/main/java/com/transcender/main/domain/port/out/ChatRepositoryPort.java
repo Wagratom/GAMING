@@ -21,7 +21,7 @@ public interface ChatRepositoryPort {
     //    ChatCore updateChat(ChatCore chat);
     boolean deleteChat(Long chatId);
 
-    List<ChatCore> getChatByName(String chatName);
+    Optional<ChatCore> getChatByName(String chatName);
 
     List<ChatCore> getPublicChats();
 

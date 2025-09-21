@@ -10,7 +10,6 @@ import RightSide from './RightSide';
 import ModalIsBanned from './ModalIsBanned';
 
 
-
 type DinamicProfile = {
 	nickName: string,
 	id: string,
@@ -32,7 +31,7 @@ type propsPageChats = {
 	chatName: string;
 }
 
-export default function ChatPublic(props: propsPageChats) {
+export default function OpenedPublicChat(props: propsPageChats) {
 	const [chatData, setDataChat] = useState<ChatDataDto>({} as ChatDataDto);
 	const [dinamicProfile, setDinamicProfile] = useState<DinamicProfile>({} as DinamicProfile);
 	const [showDinamicProfile, setShowDinamicProfile] = useState<string>('');
@@ -63,7 +62,6 @@ export default function ChatPublic(props: propsPageChats) {
 		axios.get(`${process.env.REACT_APP_HOST_URL}/chatroom/find-public/?${ENV}`, {
 			headers: {
 				Authorization: Cookies.get("jwtToken"),
-				"ngrok-skip-browser-warning": "69420",
 			}
 		}).then((response) => {
 			setDataChat(response.data)
@@ -120,7 +118,18 @@ export default function ChatPublic(props: propsPageChats) {
 	// }, [userData.socket])
 	//##############################################################
 
-	if (!chatData.name) return <div>Não ha chats</div>
+	if (!chatData.name) {
+		console.log("2: ", chatData);
+		return <div className='d-flex justify-content-center w-100'>Erro ao abrir o chat </div>
+	}
+
+
+	if (chatData.banned.map((member) => member.nickname).includes(userData.nickname)
+		|| chatData.kicked.map((member) => member.nickname).includes(userData.nickname)) {
+		return <div>Você foi banido ou expulso deste chat</div>
+	}
+
+	if (!chatData) return <div>Carregando...</div>
 
 	// https://vetplus.vet.br/wp-content/uploads/2019/12/img_2427.jpg vc foi chutado
 	return (

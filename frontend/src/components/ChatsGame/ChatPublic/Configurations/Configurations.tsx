@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ChatContext } from "../ChatPublic";
+import { ChatContext } from "../OpenedPublicChat";
 import Perfil from "./Perfil";
 import Rules from "./Rules";
 import Bar from "./Bar";

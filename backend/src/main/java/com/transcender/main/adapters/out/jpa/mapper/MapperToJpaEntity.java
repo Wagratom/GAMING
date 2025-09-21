@@ -143,7 +143,6 @@ public class MapperToJpaEntity {
         );
     }
 
-
     public MessageCore toMessageCore(MessageCoreJpa messagesJpa) {
         return messagesJpa == null
                 ? null

@@ -1,15 +1,14 @@
-import { useContext, useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
+import { useContext, useEffect, useRef, useState } from "react";
 import GameScene from "./GameScene";
 
-import SettingsStore from "../SettingsStore/SettingsStore";
-import ChooseGameMode from "../SettingsGame/ChooseGameMode";
-import Ranking from "../../Rankingpage/Ranking";
-import PublicsChats from "../../PublicChatsPage/PublicChats";
+import { UserData } from "../../InitialPage/Contexts/Contexts";
 import DinamicProfile from "../../Profiles/DinamicProfile/DinamicProfile";
 import MiniProfile from "../../Profiles/MineProfile/MineProfile";
-import { UserData } from "../../InitialPage/Contexts/Contexts";
-import { ModalConvite } from "./ModalConvite";
+import PublicsChats from "../../PublicChatsPage/PublicChats";
+import Ranking from "../../Rankingpage/Ranking";
+import ChooseGameMode from "../SettingsGame/ChooseGameMode";
+import SettingsStore from "../SettingsStore/SettingsStore";
 
 
 export default function Game() {
@@ -57,12 +56,12 @@ export default function Game() {
 					{collisionPnt === 'planetTerra' && <MiniProfile showMiniPerfil={setCollisionPnt} />}
 					{collisionPnt === 'planetLua' && <SettingsStore openSettingsStore={setCollisionPnt} />}
 					{collisionPnt === 'planetFire' && <ChooseGameMode openSettingsPath={setCollisionPnt} />}
-					{collisionPnt === 'satelite' && <PublicsChats openPageChats={setCollisionPnt} />}
+					{collisionPnt === 'satelite' && <PublicsChats openPublicChat={setCollisionPnt} />}
 					{collisionPnt === 'base' && <Ranking openStore={setCollisionPnt} />}
 					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={setCollisionPnt} id={userData.id} />}
 					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
 					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
-					<PublicsChats openPageChats={setCollisionPnt} />
+					<PublicsChats openPublicChat={setCollisionPnt} />
 					{/* <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} /> */}
 					{/* <ChooseGameMode openSettingsPath={setCollisionPnt} /> */}
 				</div>

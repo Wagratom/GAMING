@@ -1,7 +1,6 @@
 package com.transcender.main.domain.entity;
 
 import com.transcender.main.domain.enuns.ChatType;
-import com.transcender.main.domain.enuns.MessageType;
 import com.transcender.main.domain.exceptions.ChatArgumentInvalid;
 import com.transcender.main.domain.valueobject.CreateChatDto;
 
@@ -181,6 +180,10 @@ public class ChatCore {
 
     public Instant getAtualizadoEm() {
         return atualizadoEm;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public List<MessageCore> getMessagens() {

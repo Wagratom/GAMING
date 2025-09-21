@@ -8,10 +8,12 @@ import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.port.in.ChatPort;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 public class ChatController {
     private final ChatPort chatService;
     private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
@@ -86,17 +89,23 @@ public class ChatController {
         return ResponseEntity.ok(new ChatResponse(chats));
     }
 
-    @PostMapping("/open-groups")
-    public ResponseEntity<ChatResponse> openGruops(
+    @GetMapping("/open-groups")
+    public ResponseEntity<ChatResponse> openGroups(
             @RequestHeader("Authorization") String jwt,
-            @Valid @RequestBody ChatDtoCreate chatDto
-    ) {
-        logger.info("[INIT] controller create grupo chat name {}", chatDto.getChatName());
-        if (!chatDto.getType().name().equals("PUBLIC") && !chatDto.getType().name().equals("PROTECT")) {
-            throw new BadRequest("Tipo de chat invalido, deve ser PROTECT ou PUBLIC");
-        }
+            @NotBlank(message = "O nome do chat é obrigatório.")
+            @RequestParam String chatName,
 
-        ChatCore chats = chatService.createChat(chatDto.toChatCore(), jwt);
+            @RequestParam(required = false) String password
+    ) {
+        ChatCore chats = chatService.openChat(jwt, chatName, password);
+        return ResponseEntity.ok(new ChatResponse(chats));
+    }
+
+    @GetMapping("/groups/{chatId}")
+    public ResponseEntity<ChatResponse> getChatId(
+            @RequestHeader("Authorization") String jwt
+    ) {
+        ChatCore chats = chatService.openChat(jwt, chatName, password);
         return ResponseEntity.ok(new ChatResponse(chats));
     }
 }

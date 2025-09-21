@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
-import { ChatContext } from "../ChatPublic/ChatPublic";
+import { ChatContext } from "../ChatPublic/OpenedPublicChat";
 import MessageUser from "./MessageUser";
 import MessagePeople from "./MessagePeople";
 import { MessageDto, UserData } from "../../InitialPage/Contexts/Contexts";

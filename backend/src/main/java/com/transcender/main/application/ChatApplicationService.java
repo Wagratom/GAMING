@@ -124,12 +124,14 @@ public class ChatApplicationService implements ChatPort {
     @Override
     public ChatCore openChat(String jwt, String chatName, String password) {
         getIdByToken(jwt);
-        List<ChatCore> chat = chatRepository.getChatByName(chatName);
+        Optional<ChatCore> chat = chatRepository.getChatByName(chatName);
         if (chat.isEmpty()) throw new BadRequest("Chat não existe");
-        if (encriptyService.checkPassword(password, chat.getFirst().getChatName())) {
+
+
+        if (chat.get().getType().equals(ChatType.PROTECT) && !encriptyService.checkPassword(password, chat.get().getPassword())) {
             throw new Forbidden("Password invalido");
         }
-        return chat.getFirst();
+        return chat.get();
     }
 
     @Override

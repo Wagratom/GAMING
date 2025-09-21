@@ -13,12 +13,14 @@ public interface ChatPort {
 
     ChatCore createChat(CreateChatDto chat, String jwt);
 
-    //    ChatCore updateChat(ChatCore user, Long solicitanteId);
+    List<ChatCore> getPublicsChats(String jwt);
+
     ChatCore openChat(String jwt, String chatName, String password);
 
-    boolean deleteChat(Long chatId, Long userId);
+    ChatCore getGroupChatById(String jwt);
 
-    List<ChatCore> getPublicsChats(String jwt);
+
+    boolean deleteChat(Long chatId, Long userId);
 
     boolean addUsuarioChat(Long chatId, UserCore usuario);
 

@@ -103,11 +103,9 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     @Override
-    public List<ChatCore> getChatByName(String chatName) {
-        return chatRepository.findByChatName(chatName)
-                .stream()
-                .map(mapperToJpaEntity::toChatCore)
-                .collect(Collectors.toList());
+    public Optional<ChatCore> getChatByName(String chatName) {
+        List<ChatCoreJpa> chats = chatRepository.findByChatName(chatName);
+        return chats.stream().findFirst().map(mapperToJpaEntity::toChatCore);
     }
 
 //    @Override

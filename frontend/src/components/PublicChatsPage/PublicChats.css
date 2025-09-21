@@ -250,6 +250,83 @@
   font-weight: 600;
 }
 
-.color-aaa{
+.color-aaa {
   color: #aaa;
+}
+
+
+/* CSS para movel  point*/
+/* ===== Modal Banido ===== */
+.banned-modal .modal-content {
+  background: rgba(30, 30, 47, 0.95);
+  border-radius: 18px;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  animation: fadeInScale 0.3s ease-in-out;
+}
+
+.banned-modal .modal-header {
+  background: linear-gradient(90deg, #1abc9c, #4cafef);
+  border-bottom: none;
+  border-radius: 18px 18px 0 0;
+  color: #fff;
+}
+
+.banned-modal .modal-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.banned-modal .modal-body {
+  background: #1e1e2f;
+  border-radius: 0 0 18px 18px;
+  padding: 20px;
+}
+
+.banned-modal img {
+  width: 90%;
+  max-width: 250px;
+  height: auto;
+  border-radius: 12px;
+  border: 2px solid #1abc9c;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+  object-fit: cover;
+}
+
+.banned-modal .modal-footer {
+  border-top: none;
+  background: transparent;
+}
+
+.banned-modal .btn-secondary {
+  background: linear-gradient(90deg, #1abc9c, #4cafef);
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-weight: bold;
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.banned-modal .btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(90deg, #4cafef, #1abc9c);
+}
+
+/* animação suave */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }

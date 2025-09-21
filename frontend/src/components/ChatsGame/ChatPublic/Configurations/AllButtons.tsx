@@ -9,7 +9,7 @@ import { AiOutlineUserAdd } from 'react-icons/ai';
 import { GiBroadDagger } from 'react-icons/gi';
 import { MdBlock } from "react-icons/md";
 import { FormEvent, useContext } from "react";
-import { ChatContext } from "../ChatPublic";
+import { ChatContext } from "../OpenedPublicChat";
 import { UserData } from "../../../InitialPage/Contexts/Contexts";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import { BiMessageRoundedX } from "react-icons/bi";
