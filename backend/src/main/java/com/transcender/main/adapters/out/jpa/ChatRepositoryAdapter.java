@@ -76,7 +76,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
 
     @Override
     public MessageCore addNewMessageDirectChat(ChatRepositoryPort.responsePrivateChat addMessageDto, String content) {
-        logger.info("add new message direct chat | IDS={}", addMessageDto.sender().getId());
+        logger.info("add new message do usuario {} no chat {}", addMessageDto.chat().getId(), addMessageDto.sender().getId());
 
         MessageCoreJpa mensagem = messageRepository.save(new MessageCoreJpa(
                 toChatCoreJpa(addMessageDto.chat()),

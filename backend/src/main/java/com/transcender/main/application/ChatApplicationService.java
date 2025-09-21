@@ -87,7 +87,7 @@ public class ChatApplicationService implements ChatPort {
     }
 
     @Override
-    public void postDirectChat(String jwt, Long friendId, String content) {
+    public void addMessageDirectChat(String jwt, Long friendId, String content) {
         Long userId = getIdByToken(jwt);
 
         logger.info("[INFO] adicionando nova mensagem no chat privado");

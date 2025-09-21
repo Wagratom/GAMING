@@ -50,14 +50,14 @@ public class ChatController {
     }
 
     @PostMapping("/directChats/{friendId}")
-    public ResponseEntity<String> postDirectChat(
+    public ResponseEntity<String> addMessageChat(
             @RequestHeader("Authorization") String jwt,
             @PathVariable("friendId") @Valid String friendId,
             @RequestBody @Valid NewMessageChat content
     ) {
         if (content.content().isBlank()) throw new BadRequest("Message empty");
         logger.info("[INIT] controller add new message direct chat friendId ={}", friendId);
-        chatService.postDirectChat(jwt, Long.parseLong(friendId), content.content());
+        chatService.addMessageDirectChat(jwt, Long.parseLong(friendId), content.content());
         return ResponseEntity.ok("sucesso");
     }
 

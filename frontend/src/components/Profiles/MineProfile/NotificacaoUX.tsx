@@ -7,6 +7,7 @@ import { LiaRobotSolid } from "react-icons/lia";
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import webSocketService from '../../webSocketService';
+import { useNavigate } from 'react-router-dom';
 
 
 type Notifications = {
@@ -21,6 +22,7 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>({ id: '', nickname: '' });
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (!resoucePlayer.startsWith("/notifications")) return;
@@ -72,7 +74,10 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 				}
 			})
 			.catch((err) => {
-				console.error("Erro ao processar a solicitação de amizade:", err);
+				if (err.response?.status === 401 || err.response?.status === 403) {
+					alert("Sessão expirada ou não autorizada. Por favor, faça login novamente.");
+					navigate('/login')
+				}
 			});
 	}
 

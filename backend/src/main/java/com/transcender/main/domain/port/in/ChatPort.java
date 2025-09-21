@@ -9,7 +9,7 @@ import java.util.List;
 public interface ChatPort {
     ChatCore getDirectChat(String jwt, Long friendId);
 
-    void postDirectChat(String jwt, Long friendId, String content);
+    void addMessageDirectChat(String jwt, Long friendId, String content);
 
     ChatCore createChat(CreateChatDto chat, String jwt);
 
