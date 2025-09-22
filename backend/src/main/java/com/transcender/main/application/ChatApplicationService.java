@@ -127,10 +127,6 @@ public class ChatApplicationService implements ChatPort {
         Optional<ChatCore> chat = chatRepository.getChatByName(chatName);
         if (chat.isEmpty()) throw new BadRequest("Chat não existe");
 
-        logger.info("chat.get().getType().equals(ChatType.PROTECT): {}", chat.get().getType().equals(ChatType.PROTECT));
-        logger.info("password: {}", password);
-        logger.info("chat.get().getPassword(): {}", chat.get().getPassword());
-        logger.info("chat.get().getPassword(): {}", encriptyService.checkPassword(password, chat.get().getPassword()));
         if (chat.get().getType().equals(ChatType.PROTECT) && !encriptyService.checkPassword(password, chat.get().getPassword())) {
             throw new Forbidden("Password invalido");
         }
