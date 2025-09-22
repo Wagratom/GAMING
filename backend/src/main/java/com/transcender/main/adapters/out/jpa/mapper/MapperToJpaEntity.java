@@ -131,7 +131,6 @@ public class MapperToJpaEntity {
                 .map(this::toMessageCore)
                 .collect(Collectors.toList());
 
-        logger.info("password: ", chatJpa.getPassword());
         return new ChatCore(
                 chatJpa.getId(),
                 chatJpa.getChatName(),

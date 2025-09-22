@@ -16,7 +16,7 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 	const [showCreateChat, setShowCreateChat] = useState(false);
 	const [listChats, setListChats] = useState<chatDto[]>([])
 	const [allChats, setAllChats] = useState<chatDto[]>([])
-	const [nameOpenedChat, setIdOpenedChat] = useState<string>('');
+	const [idOpenedChat, setIdOpenedChat] = useState<string>('3');
 
 	const getListChats = () => {
 		axios.get(`${process.env.REACT_APP_API_URL}/groups`, {
@@ -65,8 +65,17 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 		getListChats();
 	}, []);
 
+	if (idOpenedChat) {
+		return (
+			<OpenedPublicChat
+				chatId={idOpenedChat}
+				openPageChats={openPublicChat}
+			/>
+		)
+	}
+
 	return (
-		<div className='rounded position-fixed top-50 start-50 translate-middle public-chats-screen'>
+		<div className='position-fixed top-50 start-50 translate-middle public-chats-screen'>
 			<div className='d-flex flex-column h-100'>
 				<BarOptions
 					setShowCreateChat={setShowCreateChat}
@@ -82,10 +91,8 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 				}
 
 				<div className='d-flex p-3 overflow-auto' id='showChats'>
-					{nameOpenedChat
-						? <OpenedPublicChat chatId={nameOpenedChat} openPageChats={openPublicChat} />
-						: <ChatList listChats={listChats} setIdOpenedChat={setIdOpenedChat} />
-					}
+					<ChatList listChats={listChats} setIdOpenedChat={setIdOpenedChat} />
+
 				</div>
 			</div>
 		</div>

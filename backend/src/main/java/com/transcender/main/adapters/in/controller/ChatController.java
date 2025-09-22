@@ -89,6 +89,15 @@ public class ChatController {
         return ResponseEntity.ok(new ChatResponse(chats));
     }
 
+    @GetMapping("/groups/{chatId}")
+    public ResponseEntity<ChatResponse> getChatId(
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long chatId
+    ) {
+        ChatCore chats = chatService.getGroupChatById(jwt, chatId);
+        return ResponseEntity.ok(new ChatResponse(chats));
+    }
+
     @GetMapping("/open-groups")
     public ResponseEntity<ChatResponse> openGroups(
             @RequestHeader("Authorization") String jwt,
@@ -98,15 +107,6 @@ public class ChatController {
             @RequestParam(required = false) String password
     ) {
         ChatCore chats = chatService.openChat(jwt, chatName, password);
-        return ResponseEntity.ok(new ChatResponse(chats));
-    }
-
-    @GetMapping("/groups/{chatId}")
-    public ResponseEntity<ChatResponse> getChatId(
-            @RequestHeader("Authorization") String jwt,
-            Long chatId
-    ) {
-        ChatCore chats = chatService.getGroupChatById(jwt, chatId);
         return ResponseEntity.ok(new ChatResponse(chats));
     }
 }

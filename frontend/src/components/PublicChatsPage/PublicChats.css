@@ -6,6 +6,7 @@
   height: 75%;
   width: 75%;
   border: 1px solid white;
+  border-radius: 5px;
 }
 
 
@@ -175,7 +176,7 @@
 /* point CSS barra de pesquisa */
 #BarChats {
   background: rgba(30, 30, 47, 0.95);
-  border-radius: 14px;
+  border-radius: 5px;
   padding: 10px 16px;
   margin-bottom: 16px;
   display: flex;

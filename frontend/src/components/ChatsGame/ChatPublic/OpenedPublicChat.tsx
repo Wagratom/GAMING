@@ -57,14 +57,15 @@ export default function OpenedPublicChat({chatId, openPageChats}: propsPageChats
 	//TODO: Show modal when delete chat
 
 	const getDataChat = () => {
-		axios.get(`${process.env.REACT_APP_HOST_URL}/groups/${chatId}`, {
+		axios.get(`${process.env.REACT_APP_API_URL}/groups/${chatId}`, {
 			headers: {
-				Authorization: Cookies.get("jwtToken"),
+				Authorization:  `Bearer ${localStorage.getItem("token")}`,
 			}
-		}).then((response) => {
-			setDataChat(response.data)
-			addNewMember(response.data.id, response.data)
-			// userData.socket?.emit("open-group", { chatId: response.data.id });
+		}).then((res) => {
+			console.log(res.data)
+			setDataChat(res.data)
+			addNewMember(res.data.id, res.data)
+			// userData.socket?.emit("open-group", { chatId: res.data.id });
 		}).catch(() => { })
 	}
 
