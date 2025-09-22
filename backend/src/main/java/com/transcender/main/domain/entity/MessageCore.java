@@ -11,11 +11,12 @@ public class MessageCore {
     private Long chatId;       // referência ao Chat
     private UserCore sender;     // usuário que enviou
     private String conteudo;   // texto da mensagem
-    private MessageType tipo;  // TEXT, IMAGE, FILE, SYSTEM...
+    private MessageType tipo;
+    private boolean editado;
+    private boolean deletado;// TEXT, IMAGE, FILE, SYSTEM...
     private Instant criadoEm;
     private Instant atualizadoEm;
-    private boolean editado;
-    private boolean deletado;
+
 
     // Construtor de criação
     public MessageCore(Long chatId, UserCore sender, String conteudo, MessageType tipo) {

@@ -54,13 +54,15 @@ export type MessageDto = {
 export type ChatDataDto = {
   id: string,
   name: string,
+  messages: MessageDto[],
+  owner: PlayerDto,
+  type: string,
   photo: string,
   members: PlayerDto[],
   banned: PlayerDto[],
   kicked: PlayerDto[],
   admin: PlayerDto[],
   mutted: { id: string }[],
-  message: MessageDto[],
 }
 
 export type chatDto = {
