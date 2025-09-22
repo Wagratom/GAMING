@@ -10,15 +10,14 @@ type BarOptionsProps = {
 };
 
 export default function BarOptions({ chatList, setChatList, setShowCreateChat }: BarOptionsProps) {
-	const [allchats, setAllChats] = useState(chatList);
 
 	function handleSearchChatsByName(event: React.ChangeEvent<HTMLInputElement>) {
 		const searchTerm = event.target.value.toLowerCase();
 
 		if (searchTerm === '') {
-			setChatList(allchats);
+			setChatList(chatList);
 		} else {
-			const filteredChats = allchats.filter(chat =>
+			const filteredChats = chatList.filter(chat =>
 				chat.name.toLowerCase().includes(searchTerm)
 			);
 			setChatList(filteredChats);
@@ -33,13 +32,13 @@ export default function BarOptions({ chatList, setChatList, setShowCreateChat }:
 		const typeName = chatsType.current[index];
 
 		if (typeName === "Todos os Grupos") {
-			setChatList(allchats);
+			setChatList(chatList);
 		} else {
 			const type = typeName === "Chats Públicos" ? "PUBLIC" : "PROTECT";
-			const filteredChats = allchats.filter(chat => chat.type === type);
+			const filteredChats = chatList.filter(chat => chat.type === type);
 			setChatList(filteredChats);
 		}
-	}, [index, allchats, setChatList]);
+	}, [index, chatList, setChatList]);
 
 	function handleSearchChatsByType() {
 		setIndex(prev => (prev + 1) % chatsType.current.length);
@@ -49,7 +48,7 @@ export default function BarOptions({ chatList, setChatList, setShowCreateChat }:
 		<div className='d-flex w-100' id='BarChats'>
 			{/* barra de pesquisa */}
 			<div className='d-flex align-items-center w-50 inputFindChat color-aaa'>
-				<BiSearchAlt size={28} style={{ marginRight: '8px'}} />
+				<BiSearchAlt size={28} style={{ marginRight: '8px' }} />
 				<input
 					type='text'
 					placeholder='Procurar grupo...'

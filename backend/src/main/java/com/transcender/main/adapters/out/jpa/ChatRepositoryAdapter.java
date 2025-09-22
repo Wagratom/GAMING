@@ -15,7 +15,6 @@ import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.MessageType;
 import com.transcender.main.domain.enuns.PermitionChat;
 import com.transcender.main.domain.enuns.StatusChat;
-import com.transcender.main.domain.exceptions.BadRequest;
 import com.transcender.main.domain.port.out.ChatRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -160,6 +159,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
                 mapperToJpaEntity.toUserCoreJpa(chat.getChatOwner()),
                 chat.getType(),
                 chat.getDescricao(),
+                chat.getPassword(),
                 null,
                 null,
                 Instant.now(),

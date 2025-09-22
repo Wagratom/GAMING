@@ -56,6 +56,7 @@ export default function CreateNewChat({ setShowCreateChat, createNewChat }: func
 
 				{/* nome */}
 				<input
+					onKeyDown={(e) => e.stopPropagation()} // impede listeners externos de bloquear
 					type='text'
 					name='nameChat'
 					className='form-control create-chat-input'
@@ -68,7 +69,7 @@ export default function CreateNewChat({ setShowCreateChat, createNewChat }: func
 						<input
 							id="checkboxPrivate"
 							name="privateChat"
-							value="PROTECT"
+							value="PUBLIC"
 							type="checkbox"
 							ref={checkboxPublic}
 							className="form-check-input"
@@ -80,7 +81,7 @@ export default function CreateNewChat({ setShowCreateChat, createNewChat }: func
 						<input
 							id="checkboxProtect"
 							name="protectChat"
-							value="PUBLIC"
+							value="PROTECT"
 							type="checkbox"
 							ref={checkboxProtect}
 							className="form-check-input"
@@ -92,7 +93,7 @@ export default function CreateNewChat({ setShowCreateChat, createNewChat }: func
 
 				{ShowInputPassword && (
 					<input
-						type='text'
+						type='password'
 						name='passwordChat'
 						className='form-control create-chat-input'
 						placeholder='Senha do grupo'

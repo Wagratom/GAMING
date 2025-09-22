@@ -15,6 +15,7 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 	const { user } = useContext(UserData);
 	const [showCreateChat, setShowCreateChat] = useState(false);
 	const [listChats, setListChats] = useState<chatDto[]>([])
+	const [allChats, setAllChats] = useState<chatDto[]>([])
 	const [nameOpenedChat, setNameOpenedChat] = useState<string>('');
 
 	const getListChats = () => {
@@ -22,10 +23,12 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`
 			},
-		}).then((res) => {
-			console.log(res.data);
-			setListChats(res.data);
-		});
+		})
+			.then((res) => {
+				setListChats(res.data)
+				setAllChats(res.data)
+			})
+			.catch(() => { });
 	}
 
 	function createNewChat(form: FormData) {
@@ -46,13 +49,17 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 			photoUrl: "https://photografos.com.br/wp-content/uploads/2020/09/fotografia-para-perfil.jpg",
 		};
 
+		console.log(data);
 		axios.post(`${process.env.REACT_APP_API_URL}/groups`, data, {
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`
 			},
-		}).then((res) => {
-			setListChats(prev => [...prev, res.data]);
-		}).catch(() => { });
+		})
+			.then((res) => {
+				setAllChats(prev => [...prev, res.data])
+				setListChats(prev => [...prev, res.data])
+			})
+			.catch(() => { });
 	}
 
 	useEffect(() => {
@@ -64,7 +71,7 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 			<div className='d-flex flex-column h-100'>
 				<BarOptions
 					setShowCreateChat={setShowCreateChat}
-					chatList={listChats}
+					chatList={allChats}
 					setChatList={setListChats}
 				/>
 

@@ -40,6 +40,9 @@ public class ChatCoreJpa {
     @Column(columnDefinition = "text")
     private String descricao;
 
+    @Column(name = "password")
+    private String password;
+
     @OneToMany(mappedBy = "chat", fetch = FetchType.LAZY)
     @OrderBy("atualizadoEm ASC")
     private List<MessageCoreJpa> mensagens;
