@@ -1,13 +1,12 @@
-import { ChatDataDto, PlayerDto } from '../../InitialPage/Contexts/Contexts'
 import { createContext, useContext, useEffect } from 'react';
-import { UserData } from '../../InitialPage/Contexts/Contexts';
+import { ChatDataDto, PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts';
 
-import React, { useState } from 'react';
-import DinamicProfile from '../../Profiles/DinamicProfile/DinamicProfile';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import RightSide from './RightSide';
+import React, { useState } from 'react';
+import DinamicProfile from '../../Profiles/DinamicProfile/DinamicProfile';
 import ModalIsBanned from './ModalIsBanned';
+import RightSide from './RightSide';
 
 
 type DinamicProfile = {
@@ -28,10 +27,10 @@ export const ChatContext = createContext<{
 
 type propsPageChats = {
 	openPageChats: React.Dispatch<React.SetStateAction<string>>;
-	chatName: string;
+	chatId: string;
 }
 
-export default function OpenedPublicChat(props: propsPageChats) {
+export default function OpenedPublicChat({chatId, openPageChats}: propsPageChats) {
 	const [chatData, setDataChat] = useState<ChatDataDto>({} as ChatDataDto);
 	const [dinamicProfile, setDinamicProfile] = useState<DinamicProfile>({} as DinamicProfile);
 	const [showDinamicProfile, setShowDinamicProfile] = useState<string>('');
@@ -58,8 +57,7 @@ export default function OpenedPublicChat(props: propsPageChats) {
 	//TODO: Show modal when delete chat
 
 	const getDataChat = () => {
-		const ENV = `chat_name=${props.chatName}&password=''`
-		axios.get(`${process.env.REACT_APP_HOST_URL}/chatroom/find-public/?${ENV}`, {
+		axios.get(`${process.env.REACT_APP_HOST_URL}/groups/${chatId}`, {
 			headers: {
 				Authorization: Cookies.get("jwtToken"),
 			}
@@ -97,7 +95,7 @@ export default function OpenedPublicChat(props: propsPageChats) {
 	// 	})
 
 	// 	userData.socket?.on('deleteChat', (message: any) => {
-	// 		props.openPageChats("")
+	// 		openPageChats("")
 	// 		setShowModal({ show: true, msg: message });
 	// 	})
 
@@ -119,7 +117,6 @@ export default function OpenedPublicChat(props: propsPageChats) {
 	//##############################################################
 
 	if (!chatData.name) {
-		console.log("2: ", chatData);
 		return <div className='d-flex justify-content-center w-100'>Erro ao abrir o chat </div>
 	}
 
@@ -136,7 +133,7 @@ export default function OpenedPublicChat(props: propsPageChats) {
 		<div className="rounded text-white
 			position-absolute top-50 start-50 translate-middle h-75 w-75"
 		>
-			{showModal.show ? <ModalIsBanned openPageChats={props.openPageChats} msg={showModal.msg} /> : null}
+			{showModal.show ? <ModalIsBanned openPageChats={openPageChats} msg={showModal.msg} /> : null}
 			<div className="row g-0 h-100 p-2">
 				<ChatContext.Provider value={{ chatData: chatData, setDataChat, setDinamicProfile }}>
 					<div className="col-3 border-end h-100">
@@ -151,8 +148,8 @@ export default function OpenedPublicChat(props: propsPageChats) {
 					<div className="col-9 d-flex flex-column h-100 position-relative">
 						<RightSide
 							friend={chatData.members.find((member) => member.nickname !== userData.nickname) as PlayerDto}
-							chatName={props.chatName}
-							openPageChats={props.openPageChats}
+							chatName={chatId}
+							openPageChats={openPageChats}
 						/>
 					</div>
 				</ChatContext.Provider>

@@ -112,7 +112,7 @@ public class MapperToJpaEntity {
         return chatJpa;
     }
 
-    public ChatCore toChatCore(ChatCoreJpa chatJpa) {
+    public ChatCore toChatCore(ChatCoreJpa chatJpa, boolean includeMessages) {
         boolean isPrivate = chatJpa.getType() == ChatType.PRIVATE;
 
         Set<Long> adms = isPrivate
@@ -124,18 +124,21 @@ public class MapperToJpaEntity {
                 .map(u -> u.getUsuario().getId())
                 .collect(Collectors.toSet());
 
-        List<MessageCore> mensagens = Optional.ofNullable(chatJpa.getMensagens())
+        List<MessageCore> mensagens = includeMessages ? null
+                : Optional.ofNullable(chatJpa.getMensagens())
                 .orElse(Collections.emptyList())
                 .stream()
                 .map(this::toMessageCore)
                 .collect(Collectors.toList());
 
+        logger.info("password: ", chatJpa.getPassword());
         return new ChatCore(
                 chatJpa.getId(),
                 chatJpa.getChatName(),
                 toUserCore(chatJpa.getOwner(), false, false),
                 chatJpa.getType(),
                 chatJpa.getDescricao(),
+                chatJpa.getPassword(),
                 adms,
                 mensagens,
                 chatJpa.getCriadoEm(),

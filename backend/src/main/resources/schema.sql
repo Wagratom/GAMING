@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS chat (
     chatname VARCHAR(20),
     owner BIGINT,
     type VARCHAR(10) NOT NULL,
-    descricao TEXT NOT NULL DEFAULT ''
-    password TEXT NOT NULL DEFAULT ''
+    descricao TEXT,
+    password TEXT,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     chatname_unique VARCHAR(20) GENERATED ALWAYS AS (
@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS chat (
     FOREIGN KEY (owner) REFERENCES usuarios(id),
     UNIQUE (chatname_unique)
 );
+
 
 
 

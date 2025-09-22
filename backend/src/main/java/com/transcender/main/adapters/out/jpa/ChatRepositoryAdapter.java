@@ -68,7 +68,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
                 ));
 
         return new responsePrivateChat(
-                mapperToJpaEntity.toChatCore(chatCoreJpa),
+                mapperToJpaEntity.toChatCore(chatCoreJpa, true),
                 mapperToJpaEntity.toUserCore(request.get(), false, false)
         );
     }
@@ -92,19 +92,19 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     @Override
     public Optional<ChatCore> findChatById(Long id) {
         return chatRepository.findById(id)
-                .map((chatJpa) -> mapperToJpaEntity.toChatCore(chatJpa));
+                .map((chatJpa) -> mapperToJpaEntity.toChatCore(chatJpa, true));
     }
 
     @Override
     public ChatCore createChat(ChatCore chat) {
         ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
-        return mapperToJpaEntity.toChatCore(chatJpa);
+        return mapperToJpaEntity.toChatCore(chatJpa, false);
     }
 
     @Override
     public Optional<ChatCore> getChatByName(String chatName) {
         List<ChatCoreJpa> chats = chatRepository.findByChatName(chatName);
-        return chats.stream().findFirst().map(mapperToJpaEntity::toChatCore);
+        return chats.stream().findFirst().map((chat) -> mapperToJpaEntity.toChatCore(chat, true));
     }
 
 //    @Override
@@ -133,7 +133,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
 
         return chatRepository.getCreatedChats()
                 .stream()
-                .map(mapperToJpaEntity::toChatCore)
+                .map((chat) -> mapperToJpaEntity.toChatCore(chat, false))
                 .collect(Collectors.toList());
     }
 

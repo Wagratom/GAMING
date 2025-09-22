@@ -103,9 +103,10 @@ public class ChatController {
 
     @GetMapping("/groups/{chatId}")
     public ResponseEntity<ChatResponse> getChatId(
-            @RequestHeader("Authorization") String jwt
+            @RequestHeader("Authorization") String jwt,
+            Long chatId
     ) {
-        ChatCore chats = chatService.openChat(jwt, chatName, password);
+        ChatCore chats = chatService.getGroupChatById(jwt, chatId);
         return ResponseEntity.ok(new ChatResponse(chats));
     }
 }

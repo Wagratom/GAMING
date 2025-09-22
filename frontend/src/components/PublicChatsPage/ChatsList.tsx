@@ -8,10 +8,10 @@ import BannedWarningModal from './BannedWarningModal';
 
 type PropsChatList = {
 	listChats: chatDto[];
-	setNameOpenedChat: React.Dispatch<SetStateAction<string>>;
+	setIdOpenedChat: React.Dispatch<SetStateAction<string>>;
 };
 
-export default function ChatList({ setNameOpenedChat, listChats }: PropsChatList) {
+export default function ChatList({ setIdOpenedChat, listChats }: PropsChatList) {
 	const [showWarningBan, setShowWarningBan] = useState(false);
 	const [messageErro, setMessageError] = useState('');
 	const navigate = useNavigate();
@@ -29,8 +29,8 @@ export default function ChatList({ setNameOpenedChat, listChats }: PropsChatList
 				headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 				withCredentials: true,
 			})
-			.then(() => {
-				setNameOpenedChat(chatName);
+			.then((res) => {
+				setIdOpenedChat(res.data.id);
 			})
 			.catch((err) => {
 				console.error('Erro ao abrir grupo:', err.response);
@@ -40,7 +40,7 @@ export default function ChatList({ setNameOpenedChat, listChats }: PropsChatList
 				} else {
 					console.error('Erro ao abrir o grupo:', err.response?.data);
 					setMessageError(err.response?.data?.msg || 'Erro ao abrir o grupo.');
-					setShowWarningBan(true);
+					// setShowWarningBan(true);
 				}
 				throw err; // importante para o SweetAlert detectar erro
 			});

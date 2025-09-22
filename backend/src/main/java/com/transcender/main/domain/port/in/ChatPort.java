@@ -17,7 +17,7 @@ public interface ChatPort {
 
     ChatCore openChat(String jwt, String chatName, String password);
 
-    ChatCore getGroupChatById(String jwt);
+    ChatCore getGroupChatById(String jwt, Long chatId);
 
 
     boolean deleteChat(Long chatId, Long userId);

@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { SetStateAction, useContext, useEffect, useState } from 'react';
+import OpenedPublicChat from '../ChatsGame/ChatPublic/OpenedPublicChat';
 import { chatDto, UserData } from '../InitialPage/Contexts/Contexts';
 import BarOptions from './BarOptions';
 import ChatList from './ChatsList';
 import './PublicChats.css';
 import ScreenCreateNewChat from './ScreenCreateNewChat';
-import OpenedPublicChat from '../ChatsGame/ChatPublic/OpenedPublicChat';
 
 type propsRanking = {
 	openPublicChat: React.Dispatch<SetStateAction<string>>;
@@ -16,7 +16,7 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 	const [showCreateChat, setShowCreateChat] = useState(false);
 	const [listChats, setListChats] = useState<chatDto[]>([])
 	const [allChats, setAllChats] = useState<chatDto[]>([])
-	const [nameOpenedChat, setNameOpenedChat] = useState<string>('');
+	const [nameOpenedChat, setIdOpenedChat] = useState<string>('');
 
 	const getListChats = () => {
 		axios.get(`${process.env.REACT_APP_API_URL}/groups`, {
@@ -49,7 +49,6 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 			photoUrl: "https://photografos.com.br/wp-content/uploads/2020/09/fotografia-para-perfil.jpg",
 		};
 
-		console.log(data);
 		axios.post(`${process.env.REACT_APP_API_URL}/groups`, data, {
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -84,8 +83,8 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 
 				<div className='d-flex p-3 overflow-auto' id='showChats'>
 					{nameOpenedChat
-						? <OpenedPublicChat chatName={nameOpenedChat} openPageChats={openPublicChat} />
-						: <ChatList listChats={listChats} setNameOpenedChat={setNameOpenedChat} />
+						? <OpenedPublicChat chatId={nameOpenedChat} openPageChats={openPublicChat} />
+						: <ChatList listChats={listChats} setIdOpenedChat={setIdOpenedChat} />
 					}
 				</div>
 			</div>

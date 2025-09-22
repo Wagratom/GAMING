@@ -32,7 +32,7 @@ public class ChatCore {
     }
 
     // Construtor restrito para reconstrução a partir do banco de dados
-    public ChatCore(Long id, String chatName, UserCore chatOwner, ChatType type, String descricao,
+    public ChatCore(Long id, String chatName, UserCore chatOwner, ChatType type, String descricao, String password,
                     Set<Long> adms, List<MessageCore> messages, Instant criadoEm, Instant atualizadoEm) {
         if (id == null || id <= 0) {
             throw new ChatArgumentInvalid("Id inválido");
@@ -41,6 +41,7 @@ public class ChatCore {
         this.id = id;
         this.chatName = chatName;
         this.chatOwner = chatOwner;
+        this.password = password;
         this.type = type;
         this.messages = messages;
         this.descricao = descricao;
