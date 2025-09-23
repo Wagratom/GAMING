@@ -1,6 +1,7 @@
 package com.transcender.main.adapters.in.controller.dto.responses;
 
 import com.transcender.main.domain.entity.ChatCore;
+import com.transcender.main.domain.entity.ChatUserCore;
 import com.transcender.main.domain.entity.MessageCore;
 import lombok.Getter;
 
@@ -15,6 +16,7 @@ public class ChatResponse {
     private final UserResponse owner;
     private final String type;
     private final Instant criadoEm;
+    private final List<ChatUserCore> members;
 
     public ChatResponse(ChatCore chatCore) {
         id = chatCore.getId();
@@ -23,5 +25,6 @@ public class ChatResponse {
         criadoEm = chatCore.getCriadoEm();
         messages = chatCore.getMessagens() == null ? List.of() : chatCore.getMessagens();
         owner = new UserResponse(chatCore.getChatOwner());
+        members = chatCore.getUsuarios();
     }
 }

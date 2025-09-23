@@ -3,7 +3,7 @@ import InputChats from "../InputChats";
 import { MessageDto, PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts';
 import FormatMessages from "../FormatMessagens/FormatMessagens";
 
-export default function MessagensArea({ friend }: { friend: PlayerDto }): JSX.Element {
+export default function MessagensArea({ friend, messages }: { friend: PlayerDto, messages: MessageDto[] }): JSX.Element {
 	const userData = useContext(UserData).user;
 
 	// useEffect(() => {
@@ -22,9 +22,13 @@ export default function MessagensArea({ friend }: { friend: PlayerDto }): JSX.El
 
 
 	//TODO: adicionar logica de mostrar o erro
+	if (!friend) {
+		return <div></div>
+	}
+
 	return (
 		<>
-			<FormatMessages messages={{} as MessageDto[]}/>
+			<FormatMessages messages={messages}/>
 			{/* <InputChats
 				obj={{}}
 				disable={false}

@@ -103,7 +103,6 @@ public class ChatController {
             @RequestHeader("Authorization") String jwt,
             @NotBlank(message = "O nome do chat é obrigatório.")
             @RequestParam String chatName,
-
             @RequestParam(required = false) String password
     ) {
         ChatCore chats = chatService.openChat(jwt, chatName, password);

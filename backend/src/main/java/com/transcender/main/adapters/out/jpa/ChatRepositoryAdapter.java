@@ -78,7 +78,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         logger.info("add new message do usuario {} no chat {}", addMessageDto.chat().getId(), addMessageDto.sender().getId());
 
         MessageCoreJpa mensagem = messageRepository.save(new MessageCoreJpa(
-                toChatCoreJpa(addMessageDto.chat()),
+                toChatCoreJpa(addMessageDto.chat(), null),
                 mapperToJpaEntity.toUserCoreJpa(addMessageDto.sender()),
                 content,
                 MessageType.TEXT,
@@ -97,7 +97,17 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
 
     @Override
     public ChatCore createChat(ChatCore chat) {
-        ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
+        UserCoreJpa userCoreJpa = mapperToJpaEntity.toUserCoreJpa(chat.getChatOwner());
+        ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat, userCoreJpa));
+        chatUserRepository.save(new ChatUserCoreJpa(
+                chatJpa,
+                userCoreJpa,
+                StatusChat.ATIVE,
+                PermitionChat.OWNER,
+                Instant.now(),
+                Instant.now()
+        ));
+
         return mapperToJpaEntity.toChatCore(chatJpa, false);
     }
 
@@ -152,11 +162,11 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         return false;
     }
 
-    public ChatCoreJpa toChatCoreJpa(ChatCore chat) {
+    public ChatCoreJpa toChatCoreJpa(ChatCore chat, UserCoreJpa userCore) {
         return new ChatCoreJpa(
                 chat.getId(),
                 chat.getChatName(),
-                mapperToJpaEntity.toUserCoreJpa(chat.getChatOwner()),
+                userCore,
                 chat.getType(),
                 chat.getDescricao(),
                 chat.getPassword(),

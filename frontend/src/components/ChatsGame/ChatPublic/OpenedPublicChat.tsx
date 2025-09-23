@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect } from 'react';
 import { ChatDataDto, PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts';
 
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import React, { useState } from 'react';
 import DinamicProfile from '../../Profiles/DinamicProfile/DinamicProfile';
 import ModalIsBanned from './ModalIsBanned';
@@ -30,7 +29,7 @@ type propsPageChats = {
 	chatId: string;
 }
 
-export default function OpenedPublicChat({chatId, openPageChats}: propsPageChats) {
+export default function OpenedPublicChat({ chatId, openPageChats }: propsPageChats) {
 	const [chatData, setDataChat] = useState<ChatDataDto>({} as ChatDataDto);
 	const [dinamicProfile, setDinamicProfile] = useState<DinamicProfile>({} as DinamicProfile);
 	const [showDinamicProfile, setShowDinamicProfile] = useState<string>('');
@@ -59,7 +58,7 @@ export default function OpenedPublicChat({chatId, openPageChats}: propsPageChats
 	const getDataChat = () => {
 		axios.get(`${process.env.REACT_APP_API_URL}/groups/${chatId}`, {
 			headers: {
-				Authorization:  `Bearer ${localStorage.getItem("token")}`,
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
 			}
 		}).then((res) => {
 			console.log(res.data)
@@ -122,18 +121,16 @@ export default function OpenedPublicChat({chatId, openPageChats}: propsPageChats
 	}
 
 
-	if (chatData.banned.map((member) => member.nickname).includes(userData.nickname)
-		|| chatData.kicked.map((member) => member.nickname).includes(userData.nickname)) {
-		return <div>Você foi banido ou expulso deste chat</div>
-	}
+	// if (chatData.banned.map((member) => member.nickname).includes(userData.nickname)
+	// 	|| chatData.kicked.map((member) => member.nickname).includes(userData.nickname)) {
+	// 	return <div>Você foi banido ou expulso deste chat</div>
+	// }
 
 	if (!chatData) return <div>Carregando...</div>
 
 	// https://vetplus.vet.br/wp-content/uploads/2019/12/img_2427.jpg vc foi chutado
 	return (
-		<div className="rounded text-white
-			position-absolute top-50 start-50 translate-middle h-75 w-75"
-		>
+		<div className="rounded text-white position-absolute top-50 start-50 translate-middle h-75 w-75">
 			{showModal.show ? <ModalIsBanned openPageChats={openPageChats} msg={showModal.msg} /> : null}
 			<div className="row g-0 h-100 p-2">
 				<ChatContext.Provider value={{ chatData: chatData, setDataChat, setDinamicProfile }}>
@@ -151,11 +148,11 @@ export default function OpenedPublicChat({chatId, openPageChats}: propsPageChats
 							friend={chatData.members.find((member) => member.nickname !== userData.nickname) as PlayerDto}
 							chatName={chatId}
 							openPageChats={openPageChats}
+							message={chatData.messages}
 						/>
 					</div>
 				</ChatContext.Provider>
 			</div>
-
 
 			{!showDinamicProfile ? null :
 				<DinamicProfile

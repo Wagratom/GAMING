@@ -16,7 +16,7 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 	const [showCreateChat, setShowCreateChat] = useState(false);
 	const [listChats, setListChats] = useState<chatDto[]>([])
 	const [allChats, setAllChats] = useState<chatDto[]>([])
-	const [idOpenedChat, setIdOpenedChat] = useState<string>('3');
+	const [idOpenedChat, setIdOpenedChat] = useState<string>('6');
 
 	const getListChats = () => {
 		axios.get(`${process.env.REACT_APP_API_URL}/groups`, {
@@ -92,7 +92,6 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 
 				<div className='d-flex p-3 overflow-auto' id='showChats'>
 					<ChatList listChats={listChats} setIdOpenedChat={setIdOpenedChat} />
-
 				</div>
 			</div>
 		</div>

@@ -17,7 +17,10 @@ public class ChatCore {
     private String descricao;
     private String password;
     private Set<Long> adms;
+
+    private List<ChatUserCore> usuarios;
     private List<MessageCore> messages;
+
     private Instant criadoEm;
     private Instant atualizadoEm;
 
@@ -32,8 +35,9 @@ public class ChatCore {
     }
 
     // Construtor restrito para reconstrução a partir do banco de dados
-    public ChatCore(Long id, String chatName, UserCore chatOwner, ChatType type, String descricao, String password,
-                    Set<Long> adms, List<MessageCore> messages, Instant criadoEm, Instant atualizadoEm) {
+    public ChatCore(Long id, String chatName, UserCore chatOwner, ChatType type, String descricao,
+                    String password, Set<Long> adms, List<MessageCore> messages, List<ChatUserCore> usuarios,
+                    Instant criadoEm, Instant atualizadoEm) {
         if (id == null || id <= 0) {
             throw new ChatArgumentInvalid("Id inválido");
         }
@@ -45,9 +49,12 @@ public class ChatCore {
         this.type = type;
         this.messages = messages;
         this.descricao = descricao;
+
+        this.adms = adms != null ? adms : new HashSet<>();
+        this.usuarios = usuarios;
+
         this.criadoEm = criadoEm;
         this.atualizadoEm = atualizadoEm;
-        this.adms = adms != null ? adms : new HashSet<>();
     }
 
 
@@ -169,6 +176,10 @@ public class ChatCore {
 
     public ChatType getType() {
         return type;
+    }
+
+    public List<ChatUserCore> getUsuarios() {
+        return usuarios;
     }
 
     public String getDescricao() {

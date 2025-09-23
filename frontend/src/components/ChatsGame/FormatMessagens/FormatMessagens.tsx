@@ -16,8 +16,7 @@ export default function FormatMessages({ messages }: { messages: MessageDto[] })
 		}
 	}, [messages]);
 
-
-	if (!messages || messages.length === 0) {
+	if (messages.length === undefined || messages.length === 0) {
 		return <div ref={containerRef} className="h-100 text-black p-3 overflow-auto text-white">
 			<p className="text-center">Nenhuma mensagem ainda. Comece uma conversa!</p>
 		</div>;
