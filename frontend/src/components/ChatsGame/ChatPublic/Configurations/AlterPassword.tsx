@@ -16,13 +16,13 @@ export default function AlterPassword({ funcChange }: {
 	return (
 		<>
 			<h5 className="p-2 hover" onClick={hadleAlterPassword}>
-				<RiLockPasswordLine className="foto-list-friends bg-light text-black me-3 p-1 z-10" size={30} />
+				<RiLockPasswordLine className="bg-light text-black me-3 p-1 z-10" size={30} />
 				Alterar Senha
 			</h5>
 
 			<Modal show={openChat} onHide={() => setOpenChat(false)}>
 				<Modal.Header closeButton>
-					<RiLockPasswordLine className="foto-list-friends bg-light text-black me-3 p-1 z-10" size={30} />
+					<RiLockPasswordLine className="bg-light text-black me-3 p-1 z-10" size={30} />
 					Alterar Senha
 				</Modal.Header>
 				<Modal.Body>

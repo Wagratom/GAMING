@@ -2,40 +2,60 @@ package com.transcender.main.adapters.out.jpa.mapper;
 
 import com.transcender.main.adapters.out.jpa.entity.*;
 import com.transcender.main.domain.entity.*;
-import com.transcender.main.domain.enuns.ChatType;
 import com.transcender.main.domain.enuns.PermitionChat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class MapperToJpaEntity {
-    private final Logger logger = LoggerFactory.getLogger(MapperToJpaEntity.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(MapperToJpaEntity.class);
+
+    /**
+     * Conjunto de membros do chat separados por status/permissão
+     */
+    private static class MembersChat {
+        final Set<ChatUserCore> adms = new HashSet<>();
+        final Set<ChatUserCore> members = new HashSet<>();
+        final Set<ChatUserCore> banned = new HashSet<>();
+        final Set<ChatUserCore> kicked = new HashSet<>();
+        final Set<ChatUserCore> mutted = new HashSet<>();
+    }
+
+    /* ===================== USER ===================== */
 
     public UserCore toUserCore(UserCoreJpa user, boolean includeFriends, boolean includeMatchs) {
         if (user == null) return null;
 
-        logger.info("Parser UserJpa {} para Usercore. includeFriends {} includeMatchs {}", user.getId(), includeMatchs, includeMatchs);
+        logger.debug("Parser UserJpa {} -> UserCore (includeFriends={}, includeMatchs={})",
+                user.getId(), includeFriends, includeMatchs);
+
         Set<FriendCore> solicitates = includeFriends
                 ? user.getSolicitadas().stream().map(this::toFriendCore).collect(Collectors.toSet())
-                : Set.of();
+                : Collections.emptySet();
 
         Set<FriendCore> receives = includeFriends
                 ? user.getRecebidas().stream().map(this::toFriendCore).collect(Collectors.toSet())
-                : Set.of();
+                : Collections.emptySet();
 
         List<MatchCore> partidasComoUsuario1 = includeMatchs
-                ? user.getPartidasVencidas().stream().map(this::toPartidaCore).collect(Collectors.toList()) : null;
+                ? user.getPartidasVencidas().stream().map(this::toPartidaCore).toList()
+                : null;
+
         List<MatchCore> partidasComoUsuario2 = includeMatchs
-                ? user.getPartidasPerdidas().stream().map(this::toPartidaCore).collect(Collectors.toList()) : null;
+                ? user.getPartidasPerdidas().stream().map(this::toPartidaCore).toList()
+                : null;
+
         List<MatchCore> partidasVencidas = includeMatchs
-                ? user.getPartidasVencidas().stream().map(this::toPartidaCore).collect(Collectors.toList()) : null;
+                ? user.getPartidasVencidas().stream().map(this::toPartidaCore).toList()
+                : null;
 
         return new UserCore(
                 user.getId(),
@@ -55,25 +75,8 @@ public class MapperToJpaEntity {
         );
     }
 
-    public MatchCore toPartidaCore(MatchCoreJpa match) {
-        return match == null
-                ? null
-                : new MatchCore(
-                match.getId(),
-                match.getMap(),
-                toUserCore(match.getWinner(), false, false),
-                toUserCore(match.getLoser(), false, false),
-                match.getWinnerScore(),
-                match.getLoserScore(),
-                match.getCriadoEm(),
-                match.getAtauzalidoEm()
-        );
-    }
-
     public UserCoreJpa toUserCoreJpa(UserCore user) {
-        return user == null
-                ? null
-                : new UserCoreJpa(
+        return user == null ? null : new UserCoreJpa(
                 user.getId(),
                 user.getEmail(),
                 user.getSenhaHash(),
@@ -87,9 +90,7 @@ public class MapperToJpaEntity {
     }
 
     public FriendCore toFriendCore(FriendCoreJpa friendJpa) {
-        return friendJpa == null
-                ? null
-                : new FriendCore(
+        return friendJpa == null ? null : new FriendCore(
                 friendJpa.getId(),
                 toUserCore(friendJpa.getUsuario1(), false, false),
                 toUserCore(friendJpa.getUsuario2(), false, false),
@@ -99,9 +100,25 @@ public class MapperToJpaEntity {
         );
     }
 
-    public ChatCoreJpa toChatCoreJpa(ChatCore chat, UserCoreJpa owner) {
-        logger.info("ChatRepositoryAdapter::toChatCoreJpa::exec");
+    /* ===================== MATCH ===================== */
 
+    public MatchCore toPartidaCore(MatchCoreJpa match) {
+        return match == null ? null : new MatchCore(
+                match.getId(),
+                match.getMap(),
+                toUserCore(match.getWinner(), false, false),
+                toUserCore(match.getLoser(), false, false),
+                match.getWinnerScore(),
+                match.getLoserScore(),
+                match.getCriadoEm(),
+                match.getAtualizadoEm()
+        );
+    }
+
+    /* ===================== CHAT ===================== */
+
+    public ChatCoreJpa toChatCoreJpa(ChatCore chat, UserCoreJpa owner) {
+        logger.debug("MapperToJpaEntity::toChatCoreJpa");
         ChatCoreJpa chatJpa = new ChatCoreJpa();
         chatJpa.setId(chat.getId());
         chatJpa.setChatName(chat.getChatName());
@@ -112,26 +129,44 @@ public class MapperToJpaEntity {
         return chatJpa;
     }
 
+    public List<ChatUserCore> toChatUserCore(List<ChatUserCoreJpa> chatUserCoreJpa) {
+        if (chatUserCoreJpa == null) return Collections.emptyList();
+        return chatUserCoreJpa.stream()
+                .map(userChat -> new ChatUserCore(
+                        userChat.getChat().getId(),
+                        userChat.getUsuario().getId(),
+                        userChat.getStatusChat(),
+                        userChat.getPermitionChat(),
+                        userChat.getEntrouEm(),
+                        userChat.getSaiuEm()
+                )).toList();
+    }
+
+    private MembersChat getMembers(List<ChatUserCore> members) {
+        MembersChat m = new MembersChat();
+        if (members == null || members.isEmpty()) return m;
+
+        for (ChatUserCore member : members) {
+            if (member.permitionChat() == PermitionChat.ADM) m.adms.add(member);
+            switch (member.statusChat()) {
+                case ATIVE -> m.members.add(member);
+                case BANED -> m.banned.add(member);
+                case KICKET -> m.kicked.add(member);
+                case MUTTED -> m.mutted.add(member);
+            }
+        }
+        return m;
+    }
+
     public ChatCore toChatCore(ChatCoreJpa chatJpa, boolean includeMessages) {
         if (chatJpa == null) return null;
 
-        boolean isPrivate = chatJpa.getType() == ChatType.PRIVATE;
+        List<MessageCore> mensagens = includeMessages
+                ? (chatJpa.getMensagens() == null ? Collections.emptyList() :
+                chatJpa.getMensagens().stream().map(this::toMessageCore).toList())
+                : null;
 
-        Set<Long> adms = isPrivate
-                ? Collections.emptySet()
-                : Optional.ofNullable(chatJpa.getUsuarios())
-                .orElse(Collections.emptyList())
-                .stream()
-                .filter(u -> u.getPermitionChat() == PermitionChat.ADM)
-                .map(u -> u.getUsuario().getId())
-                .collect(Collectors.toSet());
-
-        List<MessageCore> mensagens = includeMessages ? null
-                : Optional.ofNullable(chatJpa.getMensagens())
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(this::toMessageCore)
-                .collect(Collectors.toList());
+        MembersChat members = getMembers(toChatUserCore(chatJpa.getUsuarios()));
 
         return new ChatCore(
                 chatJpa.getId(),
@@ -140,34 +175,21 @@ public class MapperToJpaEntity {
                 chatJpa.getType(),
                 chatJpa.getDescricao(),
                 chatJpa.getPassword(),
-                adms,
                 mensagens,
-                toChatUserCore(chatJpa.getUsuarios()),
+                members.adms,
+                members.members,
+                members.banned,
+                members.kicked,
+                members.mutted,
                 chatJpa.getCriadoEm(),
                 chatJpa.getAtualizadoEm()
         );
     }
 
-    public List<ChatUserCore> toChatUserCore(List<ChatUserCoreJpa> chatUserCoreJpa) {
-        return chatUserCoreJpa == null
-                ? null
-                : chatUserCoreJpa.stream()
-                .map((userChat) -> {
-                    return new ChatUserCore(
-                            userChat.getChat().getId(),
-                            userChat.getUsuario().getId(),
-                            userChat.getStatusChat(),
-                            userChat.getPermitionChat(),
-                            userChat.getEntrouEm(),
-                            userChat.getSaiuEm()
-                    );
-                }).collect(Collectors.toList());
-    }
+    /* ===================== MESSAGE ===================== */
 
     public MessageCore toMessageCore(MessageCoreJpa messagesJpa) {
-        return messagesJpa == null
-                ? null
-                : new MessageCore(
+        return messagesJpa == null ? null : new MessageCore(
                 messagesJpa.getId(),
                 messagesJpa.getChat().getId(),
                 toUserCore(messagesJpa.getSender(), false, false),

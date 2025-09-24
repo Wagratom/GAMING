@@ -7,6 +7,7 @@ import lombok.Getter;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 public class ChatResponse {
@@ -16,7 +17,11 @@ public class ChatResponse {
     private final UserResponse owner;
     private final String type;
     private final Instant criadoEm;
-    private final List<ChatUserCore> members;
+    private final Set<ChatUserCore> adms;
+    private final Set<ChatUserCore> members;
+    private final Set<ChatUserCore> banned;
+    private final Set<ChatUserCore> kicked;
+    private final Set<ChatUserCore> mutted;
 
     public ChatResponse(ChatCore chatCore) {
         id = chatCore.getId();
@@ -25,6 +30,11 @@ public class ChatResponse {
         criadoEm = chatCore.getCriadoEm();
         messages = chatCore.getMessagens() == null ? List.of() : chatCore.getMessagens();
         owner = new UserResponse(chatCore.getChatOwner());
-        members = chatCore.getUsuarios();
+
+        adms = chatCore.getAdms();
+        members = chatCore.getMembers();
+        banned = chatCore.getBanned();
+        kicked = chatCore.getKicked();
+        mutted = chatCore.getMutted();
     }
 }

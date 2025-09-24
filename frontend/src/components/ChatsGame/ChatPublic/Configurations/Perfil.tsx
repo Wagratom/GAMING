@@ -15,7 +15,6 @@ export default function Perfil(props: propsPerfil) : JSX.Element {
 			<img
 				src="https://i.etsystatic.com/37688069/r/il/d3e600/5143421340/il_600x600.5143421340_sm1f.jpg"
 				alt="Foto do grupo em configuraçoes"
-				className="foto-list-friends"
 				style={{ width: '10rem', height: '10rem' }}
 			/>
 			<h3>

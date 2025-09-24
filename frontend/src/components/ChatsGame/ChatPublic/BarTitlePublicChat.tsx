@@ -7,7 +7,7 @@ type propsBarConfigurations = {
 	openOrClosedConf: () => void;
 	chatName: string;
 }
-export default function BarConfigurations(props: propsBarConfigurations) {
+export default function BarTitlePublicChat(props: propsBarConfigurations) {
 
 	const cssButtons: React.CSSProperties = {
 		color: 'white',
@@ -15,11 +15,11 @@ export default function BarConfigurations(props: propsBarConfigurations) {
 		marginLeft: '10px',
 	}
 	return (
-		<div className="border-bottom d-flex align-items-end" style={{ height: "55px" }}>
+		<div className="border-bottom d-flex align-items-end p-1" style={{ height: "55px" }}>
 			<img
 				src="https://i.etsystatic.com/37688069/r/il/d3e600/5143421340/il_600x600.5143421340_sm1f.jpg"
-				alt="bordão sunny one picie"
-				className="foto-list-friends me-2 ms-1"
+				alt="bordão sunny one picie "
+				className="me-2 ms-1 h-100 border rounded-circle"
 			/>
 			<h3>{props.chatName}</h3>
 			<div className="my-auto ms-auto">

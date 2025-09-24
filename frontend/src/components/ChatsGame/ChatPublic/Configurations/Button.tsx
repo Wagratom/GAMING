@@ -13,7 +13,7 @@ export default function Buttons(props: buttonConfigurationProps) : JSX.Element {
 	return (
 		<>
 		<h5 className="p-2 hover" onClick={() => setShowInput(!showInput)}>
-			<props.Icon className="foto-list-friends bg-light text-black me-3 p-1" size={30} />
+			<props.Icon className="bg-light text-black me-3 p-1" size={30} />
 			{props.content}
 		</h5>
 		{showInput ? <InputButton function={props.function} placeholder={props.content}/> : null}

@@ -41,7 +41,7 @@ public class MatchRepositoryAdapter implements MatchRepositoryPort {
                 scoreWinner,
                 scoreLoser,
                 newMatch.getCriadoEm(),
-                newMatch.getAtauzalidoEm()
+                newMatch.getAtualizadoEm()
         );
     }
 }

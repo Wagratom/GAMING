@@ -1,0 +1,177 @@
+/* === Painel principal === */
+.configurations-panel {
+    width: 80%;
+    height: 100%;
+    background: #0f0f16;
+    /* fundo quase preto */
+    color: #fff;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px 0 0 12px;
+    padding: 10px 20px 20px 20px;
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    overflow-y: auto;
+    animation: slideInRight 0.3s ease-out;
+    margin: 10px;
+}
+
+/* animação de entrada */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Barra superior */
+.config-bar {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px 0;
+    height: 40px;
+    margin-bottom: 15px;
+}
+
+.config-bar h5 {
+    margin-left: 15px;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.config-close {
+    cursor: pointer;
+    color: #bbb;
+    transition: color 0.2s ease;
+    margin-left: auto;
+}
+
+.config-close:hover {
+    color: #ff4757;
+}
+
+/* Perfil do grupo */
+.config-profile {
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.config-photo {
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+    border: 2px solid #4cafef;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    margin-bottom: 12px;
+    transition: transform 0.3s ease, border 0.3s ease;
+}
+
+.config-photo:hover {
+    transform: scale(1.05);
+    border-color: #1abc9c;
+}
+
+.config-name {
+    font-size: 1.4rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+.config-edit {
+    cursor: pointer;
+    color: #1abc9c;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.config-edit:hover {
+    color: #4cafef;
+    transform: scale(1.1);
+}
+
+.config-input {
+    background: #1b1b25;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: #fff;
+    padding: 8px;
+    width: 80%;
+    margin-top: 8px;
+    outline: none;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.config-input:focus {
+    border: 1px solid #1abc9c;
+    box-shadow: 0 0 6px #1abc9c;
+}
+
+.config-members {
+    font-size: 1rem;
+    color: #cfcfcf;
+    margin-top: 10px;
+}
+
+/* Regras */
+.config-rules h4 {
+    margin-bottom: 10px;
+}
+
+.config-rules ul {
+    list-style: inside disc;
+    padding-left: 10px;
+}
+
+.config-rules li {
+    margin-bottom: 6px;
+    color: #ddd;
+}
+
+/* Scrollbar */
+.configurations-panel::-webkit-scrollbar {
+    width: 5px;
+    /* barra mais fina */
+}
+
+.configurations-panel::-webkit-scrollbar-thumb {
+    background: #1abc9c;
+    border-radius: 4px;
+}
+
+.configurations-panel::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .configurations-panel {
+        width: 90%;
+        border-radius: 16px 16px 0 0;
+        right: 0;
+        left: 0;
+        margin: auto;
+        animation: slideInUp 0.3s ease-out;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}

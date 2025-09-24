@@ -39,5 +39,5 @@ public class MatchCoreJpa {
     private Instant criadoEm = Instant.now();
 
     @Column(name = "atualizado_em", nullable = false)
-    private Instant atauzalidoEm = Instant.now();
+    private Instant atualizadoEm = Instant.now();
 }

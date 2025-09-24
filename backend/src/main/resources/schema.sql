@@ -29,9 +29,6 @@ CREATE TABLE IF NOT EXISTS chat (
     UNIQUE (chatname_unique)
 );
 
-
-
-
 -- Tabela intermediária: usuários no chat (ChatUserCoreJpa)
 CREATE TABLE IF NOT EXISTS chat_usuarios (
     chat_id BIGINT NOT NULL,

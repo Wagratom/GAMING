@@ -40,20 +40,33 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 		return muttedList.map((item) => ({ id: item.userId[0].id }))
 	}
 
-	function addNewMember(chat_id: String, data: ChatDataDto) {
-		data.mutted = createMutedList(data.mutted)
-		if (data.members.map((member) => member.nickname).includes(userData.nickname)) {
-			return
-		} else if (data.banned.map((member) => member.nickname).includes(userData.nickname)) {
-			return
-		} else if (data.kicked.map((member) => member.nickname).includes(userData.nickname)) {
-			return
-		}
+	//TODO: ADD NO BACKE
+	// function addNewMember(chat_id: String, data: ChatDataDto) {
+	// 	axios.post(`${process.env.REACT_APP_API_URL}/groups/${chat_id}/members`, {
+	// 		userId: userData.id,
+	// 		nickname: userData.nickname,
+	// 		photoUrl: userData.photoUrl,
+	// 	}, {
+	// 		headers: {
+	// 			Authorization: `Bearer ${localStorage.getItem("token")}`
+	// 		},
+	// 	}).then(() => {
+	// 		const obj = {
+	// 			chatId: chat_id,
+	// 			member: {
+	// 				id: userData.id,
+	// 				nickname: userData.nickname,
+	// 				photoUrl: userData.photoUrl,
+	// 			},
+	// 			admin: data.adms.map((item) => ({ id: item.id })),
+	// 			mutted: createMutedList(data.mutted),
+	// 		}
+	// 		// userData.socket?.emit("add-member-group", obj);
+	// 	}).catch(() => { })
+	// 	// userData.socket?.emit("add-member-group", obj);
+	// }
 
-		// userData.socket?.emit("add-member-group", obj);
-	}
-
-	//TODO: Show modal when delete chat
+	// //TODO: Show modal when delete chat
 
 	const getDataChat = () => {
 		axios.get(`${process.env.REACT_APP_API_URL}/groups/${chatId}`, {
@@ -63,7 +76,7 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 		}).then((res) => {
 			console.log(res.data)
 			setDataChat(res.data)
-			addNewMember(res.data.id, res.data)
+			// addNewMember(res.data.id, res.data)
 			// userData.socket?.emit("open-group", { chatId: res.data.id });
 		}).catch(() => { })
 	}
@@ -81,7 +94,7 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 	const getIsMyId = (id: String, msg: String) => {
 		if (userData.id === id)
 			setShowModal({ show: true, msg: msg });
-		getDataChat();
+		// getDataChat();
 	}
 
 	//TODO: verificar se o usuario foi banido e manda ele sair

@@ -58,21 +58,21 @@ export type ChatDataDto = {
   owner: PlayerDto,
   type: string,
   photo: string,
+  adms: PlayerDto[],
   members: PlayerDto[],
   banned: PlayerDto[],
   kicked: PlayerDto[],
-  admin: PlayerDto[],
-  mutted: { id: string }[],
+  mutted: PlayerDto[],
 }
 
 export type chatDto = {
-	id: string;
-	name: string;
-	owner: UserDto;
-	photoUrl: string;
-	password: string;
-	type: string;
-	onlines: number;
+  id: string;
+  name: string;
+  owner: UserDto;
+  photoUrl: string;
+  password: string;
+  type: string;
+  onlines: number;
 };
 
 

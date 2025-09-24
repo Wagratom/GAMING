@@ -1,5 +1,6 @@
 package com.transcender.main.domain.entity;
 
+import com.transcender.main.adapters.out.jpa.entity.ChatUserCoreJpa;
 import com.transcender.main.domain.enuns.ChatType;
 import com.transcender.main.domain.exceptions.ChatArgumentInvalid;
 import com.transcender.main.domain.valueobject.CreateChatDto;
@@ -16,9 +17,13 @@ public class ChatCore {
     private ChatType type;
     private String descricao;
     private String password;
-    private Set<Long> adms;
 
-    private List<ChatUserCore> usuarios;
+    private Set<ChatUserCore> adms;
+    private Set<ChatUserCore> members;
+    private Set<ChatUserCore> banned;
+    private Set<ChatUserCore> kicked;
+    private Set<ChatUserCore> admin;
+    private Set<ChatUserCore> mutted;
     private List<MessageCore> messages;
 
     private Instant criadoEm;
@@ -36,8 +41,10 @@ public class ChatCore {
 
     // Construtor restrito para reconstrução a partir do banco de dados
     public ChatCore(Long id, String chatName, UserCore chatOwner, ChatType type, String descricao,
-                    String password, Set<Long> adms, List<MessageCore> messages, List<ChatUserCore> usuarios,
+                    String password, List<MessageCore> messages, Set<ChatUserCore> adms, Set<ChatUserCore> members,
+                    Set<ChatUserCore> banned, Set<ChatUserCore> kicked, Set<ChatUserCore> mutted,
                     Instant criadoEm, Instant atualizadoEm) {
+
         if (id == null || id <= 0) {
             throw new ChatArgumentInvalid("Id inválido");
         }
@@ -50,8 +57,12 @@ public class ChatCore {
         this.messages = messages;
         this.descricao = descricao;
 
-        this.adms = adms != null ? adms : new HashSet<>();
-        this.usuarios = usuarios;
+
+        this.members = members;
+        this.banned = banned;
+        this.kicked = kicked;
+        this.mutted = mutted;
+        this.adms = adms;
 
         this.criadoEm = criadoEm;
         this.atualizadoEm = atualizadoEm;
@@ -130,10 +141,8 @@ public class ChatCore {
         this.atualizadoEm = Instant.now();
     }
 
-    public void addAdm(Long userId) {
-        if (userId == null || userId <= 0) {
-            throw new ChatArgumentInvalid("ID de admin inválido");
-        }
+    public void addAdm(ChatUserCore userId) {
+        if (userId == null) throw new ChatArgumentInvalid("ID de admin inválido");
         this.adms.add(userId);
         this.atualizadoEm = Instant.now();
     }
@@ -170,16 +179,28 @@ public class ChatCore {
         return chatOwner;
     }
 
-    public Set<Long> getAdms() {
-        return new HashSet<>(adms); // retornando cópia defensiva
+    public Set<ChatUserCore> getAdms() {
+        return new HashSet<>(adms);
+    }
+
+    public Set<ChatUserCore> getMembers() {
+        return members;
+    }
+
+    public Set<ChatUserCore> getBanned() {
+        return banned;
+    }
+
+    public Set<ChatUserCore> getKicked() {
+        return kicked;
+    }
+
+    public Set<ChatUserCore> getMutted() {
+        return mutted;
     }
 
     public ChatType getType() {
         return type;
-    }
-
-    public List<ChatUserCore> getUsuarios() {
-        return usuarios;
     }
 
     public String getDescricao() {

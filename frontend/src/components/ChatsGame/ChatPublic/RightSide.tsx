@@ -1,5 +1,5 @@
 import Configurations from "./Configurations/Configurations";
-import BarConfigurations from "./barConfigurations";
+import BarTitlePublicChat from "./BarTitlePublicChat";
 import MessagensArea from "./MessagensArea";
 import { useState } from "react";
 import { MessageDto, PlayerDto } from "../../InitialPage/Contexts/Contexts";
@@ -17,21 +17,30 @@ export default function RightSide(props: propsRightSide): JSX.Element {
 	return (
 		<>
 			<div>
-				<BarConfigurations
+				<BarTitlePublicChat
 					chatName={props.chatName}
 					openPageChats={props.openPageChats}
 					openOrClosedConf={
 						() => setShowConfigurations(!showConfigurations)
 					}
 				/>
-				{!showConfigurations ? null :
+				{/* {!showConfigurations ? null :
 					<Configurations
 						chatName={props.chatName}
 						openOrClosedConf={
 							() => setShowConfigurations(!showConfigurations)
 						}
 					/>
-				}
+				} */}
+
+				<div className="d-flex justify-content-end w-100">
+					<Configurations
+						chatName={props.chatName}
+						openOrClosedConf={
+							() => setShowConfigurations(!showConfigurations)
+						}
+					/>
+				</div>
 			</div>
 			<MessagensArea friend={props.friend} messages={props.message} />
 
