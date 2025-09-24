@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect } from 'react';
-import { ChatDataDto, PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts';
+import { ChatDataDto, UserData } from '../../InitialPage/Contexts/Contexts';
 
 import axios from 'axios';
 import React, { useState } from 'react';
@@ -158,8 +158,8 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 
 					<div className="col-9 d-flex flex-column h-100 position-relative">
 						<RightSide
-							friend={chatData.members.find((member) => member.nickname !== userData.nickname) as PlayerDto}
-							chatName={chatId}
+							chatName={chatData.name}
+							chatId={chatData.id}
 							openPageChats={openPageChats}
 							message={chatData.messages}
 						/>

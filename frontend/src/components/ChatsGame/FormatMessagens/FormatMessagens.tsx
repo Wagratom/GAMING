@@ -37,7 +37,7 @@ export default function FormatMessages({ messages }: { messages: MessageDto[] })
 		<div ref={containerRef} className="h-100 text-black p-3 overflow-auto">
 			{messages.map((notificacao: MessageDto) => {
 				const dateFormating = getDateFormating(notificacao.date)
-				if (notificacao.sender.nickname === user.nickname) {
+				if (notificacao.sender.id === user.id) {
 					return <MessageUser notificacao={notificacao} date={dateFormating} _key={notificacao.id} />
 				} else {
 					return <MessagePeople notificacao={notificacao} date={dateFormating} _key={notificacao.id} />

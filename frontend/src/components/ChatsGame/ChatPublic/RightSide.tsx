@@ -1,13 +1,13 @@
-import Configurations from "./Configurations/Configurations";
-import BarTitlePublicChat from "./BarTitlePublicChat";
-import MessagensArea from "./MessagensArea";
 import { useState } from "react";
-import { MessageDto, PlayerDto } from "../../InitialPage/Contexts/Contexts";
+import { MessageDto } from "../../InitialPage/Contexts/Contexts";
+import BarTitlePublicChat from "./BarTitlePublicChat";
+import Configurations from "./Configurations/Configurations";
+import MessagensArea from "./MessagensArea";
 
 type propsRightSide = {
-	friend: PlayerDto;
 	chatName: string;
 	message: MessageDto[];
+	chatId: string;
 	openPageChats: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -24,25 +24,16 @@ export default function RightSide(props: propsRightSide): JSX.Element {
 						() => setShowConfigurations(!showConfigurations)
 					}
 				/>
-				{/* {!showConfigurations ? null :
+				{!showConfigurations ? null :
 					<Configurations
 						chatName={props.chatName}
 						openOrClosedConf={
 							() => setShowConfigurations(!showConfigurations)
 						}
 					/>
-				} */}
-
-				<div className="d-flex justify-content-end w-100">
-					<Configurations
-						chatName={props.chatName}
-						openOrClosedConf={
-							() => setShowConfigurations(!showConfigurations)
-						}
-					/>
-				</div>
+				}
 			</div>
-			<MessagensArea friend={props.friend} messages={props.message} />
+			<MessagensArea messages={props.message} chatId={props.chatId}/>
 
 		</>
 	)

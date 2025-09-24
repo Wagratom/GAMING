@@ -1,9 +1,10 @@
 import { useContext } from "react";
-import InputChats from "../InputChats";
-import { MessageDto, PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts';
+import { MessageDto, UserData } from '../../InitialPage/Contexts/Contexts';
 import FormatMessages from "../FormatMessagens/FormatMessagens";
+import InputChats from "../InputChats";
 
-export default function MessagensArea({ friend, messages }: { friend: PlayerDto, messages: MessageDto[] }): JSX.Element {
+
+export default function MessagensArea({ messages, chatId }: {messages: MessageDto[], chatId: string }): JSX.Element {
 	const userData = useContext(UserData).user;
 
 	// useEffect(() => {
@@ -22,17 +23,12 @@ export default function MessagensArea({ friend, messages }: { friend: PlayerDto,
 
 
 	//TODO: adicionar logica de mostrar o erro
-	if (!friend) {
-		return <div></div>
-	}
+
 
 	return (
 		<>
-			<FormatMessages messages={messages}/>
-			{/* <InputChats
-				obj={{}}
-				disable={false}
-			/> */}
+			<FormatMessages messages={messages} />
+			<InputChats resourceSend={`/add-message-groups/${chatId}`}/>
 		</>
 	)
 }
