@@ -23,9 +23,7 @@ public class MessageCore {
         if (chatId == null || chatId <= 0) {
             throw new ChatArgumentInvalid("ChatId inválido");
         }
-        if (sender == null || sender.getId() <= 0) {
-            throw new ChatArgumentInvalid("SenderId inválido");
-        }
+
         if (conteudo == null || conteudo.trim().isEmpty()) {
             throw new ChatArgumentInvalid("Conteúdo da mensagem não pode estar vazio");
         }

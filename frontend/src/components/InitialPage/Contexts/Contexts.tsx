@@ -49,6 +49,9 @@ export type MessageDto = {
   content: string,
   sender: PlayerDto
   date: string;
+  deletado: boolean;
+  editado: boolean;
+  tipo: string
 }
 
 export type ChatDataDto = {

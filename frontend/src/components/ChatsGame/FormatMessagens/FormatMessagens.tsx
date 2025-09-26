@@ -1,11 +1,9 @@
 import { useContext, useEffect, useRef } from "react";
-import { ChatContext } from "../ChatPublic/OpenedPublicChat";
-import MessageUser from "./MessageUser";
-import MessagePeople from "./MessagePeople";
 import { MessageDto, UserData } from "../../InitialPage/Contexts/Contexts";
+import MessagePeople from "./MessagePeople";
+import MessageUser from "./MessageUser";
 
 export default function FormatMessages({ messages }: { messages: MessageDto[] }): JSX.Element {
-	const { setDinamicProfile } = useContext(ChatContext);
 	const { user } = useContext(UserData);
 	const containerRef = useRef<HTMLDivElement>(null);
 
@@ -16,15 +14,14 @@ export default function FormatMessages({ messages }: { messages: MessageDto[] })
 		}
 	}, [messages]);
 
-	if (messages.length === undefined || messages.length === 0) {
+	console.log("message: ", messages)
+	if (!messages || messages.length === 0) {
 		return <div ref={containerRef} className="h-100 text-black p-3 overflow-auto text-white">
 			<p className="text-center">Nenhuma mensagem ainda. Comece uma conversa!</p>
 		</div>;
 	}
+	console.log("message: ", messages)
 
-	const showDinamicProfile = (nickname: string, id: string) => {
-		setDinamicProfile({ nickName: nickname, id: id });
-	}
 
 	const getDateFormating = (date: string) => {
 		const data = new Date(date.replace(/\.\d{3,6}/, '.000'));

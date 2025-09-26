@@ -75,8 +75,8 @@ public class UserCoreJpa {
     private Instant criadoEm = Instant.now();
 
     // Última vez que o perfil foi atualizado
-    @Column(name = "atualizado_em", nullable = false)
-    private Instant atualizadoEm = Instant.now();
+    @Column(name = "atualizado_em", nullable = true)
+    private Instant atualizadoEm = null;
 
     public UserCoreJpa(
             Long id,

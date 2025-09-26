@@ -20,24 +20,17 @@ export default function InputChats({ resourceSend }: PropsInputChats) {
 		const message = inputChat.current?.value?.trim();
 		if (!message) return;
 
+		if (inputChat.current) inputChat.current.value = ""
+
 		axios.post(`${process.env.REACT_APP_API_URL}${resourceSend}`,
 			{ content: message },
 			{
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("token")}`,
-				},
-				withCredentials: true,
+				headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+				withCredentials: true
 			}
-		)
-			.then(() => {
-				if (inputChat.current) {
-					inputChat.current.value = "";
-				}
-			})
-			.catch((err) => {
-				console.error("❌ Erro ao enviar mensagem:", err);
-			});
+		).catch(err => console.error("❌ Erro ao enviar mensagem:", err));
 	};
+
 
 
 	return (

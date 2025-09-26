@@ -1,18 +1,35 @@
-import { useState } from "react";
-import { MessageDto } from "../../InitialPage/Contexts/Contexts";
+import { useContext, useEffect, useState } from "react";
+import { MessageDto, UserData } from "../../InitialPage/Contexts/Contexts";
+import FormatMessages from "../FormatMessagens/FormatMessagens";
+import InputChats from "../InputChats";
 import BarTitlePublicChat from "./BarTitlePublicChat";
 import Configurations from "./Configurations/Configurations";
-import MessagensArea from "./MessagensArea";
+import webSocketService from "../../webSocketService";
 
 type propsRightSide = {
 	chatName: string;
-	message: MessageDto[];
+	messages: MessageDto[];
 	chatId: string;
 	openPageChats: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function RightSide(props: propsRightSide): JSX.Element {
+export default function RightSide(props: propsRightSide) {
+	const { user } = useContext(UserData)
+	const [messages, setMessages] = useState<MessageDto[]>(props.messages);
 	const [showConfigurations, setShowConfigurations] = useState(false);
+
+	useEffect(() => {
+		if (!user.id) return;
+
+		const socket = webSocketService(
+			`/topic/groups/${props.chatId}`,
+			(msg: MessageDto) => {
+				if (!msg) return;
+				setMessages((prev) => [...prev, msg])
+			}
+		)
+		return () => void socket.deactivate();
+	}, [props.chatId])
 
 	return (
 		<>
@@ -33,8 +50,8 @@ export default function RightSide(props: propsRightSide): JSX.Element {
 					/>
 				}
 			</div>
-			<MessagensArea messages={props.message} chatId={props.chatId}/>
-
+			<FormatMessages messages={messages} />
+			<InputChats resourceSend={`/add-message-groups/${props.chatId}`} />
 		</>
 	)
 }

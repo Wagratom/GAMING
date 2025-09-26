@@ -38,6 +38,6 @@ public class MatchCoreJpa {
     @Column(name = "criado_em", nullable = false, updatable = false)
     private Instant criadoEm = Instant.now();
 
-    @Column(name = "atualizado_em", nullable = false)
-    private Instant atualizadoEm = Instant.now();
+    @Column(name = "atualizado_em", nullable = true)
+    private Instant atualizadoEm = null;
 }

@@ -42,7 +42,7 @@ public class MessageCoreJpa {
     private Instant criadoEm = Instant.now();
 
     @Column(name = "atualizado_em", nullable = false)
-    private Instant atualizadoEm = Instant.now();
+    private Instant atualizadoEm = null;
 
     @Column(nullable = false)
     private boolean editado = false;
@@ -59,5 +59,6 @@ public class MessageCoreJpa {
         this.conteudo = content;
         this.deletado = deletado;
         this.editado = editado;
+        this.conteudo = content;
     }
 }

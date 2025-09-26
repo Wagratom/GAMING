@@ -8,10 +8,7 @@ import ModalIsBanned from './ModalIsBanned';
 import RightSide from './RightSide';
 
 
-type DinamicProfile = {
-	nickName: string,
-	id: string,
-}
+type DinamicProfile = { nickName: string, id: string }
 
 export const ChatContext = createContext<{
 	chatData: ChatDataDto;
@@ -70,14 +67,10 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 
 	const getDataChat = () => {
 		axios.get(`${process.env.REACT_APP_API_URL}/groups/${chatId}`, {
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem("token")}`,
-			}
+			headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
 		}).then((res) => {
-			console.log(res.data)
 			setDataChat(res.data)
 			// addNewMember(res.data.id, res.data)
-			// userData.socket?.emit("open-group", { chatId: res.data.id });
 		}).catch(() => { })
 	}
 
@@ -91,11 +84,6 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 		}
 	}, [dinamicProfile])
 
-	const getIsMyId = (id: String, msg: String) => {
-		if (userData.id === id)
-			setShowModal({ show: true, msg: msg });
-		// getDataChat();
-	}
 
 	//TODO: verificar se o usuario foi banido e manda ele sair
 	//Sockets
@@ -161,7 +149,7 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 							chatName={chatData.name}
 							chatId={chatData.id}
 							openPageChats={openPageChats}
-							message={chatData.messages}
+							messages={chatData.messages}
 						/>
 					</div>
 				</ChatContext.Provider>

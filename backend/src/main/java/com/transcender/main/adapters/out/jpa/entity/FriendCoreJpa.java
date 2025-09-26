@@ -38,8 +38,8 @@ public class FriendCoreJpa {
     @Column(name = "criado_em", nullable = false)
     private Instant criadoEm = Instant.now();
 
-    @Column(name = "atualizado_em", nullable = false)
-    private Instant atualizadoEm = Instant.now();
+    @Column(name = "atualizado_em", nullable = true)
+    private Instant atualizadoEm = null;
 
     public FriendCoreJpa(UserCoreJpa usuario1, UserCoreJpa usuario2, FriendStatus status) {
         this.usuario1 = usuario1;

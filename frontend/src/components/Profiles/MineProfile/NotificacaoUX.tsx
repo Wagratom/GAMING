@@ -29,9 +29,7 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 
 		const route = `${process.env.REACT_APP_API_URL}/notifications?status=PENDING`;
 
-		axios.get(route, {
-			headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-		})
+		axios.get(route, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
 			.then((res) => {
 				setFriendshipRequests(res.data.map((notification: Notifications) => notification.sender));
 			})

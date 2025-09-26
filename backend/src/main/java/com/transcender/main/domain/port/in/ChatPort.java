@@ -10,6 +10,7 @@ public interface ChatPort {
     ChatCore getDirectChat(String jwt, Long friendId);
 
     void addMessageDirectChat(String jwt, Long friendId, String content);
+    void addMessageGroups(String jwt, Long chatId, String content);
 
     ChatCore createChat(CreateChatDto chat, String jwt);
 

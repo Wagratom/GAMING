@@ -4,6 +4,7 @@ import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.entity.MessageCore;
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.ChatType;
+import com.transcender.main.domain.enuns.MessageType;
 import com.transcender.main.domain.exceptions.*;
 import com.transcender.main.domain.port.in.ChatPort;
 import com.transcender.main.domain.port.out.*;
@@ -59,7 +60,7 @@ public class ChatApplicationService implements ChatPort {
         return new MessageDto(
                 message.getId(),
                 message.getConteudo(),
-                message.getAtualizadoEm().toString(),
+                message.getAtualizadoEm() != null ? message.getAtualizadoEm().toString() : message.getCriadoEm().toString(),
                 new SenderDto(
                         sender.getId(),
                         sender.getNickname(),
@@ -67,7 +68,6 @@ public class ChatApplicationService implements ChatPort {
                         sender.getOnline()
                 )
         );
-
     }
 
     @Override
@@ -102,6 +102,24 @@ public class ChatApplicationService implements ChatPort {
         logger.info("[END] enviando resposta");
         messagingTemplate.convertAndSend("/topic/directChats/" + userId, toMessageDto(messageCore));
         messagingTemplate.convertAndSend("/topic/directChats/" + friendId, toMessageDto(messageCore));
+    }
+
+    @Override
+    public void addMessageGroups(String jwt, Long chatId, String content) {
+        Long userId = getIdByToken(jwt);
+        logger.info("[INFO] adicionando nova mensagem no grupo");
+
+        MessageCore msg = new MessageCore(
+                chatId,
+                null,
+                content,
+                MessageType.TEXT
+        );
+
+        MessageCore messageCore = chatRepository.addMessageGroups(msg, userId);
+
+        logger.info("[END] enviando resposta");
+        messagingTemplate.convertAndSend("/topic/groups/" + chatId, toMessageDto(messageCore));
     }
 
     @Override

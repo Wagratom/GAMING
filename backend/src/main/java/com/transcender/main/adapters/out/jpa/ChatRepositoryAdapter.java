@@ -15,6 +15,7 @@ import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.MessageType;
 import com.transcender.main.domain.enuns.PermitionChat;
 import com.transcender.main.domain.enuns.StatusChat;
+import com.transcender.main.domain.exceptions.ResourceNotFound;
 import com.transcender.main.domain.port.out.ChatRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -90,6 +91,32 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     @Override
+    public MessageCore addMessageGroups(MessageCore messageObj, Long senderId) {
+        logger.info("add new message on groups {}", messageObj.getChatId());
+
+        ChatCoreJpa chat = chatRepository.findById(messageObj.getChatId()).orElseThrow(() -> new ResourceNotFound("Chat", messageObj.getChatId()));
+        UserCoreJpa user = userRepository.findById(senderId).orElseThrow(() -> new ResourceNotFound("Usuario", senderId));
+        MessageCoreJpa newMessage = new MessageCoreJpa(
+                chat,
+                user,
+                messageObj.getConteudo(),
+                messageObj.getTipo(),
+                false,
+                false
+        );
+        MessageCoreJpa mensagem = messageRepository.save(new MessageCoreJpa(
+                chat,
+                user,
+                messageObj.getConteudo(),
+                MessageType.TEXT,
+                false,
+                false
+        ));
+
+        return mapperToJpaEntity.toMessageCore(mensagem);
+    }
+
+    @Override
     public Optional<ChatCore> findChatById(Long id) {
         return chatRepository.findById(id)
                 .map((chatJpa) -> mapperToJpaEntity.toChatCore(chatJpa, true));
@@ -116,14 +143,6 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
         List<ChatCoreJpa> chats = chatRepository.findByChatName(chatName);
         return chats.stream().findFirst().map((chat) -> mapperToJpaEntity.toChatCore(chat, true));
     }
-
-//    @Override
-//    public ChatCore updateChat(ChatCore chat) {
-//        logger.info("ChatRepositoryAdapter > updateChat > exec");
-//
-//        ChatCoreJpa chatJpa = chatRepository.save(toChatCoreJpa(chat));
-//        return mapperToJpaEntity.toChatCore(chatJpa);
-//    }
 
     @Override
     public boolean deleteChat(Long chatId) {

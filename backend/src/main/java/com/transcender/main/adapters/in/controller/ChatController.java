@@ -92,12 +92,12 @@ public class ChatController {
     @PostMapping("/add-message-groups/{chatId}")
     public ResponseEntity<String> addMessageGroups(
             @RequestHeader("Authorization") String jwt,
-            @PathVariable("friendId") @Valid String chatId,
+            @PathVariable("chatId") @Valid String chatId,
             @RequestBody @Valid NewMessageChat content
     ) {
         if (content.content().isBlank()) throw new BadRequest("Message empty");
         logger.info("[INIT] controller add message group name {}", chatId);
-        chatService.addMessageDirectChat(jwt, Long.parseLong(chatId), content.content());
+        chatService.addMessageGroups(jwt, Long.parseLong(chatId), content.content());
         return ResponseEntity.ok("sucesso");
     }
 

@@ -13,6 +13,7 @@ public interface ChatRepositoryPort {
     responsePrivateChat getOrCreateDirectChat(Long requester, UserCore user2);
 
     MessageCore addNewMessageDirectChat(responsePrivateChat addMessageDto, String content);
+    MessageCore addMessageGroups(MessageCore content, Long senderId);
 
     Optional<ChatCore> findChatById(Long chatId);
 
