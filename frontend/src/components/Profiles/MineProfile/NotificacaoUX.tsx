@@ -72,7 +72,7 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 				}
 			})
 			.catch((err) => {
-				if (err.response?.status === 401 || err.response?.status === 403) {
+				if (err.response?.status === 401) {
 					alert("Sessão expirada ou não autorizada. Por favor, faça login novamente.");
 					navigate('/login')
 				}

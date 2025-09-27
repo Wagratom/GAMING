@@ -38,24 +38,21 @@ public class ChatApplicationService implements ChatPort {
     private final Logger logger = LoggerFactory.getLogger(ChatApplicationService.class);
 
     //records utilizados para gerar os objetos de resposta
-    private record UsersPair(UserCore requester, UserCore friend) {
-    }
+    private record UsersPair(UserCore requester, UserCore friend) {}
 
-    private record SenderDto(Long id, String nickname, String avatar, Boolean online) {
-    }
+    private record SenderDto(Long id, String nickname, String avatar, Boolean online) {}
 
-    public record MessageDto(Long id, String content, String date, SenderDto sender) {
-    }
+    public record MessageDto(Long id, String content, String date, SenderDto sender) {}
 
     private Long getIdByToken(String jwt) {
+        if (jwt == null) throw new BadRequest("Token não enviado");
         try {
-            if (jwt == null) throw new BadRequest("Token não enviado");
             Map<String, Object> userInfo = jwtService.validateTokenAndGetClaims(jwt.substring(7));
             return ((Number) userInfo.get("id")).longValue();
         } catch (ExpiredJwtException err) {
             throw new Unauthorized("Token expirado amigo!");
         } catch (JwtException ex) {
-            throw new Forbidden("Token inválido amigo!");
+            throw new Unauthorized("Token inválido amigo!");
         }
     }
 
@@ -117,7 +114,6 @@ public class ChatApplicationService implements ChatPort {
                 .orElseThrow(() -> new ResourceNotFound("chat", chatId));
 
         logger.info("[Parsing] checking if the user '{}' have permission to write in chat", userId);
-
         Set<ChatUserCore> members = chat.getMembers();
         if (members == null || members.isEmpty())
             throw new Forbidden("Você não tem permissão para enviar mensagem nesse chat");
@@ -137,6 +133,7 @@ public class ChatApplicationService implements ChatPort {
                 content,
                 MessageType.TEXT
         );
+        logger.info("chamando database");
         MessageCore messageCore = chatRepository.addMessageGroups(msg, userId);
 
         logger.info("[END] sending response to websocket topic");

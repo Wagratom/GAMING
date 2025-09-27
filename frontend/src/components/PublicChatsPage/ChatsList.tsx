@@ -34,7 +34,7 @@ export default function ChatList({ setIdOpenedChat, listChats }: PropsChatList) 
 			})
 			.catch((err) => {
 				console.error('Erro ao abrir grupo:', err.response);
-				if (err.response?.status === 401 || err.response?.status === 403) {
+				if (err.response?.status === 401) {
 					alert('Sessão expirada ou não autorizada. Por favor, faça login novamente.');
 					navigate('/login');
 				} else {

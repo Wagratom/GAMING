@@ -106,7 +106,8 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
                 false,
                 false
         );
-
+        messageRepository.save(newMessage);
+        logger.info("criei a msg");
         return mapperToJpaEntity.toMessageCore(newMessage);
     }
 

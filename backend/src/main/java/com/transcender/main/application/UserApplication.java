@@ -27,14 +27,14 @@ public class UserApplication implements UserPortIn {
     private static final Logger logger = LoggerFactory.getLogger(UserApplication.class);
 
     private Long getIdByToken(String jwt) {
+        if (jwt == null) throw new BadRequest("Token não enviado");
         try {
-            if (jwt == null) throw new BadRequest("Token não enviado");
             Map<String, Object> userInfo = jwtService.validateTokenAndGetClaims(jwt.substring(7));
             return ((Number) userInfo.get("id")).longValue();
         } catch (ExpiredJwtException err) {
             throw new Unauthorized("Token expirado amigo!");
         } catch (JwtException ex) {
-            throw new Forbidden("Token inválido amigo!");
+            throw new Unauthorized("Token inválido amigo!");
         }
     }
 

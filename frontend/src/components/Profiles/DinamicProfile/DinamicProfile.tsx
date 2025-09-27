@@ -42,7 +42,7 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
             .then((res) => { setProfile(res.data as ProfileDto) })
             .catch((err) => {
                 console.error("Erro ao buscar dados do usuário:", err.response);
-                if (err.response?.status === 401 || err.response?.status === 403) {
+                if (err.response?.status === 401) {
                     alert("Sessão expirada ou não autorizada. Por favor, faça login novamente.");
                     navigate('/login')
                 }

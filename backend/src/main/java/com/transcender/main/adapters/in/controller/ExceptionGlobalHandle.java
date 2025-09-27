@@ -75,7 +75,7 @@ public class ExceptionGlobalHandle {
 
     @ExceptionHandler(Unauthorized.class)
     public ResponseEntity<String> Forbidden(Unauthorized ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
     @ExceptionHandler(InternalError.class)

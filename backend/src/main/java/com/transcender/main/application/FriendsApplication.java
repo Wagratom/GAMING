@@ -10,6 +10,7 @@ import com.transcender.main.domain.port.in.FriendsPort;
 import com.transcender.main.domain.port.out.FriendsRepositoryPort;
 import com.transcender.main.domain.port.out.JwtService;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -36,15 +37,14 @@ public class FriendsApplication implements FriendsPort {
     private record UsersPair(UserCore requester, UserCore friend) {}
 
     private Long extractUserIdFromJwt(String jwt) {
-        if (jwt == null || jwt.length() < 7) {
-            throw new Unauthorized("Token inválido");
-        }
+        if (jwt == null) throw new BadRequest("Token não enviado");
         try {
-            Map<String, Object> claims = jwtService.validateTokenAndGetClaims(jwt.substring(7));
-            return ((Number) claims.get("id")).longValue();
+            Map<String, Object> userInfo = jwtService.validateTokenAndGetClaims(jwt.substring(7));
+            return ((Number) userInfo.get("id")).longValue();
+        } catch (ExpiredJwtException err) {
+            throw new Unauthorized("Token expirado amigo!");
         } catch (JwtException ex) {
-            logger.error("Falha ao decodificar token JWT", ex);
-            throw new Unauthorized("Token inválido");
+            throw new Unauthorized("Token inválido amigo!");
         }
     }
 

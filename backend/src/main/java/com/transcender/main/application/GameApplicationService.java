@@ -31,7 +31,7 @@ public class GameApplicationService {
 
     // Fila de espera para matchmaking
     private final Queue<UserCore> waitingPlayersNomalGame = new ConcurrentLinkedQueue<>();
-    private  final List<Long> playersInMatcher;
+    private final List<Long> playersInMatcher;
     private final MatchRepositoryPort matchRepository;
 
     private final Logger logger = LoggerFactory.getLogger(GameApplicationService.class);
@@ -48,17 +48,13 @@ public class GameApplicationService {
             Long playerLeftId,
             Long playerRightId
     ) {
-        public record BallDto(int positionX, int positionY, int size) {
-        }
+        public record BallDto(int positionX, int positionY, int size) { }
 
-        public record PaddleDto(int positionX, int positionFront, int height, int width, int velocity) {
-        }
+        public record PaddleDto(int positionX, int positionFront, int height, int width, int velocity) { }
 
-        public record WindowDto(int height, int width) {
-        }
+        public record WindowDto(int height, int width) { }
 
-        public record PowerDto(int x, int y, int size) {
-        }
+        public record PowerDto(int x, int y, int size) { }
     }
 
     public void addToQueue(Long playerId, String typeMode) {

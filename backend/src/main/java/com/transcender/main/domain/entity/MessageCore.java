@@ -23,9 +23,7 @@ public class MessageCore {
         if (chat == null) {
             throw new ChatArgumentInvalid("chat nulo");
         }
-        if (sender == null) {
-            throw new ChatArgumentInvalid("sender nulo");
-        }
+
         if (conteudo == null || conteudo.trim().isEmpty()) {
             throw new ChatArgumentInvalid("Conteúdo da mensagem não pode estar vazio");
         }
