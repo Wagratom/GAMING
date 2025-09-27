@@ -91,35 +91,23 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     @Override
-    public MessageCore addMessageGroups(MessageCore messageObj, Long senderId) {
-        logger.info("add new message on groups {}", messageObj.getChatId());
+    public Optional<ChatCore> getChatById(Long chatId) {
+        return chatRepository.findById(chatId).map((chat) -> mapperToJpaEntity.toChatCore(chat, false));
+    }
 
-        ChatCoreJpa chat = chatRepository.findById(messageObj.getChatId()).orElseThrow(() -> new ResourceNotFound("Chat", messageObj.getChatId()));
+    @Override
+    public MessageCore addMessageGroups(MessageCore messageObj, Long senderId) {
         UserCoreJpa user = userRepository.findById(senderId).orElseThrow(() -> new ResourceNotFound("Usuario", senderId));
         MessageCoreJpa newMessage = new MessageCoreJpa(
-                chat,
+                toChatCoreJpa(messageObj.getChat(), null),
                 user,
                 messageObj.getConteudo(),
                 messageObj.getTipo(),
                 false,
                 false
         );
-        MessageCoreJpa mensagem = messageRepository.save(new MessageCoreJpa(
-                chat,
-                user,
-                messageObj.getConteudo(),
-                MessageType.TEXT,
-                false,
-                false
-        ));
 
-        return mapperToJpaEntity.toMessageCore(mensagem);
-    }
-
-    @Override
-    public Optional<ChatCore> findChatById(Long id) {
-        return chatRepository.findById(id)
-                .map((chatJpa) -> mapperToJpaEntity.toChatCore(chatJpa, true));
+        return mapperToJpaEntity.toMessageCore(newMessage);
     }
 
     @Override

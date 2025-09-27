@@ -1,10 +1,12 @@
 package com.transcender.main.application;
 
 import com.transcender.main.domain.entity.ChatCore;
+import com.transcender.main.domain.entity.ChatUserCore;
 import com.transcender.main.domain.entity.MessageCore;
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.ChatType;
 import com.transcender.main.domain.enuns.MessageType;
+import com.transcender.main.domain.enuns.StatusChat;
 import com.transcender.main.domain.exceptions.*;
 import com.transcender.main.domain.port.in.ChatPort;
 import com.transcender.main.domain.port.out.*;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -55,6 +58,7 @@ public class ChatApplicationService implements ChatPort {
             throw new Forbidden("Token inválido amigo!");
         }
     }
+
     private MessageDto toMessageDto(MessageCore message) {
         UserCore sender = message.getSender();
         return new MessageDto(
@@ -107,18 +111,33 @@ public class ChatApplicationService implements ChatPort {
     @Override
     public void addMessageGroups(String jwt, Long chatId, String content) {
         Long userId = getIdByToken(jwt);
-        logger.info("[INFO] adicionando nova mensagem no grupo");
 
+        logger.info("[INFO] adding new mensagein grup, getting chat {}", chatId);
+        ChatCore chat = chatRepository.getChatById(chatId).orElseThrow(() -> new ResourceNotFound("chat", chatId));
+
+        logger.info("[Parsing] checking if the user '{}' have permition to write in chat", userId);
+        Set<ChatUserCore> members = chat.getMembers();
+        if (members == null || members.isEmpty())
+            throw new Forbidden("Você não tem permissão para enviar mensagem nesse chat");
+
+        ChatUserCore member = members.stream().
+                filter(memb -> memb.usuarioId().equals(userId))
+                .findFirst()
+                .orElseThrow(() -> new Forbidden("Você não tem permissão para enviar mensagem nesse chat"));
+
+        if (!member.statusChat().equals(StatusChat.ATIVE))
+            throw new Forbidden("Você não tem permissão para enviar mensagem nesse chat");
+
+        logger.info("[Creating] creating a new message to chat");
         MessageCore msg = new MessageCore(
-                chatId,
+                chat,
                 null,
                 content,
                 MessageType.TEXT
         );
-
         MessageCore messageCore = chatRepository.addMessageGroups(msg, userId);
 
-        logger.info("[END] enviando resposta");
+        logger.info("[END] sending response to websokcet topic");
         messagingTemplate.convertAndSend("/topic/groups/" + chatId, toMessageDto(messageCore));
     }
 
@@ -154,8 +173,9 @@ public class ChatApplicationService implements ChatPort {
     @Override
     public ChatCore getGroupChatById(String jwt, Long chatId) {
         getIdByToken(jwt);
-        return chatRepository.findChatById(chatId).orElseThrow(() -> new BadRequest("Chat não existe"));
+        return chatRepository.getChatById(chatId).orElseThrow(() -> new BadRequest("Chat não existe"));
     }
+
     @Override
     public boolean deleteChat(Long chatId, Long userId) {
         if (chatId == null || chatId <= 0)
@@ -164,7 +184,7 @@ public class ChatApplicationService implements ChatPort {
         if (userId == null || userId <= 0)
             throw new BadRequest("Id do usuário inválido");
 
-        ChatCore chat = chatRepository.findChatById(chatId)
+        ChatCore chat = chatRepository.getChatById(chatId)
                 .orElseThrow(() -> new ResourceNotFound("Chat", chatId));
 
         if (!chat.getChatOwner().equals(userId))

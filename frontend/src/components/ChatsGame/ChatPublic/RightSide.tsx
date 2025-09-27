@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { MessageDto, UserData } from "../../InitialPage/Contexts/Contexts";
-import FormatMessages from "../FormatMessagens/FormatMessagens";
+import FormatMessages from "./FormatMessagens";
 import InputChats from "../InputChats";
 import BarTitlePublicChat from "./BarTitlePublicChat";
 import Configurations from "./Configurations/Configurations";

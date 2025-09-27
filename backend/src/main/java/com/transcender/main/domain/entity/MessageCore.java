@@ -8,7 +8,7 @@ import java.time.Instant;
 public class MessageCore {
 
     private Long id;
-    private Long chatId;       // referência ao Chat
+    private ChatCore chat;       // referência ao Chat
     private UserCore sender;     // usuário que enviou
     private String conteudo;   // texto da mensagem
     private MessageType tipo;
@@ -19,16 +19,18 @@ public class MessageCore {
 
 
     // Construtor de criação
-    public MessageCore(Long chatId, UserCore sender, String conteudo, MessageType tipo) {
-        if (chatId == null || chatId <= 0) {
-            throw new ChatArgumentInvalid("ChatId inválido");
+    public MessageCore(ChatCore chat, UserCore sender, String conteudo, MessageType tipo) {
+        if (chat == null) {
+            throw new ChatArgumentInvalid("chat nulo");
         }
-
+        if (sender == null) {
+            throw new ChatArgumentInvalid("sender nulo");
+        }
         if (conteudo == null || conteudo.trim().isEmpty()) {
             throw new ChatArgumentInvalid("Conteúdo da mensagem não pode estar vazio");
         }
 
-        this.chatId = chatId;
+        this.chat = chat;
         this.sender = sender;
         this.conteudo = conteudo;
         this.tipo = tipo != null ? tipo : MessageType.TEXT;
@@ -39,12 +41,12 @@ public class MessageCore {
     }
 
     // Construtor de reconstrução (ex: banco de dados)
-    public MessageCore(Long id, Long chatId, UserCore senderId, String conteudo,
+    public MessageCore(Long id, ChatCore chat, UserCore senderId, String conteudo,
                        MessageType tipo, Instant criadoEm, Instant atualizadoEm,
                        boolean editado, boolean deletado) {
         if (id == null || id <= 0) throw new ChatArgumentInvalid("Id inválido");
         this.id = id;
-        this.chatId = chatId;
+        this.chat = chat;
         this.sender = senderId;
         this.conteudo = conteudo;
         this.tipo = tipo;
@@ -74,8 +76,8 @@ public class MessageCore {
         return id;
     }
 
-    public Long getChatId() {
-        return chatId;
+    public ChatCore getChat() {
+        return chat;
     }
 
     public UserCore getSender() {
@@ -110,7 +112,7 @@ public class MessageCore {
     public String toString() {
         return "MessageCore{" +
                 "id=" + id +
-                ", chatId=" + chatId +
+                ", chatId=" + chat.getId() +
                 ", sender" + sender.getNickname() +
                 ", conteudo='" + conteudo + '\'' +
                 ", tipo=" + tipo +

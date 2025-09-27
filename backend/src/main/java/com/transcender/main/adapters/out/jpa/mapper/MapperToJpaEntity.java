@@ -191,7 +191,7 @@ public class MapperToJpaEntity {
     public MessageCore toMessageCore(MessageCoreJpa messagesJpa) {
         return messagesJpa == null ? null : new MessageCore(
                 messagesJpa.getId(),
-                messagesJpa.getChat().getId(),
+                null,
                 toUserCore(messagesJpa.getSender(), false, false),
                 messagesJpa.getConteudo(),
                 messagesJpa.getTipo(),
