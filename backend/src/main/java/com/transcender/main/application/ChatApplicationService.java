@@ -112,10 +112,12 @@ public class ChatApplicationService implements ChatPort {
     public void addMessageGroups(String jwt, Long chatId, String content) {
         Long userId = getIdByToken(jwt);
 
-        logger.info("[INFO] adding new mensagein grup, getting chat {}", chatId);
-        ChatCore chat = chatRepository.getChatById(chatId).orElseThrow(() -> new ResourceNotFound("chat", chatId));
+        logger.info("[INFO] adding new message group, getting chat {}", chatId);
+        ChatCore chat = chatRepository.getChatById(chatId, false)
+                .orElseThrow(() -> new ResourceNotFound("chat", chatId));
 
-        logger.info("[Parsing] checking if the user '{}' have permition to write in chat", userId);
+        logger.info("[Parsing] checking if the user '{}' have permission to write in chat", userId);
+
         Set<ChatUserCore> members = chat.getMembers();
         if (members == null || members.isEmpty())
             throw new Forbidden("Você não tem permissão para enviar mensagem nesse chat");
@@ -137,7 +139,7 @@ public class ChatApplicationService implements ChatPort {
         );
         MessageCore messageCore = chatRepository.addMessageGroups(msg, userId);
 
-        logger.info("[END] sending response to websokcet topic");
+        logger.info("[END] sending response to websocket topic");
         messagingTemplate.convertAndSend("/topic/groups/" + chatId, toMessageDto(messageCore));
     }
 
@@ -173,7 +175,8 @@ public class ChatApplicationService implements ChatPort {
     @Override
     public ChatCore getGroupChatById(String jwt, Long chatId) {
         getIdByToken(jwt);
-        return chatRepository.getChatById(chatId).orElseThrow(() -> new BadRequest("Chat não existe"));
+        logger.info("[INIT] getting chat {}", chatId);
+        return chatRepository.getChatById(chatId, true).orElseThrow(() -> new BadRequest("Chat não existe"));
     }
 
     @Override
@@ -184,7 +187,7 @@ public class ChatApplicationService implements ChatPort {
         if (userId == null || userId <= 0)
             throw new BadRequest("Id do usuário inválido");
 
-        ChatCore chat = chatRepository.getChatById(chatId)
+        ChatCore chat = chatRepository.getChatById(chatId, false)
                 .orElseThrow(() -> new ResourceNotFound("Chat", chatId));
 
         if (!chat.getChatOwner().equals(userId))

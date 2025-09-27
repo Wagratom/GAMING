@@ -15,7 +15,7 @@ public interface ChatRepositoryPort {
     MessageCore addNewMessageDirectChat(responsePrivateChat addMessageDto, String content);
     MessageCore addMessageGroups(MessageCore content, Long senderId);
 
-    Optional<ChatCore> getChatById(Long chatId);
+    Optional<ChatCore> getChatById(Long chatId, boolean includeMessages);
 
     ChatCore createChat(ChatCore chat);
 

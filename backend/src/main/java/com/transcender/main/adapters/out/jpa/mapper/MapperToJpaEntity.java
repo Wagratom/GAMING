@@ -166,6 +166,7 @@ public class MapperToJpaEntity {
                 chatJpa.getMensagens().stream().map(this::toMessageCore).toList())
                 : null;
 
+        logger.info("MessageCore: {} ", mensagens);
         MembersChat members = getMembers(toChatUserCore(chatJpa.getUsuarios()));
 
         return new ChatCore(

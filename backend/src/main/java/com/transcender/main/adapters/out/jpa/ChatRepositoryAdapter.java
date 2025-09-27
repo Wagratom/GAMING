@@ -91,8 +91,8 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     @Override
-    public Optional<ChatCore> getChatById(Long chatId) {
-        return chatRepository.findById(chatId).map((chat) -> mapperToJpaEntity.toChatCore(chat, false));
+    public Optional<ChatCore> getChatById(Long chatId, boolean includeMessages) {
+        return chatRepository.findById(chatId).map((chat) -> mapperToJpaEntity.toChatCore(chat, includeMessages));
     }
 
     @Override
