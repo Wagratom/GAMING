@@ -175,3 +175,16 @@
         }
     }
 }
+
+/* point css message chats*/
+.message {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+}
+
+.message-data {
+    color: gray;
+    line-height: 5px;
+    font-size: 10px;
+}

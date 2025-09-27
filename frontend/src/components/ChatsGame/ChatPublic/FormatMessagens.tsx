@@ -40,10 +40,12 @@ export default function FormatMessages({ messages }: { messages: MessageDto[] })
 						? (
 							<div className='d-flex mb-2 justify-content-end' key={message.id}>
 								<div className='bg-light rounded me-2 p-2 d-flex' style={{ maxWidth: '65%' }}>
-									<div style={{ whiteSpace: 'pre-line', overflowWrap: 'anywhere', hyphens: 'auto' }}>
+									<div className="message">
 										<p style={{ fontWeight: '600' }}>{message.content}</p>
 									</div>
-									<p className="ms-2 d-flex align-items-end" style={{ fontSize: '10px', color: 'gray' }}>{dateFormating}</p>
+									<p
+										className="ms-2 d-flex align-items-end message-data">{dateFormating}
+									</p>
 								</div>
 								<img style={cssPhoto} src={message.sender.avatar} alt={`Foto do usuario ${message.sender.nickname}`}
 								// onClick={() => props.showDinamicProfile(props.sender.nickname, props.sender)}
@@ -55,10 +57,10 @@ export default function FormatMessages({ messages }: { messages: MessageDto[] })
 								<img style={cssPhoto} src={message.sender.avatar} alt={`foto do usuario ${message.sender.avatar}`} />
 
 								<div className='bg-light rounded ms-2 p-2 d-flex' style={{ maxWidth: '65%' }}>
-									<div style={{ whiteSpace: 'pre-line', overflowWrap: 'anywhere', hyphens: 'auto' }}>
+									<div className="message">
 										<p style={{ fontWeight: '600' }}>{message.content}</p>
 									</div>
-									<p className="ms-2 d-flex align-items-end" style={{ fontSize: '10px', color: 'gray' }}>
+									<p className="ms-2 d-flex align-items-end message-data">
 										{dateFormating}
 									</p>
 								</div>
