@@ -25,12 +25,6 @@ export default function FormatMessages({ messages }: { messages: MessageDto[] })
 		return `${horas}:${minutos}`;
 	}
 
-	const cssPhoto: React.CSSProperties = {
-		height: '40px',
-		width: '40px',
-		borderRadius: '50%',
-		cursor: 'pointer',
-	}
 	return (
 		<div ref={containerRef} className="h-100 text-black p-3 overflow-auto">
 			{
@@ -47,14 +41,14 @@ export default function FormatMessages({ messages }: { messages: MessageDto[] })
 										className="ms-2 d-flex align-items-end message-data">{dateFormating}
 									</p>
 								</div>
-								<img style={cssPhoto} src={message.sender.avatar} alt={`Foto do usuario ${message.sender.nickname}`}
+								<img className="cssPhoto" src={message.sender.avatar} alt={`Foto do usuario ${message.sender.nickname}`}
 								// onClick={() => props.showDinamicProfile(props.sender.nickname, props.sender)}
 								/>
 							</div>
 						)
 						: (
 							<div className='d-flex mb-2' key={message.id}>
-								<img style={cssPhoto} src={message.sender.avatar} alt={`foto do usuario ${message.sender.avatar}`} />
+								<img className="cssPhoto" src={message.sender.avatar} alt={`foto do usuario ${message.sender.avatar}`} />
 
 								<div className='bg-light rounded ms-2 p-2 d-flex' style={{ maxWidth: '65%' }}>
 									<div className="message">

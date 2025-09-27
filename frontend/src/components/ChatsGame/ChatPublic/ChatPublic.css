@@ -188,3 +188,10 @@
     line-height: 5px;
     font-size: 10px;
 }
+
+.cssPhoto {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
