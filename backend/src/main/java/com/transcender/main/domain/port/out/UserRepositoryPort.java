@@ -11,6 +11,7 @@ public interface UserRepositoryPort {
     Optional<UserCore> getUserByEmail(String email);
     Optional<UserCore> getUserByNickname(String nickname);
 
+    boolean existUser(Long userId);
     List<UserCore> getUsers();
     List<UserCore> getUsersOnline();
 

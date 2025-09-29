@@ -72,9 +72,11 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
 
     @Override
     public boolean existsFriends(Long userId1, Long userId2) {
-        boolean exist = friendsRepository.findFriendsByUsersIdAndStatus(userId1, userId2, FriendStatus.ACCEPTED.name()).isPresent();
-        logger.info("FriendRepositoryAdapter::existsFriends::exist={}", exist);
-        return exist;
+        try {
+        return friendsRepository.findFriendsByUsersIdAndStatus(userId1, userId2, FriendStatus.ACCEPTED.name()).isPresent();
+        } catch (Exception exception) {
+            return false;
+        }
     }
 
     @Override

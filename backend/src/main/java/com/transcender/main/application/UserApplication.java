@@ -48,10 +48,10 @@ public class UserApplication implements UserPortIn {
     @Override
     public List<UserCore> getUsers(Boolean online, String jwt) {
         Long solicitanteId = getIdByToken(jwt);
-        logger.info("[INIT] Retornando todos os usuários. Solicitante={} | online={}", solicitanteId, online);
+        logger.info("[INIT] get all users. Solicitante={} | online={}", solicitanteId, online);
 
         List<UserCore> users = Boolean.TRUE.equals(online) ? userRepository.getUsersOnline() : userRepository.getUsers();
-        logger.info("Retornando lista de usuários");
+        logger.info("[END] returning users...");
         return users;
     }
 
@@ -64,17 +64,17 @@ public class UserApplication implements UserPortIn {
         UserCore user = userRepository.getUserByNickname(nickname.get())
                 .orElseThrow(() -> new Forbidden("Credenciais inválidas"));
 
-        logger.info("Usuário encontrado. Verificando password");
+        logger.info("user found. checking password");
         if (!encriptyService.checkPassword(senha, user.getSenhaHash())) {
             throw new Forbidden("Credenciais inválidas");
         }
 
-        logger.info("Atualizando o usuário na base: online=true");
+        logger.info("update user: online=true");
         user.setOnline(true);
         userRepository.updateUser(user);
 
-        logger.info("Gerando token JWT");
-        return jwtService.generateToken(toJson(user, false));
+        logger.info("[END] Gerando token JWT");
+        return jwtService.generateToken(toJson(user));
     }
 
     @Override
@@ -83,7 +83,7 @@ public class UserApplication implements UserPortIn {
         logger.info("[INIT] logout user={}", userId);
 
         UserCore user = userRepository.getUserById(userId)
-                .orElseThrow(() -> new ResourceNotFound("usuario", userId));
+                .orElseThrow(() -> new ResourceNotFound("usuário", userId));
 
         user.setOnline(false);
         logger.info("Atualizando online=false");
@@ -94,22 +94,24 @@ public class UserApplication implements UserPortIn {
     @Override
     public UserCore getUserByToken(String jwt) {
         Long userId = getIdByToken(jwt);
+        logger.info("Getting user by token: {}", userId);
         return userRepository.getUserById(userId)
-                .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
+                .orElseThrow(() -> new ResourceNotFound("usuário", userId));
     }
 
     @Override
     public UserCore getProfile(String jwt, Long userId) {
         getIdByToken(jwt);
-        logger.info("[INIT] pegando profile do usuario {}", userId);
+        logger.info("[INIT] get profile user '{}'", userId);
         return userRepository.getProfileById(userId)
-                .orElseThrow(() -> new ResourceNotFound("Usuario", userId));
+                .orElseThrow(() -> new ResourceNotFound("usuário", userId));
     }
 
     @Override
     public UserCore registerUser(UserCore user) {
-        logger.info("UserApplication > registerUser > exec");
         if (user == null) throw new BadRequest("Usuário nulo");
+        logger.info("[INIT] register user '{}'", user.getNickname());
+
         user.validateCreateUser();
         if (user.getEmail() != null && userRepository.getUserByEmail(user.getEmail()).isPresent()) {
             throw new Conflict("Esse email já está sendo utilizado");
@@ -117,7 +119,7 @@ public class UserApplication implements UserPortIn {
         if (user.getNickname() != null && userRepository.getUserByNickname(user.getNickname()).isPresent()) {
             throw new Conflict("Esse nickname já está sendo utilizado");
         }
-        logger.info("Encriptando senha");
+        logger.info("encrypt senha");
         user.setSenhaHash(this.encriptyService.encryptPassword(user.getSenhaHash()));
         return this.userRepository.createUser(user);
     }
@@ -125,7 +127,7 @@ public class UserApplication implements UserPortIn {
     @Override
     public UserCore updateUser(String newNickname, Long userId) {
         if (userId == null || userId <= 0) throw new BadRequest("Id inválido: deve ser positivo");
-        if (newNickname == null || newNickname.trim().isEmpty()) throw new BadRequest("Nickname vazio");
+        if (newNickname == null || newNickname.trim().isEmpty()) throw new BadRequest("Nickname empty");
 
         logger.info("Pegando usuário antigo DB");
         UserCore oldUser = userRepository.getUserById(userId)
@@ -145,7 +147,7 @@ public class UserApplication implements UserPortIn {
     }
 
     // Mantém método auxiliar privado toJson se necessário
-    private Map<String, Object> toJson(UserCore user, boolean includeDetails) {
+    private Map<String, Object> toJson(UserCore user) {
         // Implementar lógica de conversão para Map<String,Object> se quiser manter getProfile
         return Map.of(
                 "id", user.getId(),

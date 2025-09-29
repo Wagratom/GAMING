@@ -11,7 +11,6 @@ import com.transcender.main.adapters.out.jpa.repository.MessageRepository;
 import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.entity.MessageCore;
-import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.MessageType;
 import com.transcender.main.domain.enuns.PermitionChat;
 import com.transcender.main.domain.enuns.StatusChat;
@@ -57,8 +56,8 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     @Override
-    public ChatRepositoryPort.responsePrivateChat getOrCreateDirectChat(Long requester, UserCore user2) {
-        var ids = List.of(requester, user2.getId());
+    public ChatRepositoryPort.responsePrivateChat getOrCreateDirectChat(Long requester, Long friendId) {
+        var ids = List.of(requester, friendId);
         logger.info("Get direct chat | IDS={}", ids);
 
         Optional<UserCoreJpa> request = userRepository.findById(requester);
@@ -66,7 +65,7 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
                 .findPrivateChatBetweenUsers(ids, ids.size())
                 .orElseGet(() -> createDirectChat(
                         request.get(),
-                        mapperToJpaEntity.toUserCoreJpa(user2)
+                        userRepository.findById(friendId).orElseThrow(() -> new ResourceNotFound("User", friendId))
                 ));
 
         return new responsePrivateChat(

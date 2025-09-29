@@ -39,14 +39,11 @@ public class ChatApplicationService implements ChatPort {
     private final Logger logger = LoggerFactory.getLogger(ChatApplicationService.class);
 
     //records utilizados para gerar os objetos de resposta
-    private record UsersPair(UserCore requester, UserCore friend) {
-    }
+    private record UsersPair(UserCore requester, UserCore friend) {}
 
-    private record SenderDto(Long id, String nickname, String avatar, Boolean online) {
-    }
+    private record SenderDto(Long id, String nickname, String avatar, Boolean online) {}
 
-    public record MessageDto(Long id, String content, String date, SenderDto sender) {
-    }
+    public record MessageDto(Long id, String content, String date, SenderDto sender) {}
 
     private Long getIdByToken(String jwt) {
         if (jwt == null) throw new BadRequest("Token não enviado");
@@ -78,34 +75,30 @@ public class ChatApplicationService implements ChatPort {
     @Override
     public ChatCore getDirectChat(String jwt, Long friendId) {
         Long userId = getIdByToken(jwt);
-        logger.info("[INIT] pegando as mensagens privadas entre user {} e user {}", userId, friendId);
-
-        UserCore friend = userRepository.getUserById(friendId)
-                .orElseThrow(() -> new ResourceNotFound("Usuario não existe", friendId));
+        logger.info("[INIT] getting private chat between '{}' and '{}'", userId, friendId);
 
         if (!friendRepository.existsFriends(userId, friendId)) {
-            throw new Forbidden("Os usuarios não são amigos");
+            throw new Forbidden("They don't have a friendship");
         }
 
-        logger.info("[END] Processo finalizado com sucesso");
-        return chatRepository.getOrCreateDirectChat(userId, friend).chat();
+        logger.info("[END] returning chat");
+        return chatRepository.getOrCreateDirectChat(userId, friendId).chat();
     }
 
     @Override
     public void addMessageDirectChat(String jwt, Long friendId, String content) {
-        Long userId = getIdByToken(jwt);
+        Long requester = getIdByToken(jwt);
 
-        logger.info("[INFO] adicionando nova mensagem no chat privado");
-        if (!friendRepository.existsFriends(userId, friendId)) throw new Forbidden("Os usuarios não são amigos");
+        logger.info("[INFO] adding new message in private chat");
+        if (!friendRepository.existsFriends(requester, friendId)) {
+            throw new Forbidden("They don't have a friendship");
+        }
 
-        UserCore friend = userRepository.getUserById(friendId)
-                .orElseThrow(() -> new ResourceNotFound("Usuario não existe", friendId));
-
-        ChatRepositoryPort.responsePrivateChat addMessageDto = chatRepository.getOrCreateDirectChat(userId, friend);
+        ChatRepositoryPort.responsePrivateChat addMessageDto = chatRepository.getOrCreateDirectChat(requester, friendId);
         MessageCore messageCore = chatRepository.addNewMessageDirectChat(addMessageDto, content);
 
-        logger.info("[END] enviando resposta");
-        messagingTemplate.convertAndSend("/topic/directChats/" + userId, toMessageDto(messageCore));
+        logger.info("[END] sending message to topic ");
+        messagingTemplate.convertAndSend("/topic/directChats/" + requester, toMessageDto(messageCore));
         messagingTemplate.convertAndSend("/topic/directChats/" + friendId, toMessageDto(messageCore));
     }
 

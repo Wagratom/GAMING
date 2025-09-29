@@ -49,6 +49,11 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
+    public boolean existUser(Long userId) {
+        return userRepository.findById(userId).isPresent();
+    }
+
+    @Override
     public List<UserCore> getUsers() {
         logger.info("UserRepositoryAdapter > getUsers > exec");
         return userRepository.findAll()

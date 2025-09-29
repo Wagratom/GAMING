@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface ChatRepositoryPort {
     record responsePrivateChat(ChatCore chat, UserCore sender) {};
 
-    responsePrivateChat getOrCreateDirectChat(Long requester, UserCore user2);
+    responsePrivateChat getOrCreateDirectChat(Long requester, Long friendId);
 
     MessageCore addNewMessageDirectChat(responsePrivateChat addMessageDto, String content);
     MessageCore addMessageGroups(MessageCore content, Long senderId);
