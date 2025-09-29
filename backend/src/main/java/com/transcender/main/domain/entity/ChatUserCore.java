@@ -5,7 +5,7 @@ import com.transcender.main.domain.enuns.StatusChat;
 
 public record ChatUserCore(
         Long chatId,
-        Long usuarioId,
+        UserCore user,
         StatusChat statusChat,
         PermitionChat permitionChat,
         java.time.Instant entrouEm,

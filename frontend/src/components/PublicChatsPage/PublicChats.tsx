@@ -16,7 +16,7 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 	const [showCreateChat, setShowCreateChat] = useState(false);
 	const [listChats, setListChats] = useState<chatDto[]>([])
 	const [allChats, setAllChats] = useState<chatDto[]>([])
-	const [idOpenedChat, setIdOpenedChat] = useState<string>('1');
+	const [idOpenedChat, setIdOpenedChat] = useState<string>('');
 
 	const getListChats = () => {
 		axios.get(`${process.env.REACT_APP_API_URL}/groups`, {
@@ -73,7 +73,7 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 	}
 
 	return (
-		<div className='position-fixed top-50 start-50 translate-middle public-chats-screen'>
+		<div className='position-fixed top-50 start-50 translate-middle public-chats-screen' onClick={(event) => event.stopPropagation()}>
 			<div className='d-flex flex-column h-100'>
 				<BarOptions
 					setShowCreateChat={setShowCreateChat}

@@ -1,3 +1,4 @@
+clear
 package com.transcender.main.application;
 
 import com.transcender.main.domain.entity.FriendCore;

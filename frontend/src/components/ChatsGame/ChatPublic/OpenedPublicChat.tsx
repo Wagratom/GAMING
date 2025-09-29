@@ -1,10 +1,12 @@
-import { createContext, useContext, useEffect } from 'react';
-import { ChatDataDto, UserData } from '../../InitialPage/Contexts/Contexts';
+import { createContext, useEffect } from 'react';
+import { ChatDataDto } from '../../InitialPage/Contexts/Contexts';
 
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DinamicProfile from '../../Profiles/DinamicProfile/DinamicProfile';
+import ListFriends from '../../Profiles/MineProfile/ListFriends';
+import webSocketService from '../../webSocketService';
 import ModalIsBanned from './ModalIsBanned';
 import RightSide from './RightSide';
 
@@ -31,7 +33,6 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 	const [chatData, setDataChat] = useState<ChatDataDto>({} as ChatDataDto);
 	const [dinamicProfile, setDinamicProfile] = useState<DinamicProfile>({} as DinamicProfile);
 	const [showDinamicProfile, setShowDinamicProfile] = useState<string>('');
-	const userData = useContext(UserData).user;
 	const [showModal, setShowModal] = useState<{ show: boolean, msg: String }>({ show: false, msg: "" });
 	const [showAccessModal, setShowAccessModal] = useState(false);
 	const navigate = useNavigate()
@@ -69,7 +70,6 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 			headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
 		}).then((res) => {
 			setDataChat(res.data)
-			// addNewMember(res.data.id, res.data)
 		}).catch((err) => {
 			const status = err.response?.status;
 
@@ -85,6 +85,10 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 
 	useEffect(() => {
 		getDataChat()
+		const socket = webSocketService('topic/updateChat', () => {
+		})
+
+		return () => { socket.deactivate() };
 	}, [])
 
 	useEffect(() => {
@@ -93,37 +97,6 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 		}
 	}, [dinamicProfile])
 
-
-	//TODO: verificar se o usuario foi banido e manda ele sair
-	//Sockets
-	// useEffect(() => {
-	// 	userData.socket?.on('checkStatus', (data: any) => {
-	// 		getDataChat();
-	// 	})
-	// 	userData.socket?.on('updateChat', (data: any) => {
-	// 		getDataChat();
-	// 	})
-
-	// 	userData.socket?.on('deleteChat', (message: any) => {
-	// 		openPageChats("")
-	// 		setShowModal({ show: true, msg: message });
-	// 	})
-
-	// 	userData.socket?.on('banMember', (obj: any) => {
-	// 		getIsMyId(obj.id, obj.msg)
-	// 	})
-
-	// 	userData.socket?.on('kickMember', (obj: any) => {
-	// 		getIsMyId(obj.id, obj.msg)
-	// 	})
-	// 	return () => {
-	// 		userData.socket?.off('checkStatus')
-	// 		userData.socket?.off('updateChat')
-	// 		userData.socket?.off('deleteChat')
-	// 		userData.socket?.off('banMember')
-	// 		userData.socket?.off('kickMember')
-	// 	}
-	// }, [userData.socket])
 	//##############################################################
 
 
@@ -134,18 +107,18 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 
 	if (!chatData && !showAccessModal) return <div>Carregando...</div>
 
+	console.log("chatData: ", chatData)
 	return (
-		<div className="rounded text-white position-absolute top-50 start-50 translate-middle h-75 w-75">
+		<div className="rounded text-white position-absolute top-50 start-50 translate-middle h-75 w-75" onClick={(event) => event.stopPropagation()}>
 			{showModal.show ? <ModalIsBanned openPageChats={openPageChats} msg={showModal.msg} /> : null}
 			<div className="row g-0 h-100 p-2">
 				<ChatContext.Provider value={{ chatData: chatData, setDataChat, setDinamicProfile }}>
 					<div className="col-3 border-end h-100">
-						{/* <ListFriends
+						<ListFriends
 							players={chatData.members}
-							getPlayers={() => { }}
-							admin={chatData.admin}
-							mute={chatData.mutted}
-						/> */}
+							adms={chatData.adms}
+							openChat={false}
+						/>
 					</div>
 
 					<div className="col-9 d-flex flex-column h-100 position-relative">

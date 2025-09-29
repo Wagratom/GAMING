@@ -18,11 +18,11 @@ public class ChatResponse {
     private final UserResponse owner;
     private final String type;
     private final Instant criadoEm;
-    private final Set<ChatUserCore> adms;
-    private final Set<ChatUserCore> members;
-    private final Set<ChatUserCore> banned;
-    private final Set<ChatUserCore> kicked;
-    private final Set<ChatUserCore> mutted;
+    private final Set<UserResponse> adms;
+    private final Set<UserResponse> members;
+    private final Set<UserResponse> banned;
+    private final Set<UserResponse> kicked;
+    private final Set<UserResponse> mutted;
 
     private record messageResponseDto(
             Long id,

@@ -65,7 +65,7 @@ export default function MiniProfile({ showMiniPerfil }: propsMiniProfile) {
 			<Social setResourcePlayer={setResourcePlayer} />
 			{
 				resoucePlayer.startsWith("/users") || resoucePlayer.startsWith("/friends")
-					? <ListFriends players={players} openChat={resoucePlayer === "/friends?status=ACCEPTED"} />
+					? <ListFriends adms={[]} players={players} openChat={resoucePlayer === "/friends?status=ACCEPTED"} />
 					: resoucePlayer.startsWith("/notifications")
 						? <NotificacaoUX resoucePlayer={resoucePlayer} />
 						: null

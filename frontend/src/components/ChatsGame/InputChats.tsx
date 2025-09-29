@@ -16,7 +16,7 @@ export default function InputChats({ resourceSend }: PropsInputChats) {
 		if (event.key === "Enter") {
 			sendMessage();
 		}
-		// Deixe a propagação continuar para o documento se desejar, ou remova esta linha
+		// Deixe a propagação continuar para o documento
 		event.stopPropagation();
 	};
 

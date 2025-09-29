@@ -6,10 +6,15 @@ import { UserData, PlayerDto } from '../../InitialPage/Contexts/Contexts';
 import PhotoWithOnlineStatus from './PhotoWithOnlineStatus';
 import { TbPingPong } from 'react-icons/tb';
 
-export default function ListFriends({ players, openChat }: { players: PlayerDto[], openChat: boolean }) {
+type typeListChat = {
+	players: PlayerDto[]
+	adms: PlayerDto[]
+	openChat: boolean
+}
+
+export default function ListFriends({ players, adms, openChat }: typeListChat) {
 	const { user } = useContext(UserData);
 	const [friendSelectedForDirect, setFriendSelectedForDirect] = useState<PlayerDto>({} as PlayerDto);
-
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>({ id: '', nickname: '' });
 
@@ -22,7 +27,8 @@ export default function ListFriends({ players, openChat }: { players: PlayerDto[
 		else setFriendSelectedForDirect(player)
 	}
 
-	if (players.length === 0) {
+	console.log("players: ", players)
+	if (!players || players.length === 0) {
 		return (
 			<div className='d-flex flex-column justify-content-center align-items-center h-100'>
 				<div className='d-flex justify-content-center'>
@@ -64,7 +70,7 @@ export default function ListFriends({ players, openChat }: { players: PlayerDto[
 									online={play.online}
 									name={play.nickname}
 									mute={[]}
-									admin={[]}
+									admin={adms}
 									match_status={play.match_status}
 								/>
 							</div>

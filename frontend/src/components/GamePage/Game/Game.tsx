@@ -50,7 +50,10 @@ export default function Game() {
 			}} />
 
 			{/* Container Phaser */}
-			<div ref={gameContainerRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }} >
+			<div
+				ref={gameContainerRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}
+				onClick={() => setCollisionPnt('')}
+			>
 				{/* Componentes React */}
 				<div >
 					{collisionPnt === 'planetTerra' && <MiniProfile showMiniPerfil={setCollisionPnt} />}
@@ -61,7 +64,7 @@ export default function Game() {
 					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={setCollisionPnt} id={userData.id} />}
 					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
 					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
-					<PublicsChats openPublicChat={setCollisionPnt} />
+					{/* <PublicsChats openPublicChat={setCollisionPnt} /> */}
 					{/* <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} /> */}
 					{/* <ChooseGameMode openSettingsPath={setCollisionPnt} /> */}
 				</div>
