@@ -116,7 +116,7 @@ public class ChatApplicationService implements ChatPort {
         if (chat.getChatOwner().getId().equals(userId)) return true;
 
         return Stream.concat(chat.getMembers().stream(), chat.getAdms().stream())
-                .filter(u -> u.usuarioId().equals(userId))
+                .filter(u -> u.user().getId().equals(userId))
                 .map(ChatUserCore::statusChat)
                 .anyMatch(status -> status == StatusChat.ATIVE);
 

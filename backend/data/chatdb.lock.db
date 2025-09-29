@@ -1,0 +1,6 @@
+#FileLock
+#Mon Sep 29 00:15:32 BRT 2025
+hostName=DESKTOP-2G4G9BP.localdomain
+id=1999377e44952d38faf3e5c8847618a52b547b4dfd8
+method=file
+server=127.0.1.1\:37567

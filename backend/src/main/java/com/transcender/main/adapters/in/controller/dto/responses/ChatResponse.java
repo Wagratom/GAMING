@@ -18,11 +18,11 @@ public class ChatResponse {
     private final UserResponse owner;
     private final String type;
     private final Instant criadoEm;
-    private final Set<UserResponse> adms;
-    private final Set<UserResponse> members;
-    private final Set<UserResponse> banned;
-    private final Set<UserResponse> kicked;
-    private final Set<UserResponse> mutted;
+    private final List<UserResponse> adms;
+    private final List<UserResponse> members;
+    private final List<UserResponse> banned;
+    private final List<UserResponse> kicked;
+    private final List<UserResponse> mutted;
 
     private record messageResponseDto(
             Long id,
@@ -40,11 +40,11 @@ public class ChatResponse {
         criadoEm = chatCore.getCriadoEm();
         owner = new UserResponse(chatCore.getChatOwner());
 
-        adms = chatCore.getAdms();
-        members = chatCore.getMembers();
-        banned = chatCore.getBanned();
-        kicked = chatCore.getKicked();
-        mutted = chatCore.getMutted();
+        adms = chatCore.getAdms().stream().map((adm) -> new UserResponse(adm.user())).collect(Collectors.toList());
+        members = chatCore.getMembers().stream().map((adm) -> new UserResponse(adm.user())).collect(Collectors.toList());
+        banned = chatCore.getBanned().stream().map((adm) -> new UserResponse(adm.user())).collect(Collectors.toList());
+        kicked = chatCore.getKicked().stream().map((adm) -> new UserResponse(adm.user())).collect(Collectors.toList());
+        mutted = chatCore.getMutted().stream().map((adm) -> new UserResponse(adm.user())).collect(Collectors.toList());
 
         messages = chatCore.getMessagens() == null
                 ? List.of()

@@ -129,11 +129,12 @@ public class MapperToJpaEntity {
     }
 
     public List<ChatUserCore> toChatUserCore(List<ChatUserCoreJpa> chatUserCoreJpa) {
-        if (chatUserCoreJpa == null) return Collections.emptyList();
+        if (chatUserCoreJpa == null) return null;
+
         return chatUserCoreJpa.stream()
                 .map(userChat -> new ChatUserCore(
                         userChat.getChat().getId(),
-                        userChat.getUsuario().getId(),
+                        toUserCore(userChat.getUsuario(), false, false),
                         userChat.getStatusChat(),
                         userChat.getPermitionChat(),
                         userChat.getEntrouEm(),
@@ -159,7 +160,6 @@ public class MapperToJpaEntity {
 
     public ChatCore toChatCore(ChatCoreJpa chatJpa, boolean includeMessages) {
         if (chatJpa == null) return null;
-        
                 List<MessageCore> mensagens = includeMessages
                 ? (chatJpa.getMensagens() == null ? Collections.emptyList() :
                 chatJpa.getMensagens().stream().map(this::toMessageCore).toList())

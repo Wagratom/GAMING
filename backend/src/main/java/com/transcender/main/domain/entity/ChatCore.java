@@ -179,7 +179,7 @@ public class ChatCore {
     }
 
     public Set<ChatUserCore> getAdms() {
-        return new HashSet<>(adms);
+        return adms;
     }
 
     public Set<ChatUserCore> getMembers() {
