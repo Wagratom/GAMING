@@ -148,8 +148,6 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
 
     @Override
     public List<ChatCore> getPublicChats() {
-        logger.info("ChatRepositoryAdapter > getAllChats > exec");
-
         return chatRepository.getCreatedChats()
                 .stream()
                 .map((chat) -> mapperToJpaEntity.toChatCore(chat, false))

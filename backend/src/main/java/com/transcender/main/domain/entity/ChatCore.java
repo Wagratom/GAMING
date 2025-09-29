@@ -22,7 +22,6 @@ public class ChatCore {
     private Set<ChatUserCore> members;
     private Set<ChatUserCore> banned;
     private Set<ChatUserCore> kicked;
-    private Set<ChatUserCore> admin;
     private Set<ChatUserCore> mutted;
     private List<MessageCore> messages;
 

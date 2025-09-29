@@ -24,8 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -114,16 +113,13 @@ public class ChatApplicationService implements ChatPort {
         if (chat == null) throw new InternalError();
 
         logger.info("[validation] checking if user is ative member");
+        if (chat.getChatOwner().getId().equals(userId)) return true;
 
-        Set<ChatUserCore> members = chat.getMembers();
-        if (members == null || members.isEmpty())
-            return false;
+        return Stream.concat(chat.getMembers().stream(), chat.getAdms().stream())
+                .filter(u -> u.usuarioId().equals(userId))
+                .map(ChatUserCore::statusChat)
+                .anyMatch(status -> status == StatusChat.ATIVE);
 
-        Optional<ChatUserCore> member = members.stream().
-                filter(memb -> memb.usuarioId().equals(userId))
-                .findFirst();
-
-        return member.isPresent() && member.get().statusChat().equals(StatusChat.ATIVE);
     }
 
     @Override
@@ -191,7 +187,11 @@ public class ChatApplicationService implements ChatPort {
         ChatCore chat = chatRepository.getChatById(chatId, true)
                 .orElseThrow(() -> new ResourceNotFound("chat", chatId));
 
-        if (!isAtiveMember(chat, userId)) {
+        boolean isMember = isAtiveMember(chat, userId);
+        if (chat.getType().equals(ChatType.PROTECT) && !isMember) {
+            throw new Forbidden("User is not a chat member");
+        }
+        if (!isMember) {
             logger.info("add member in chat");
             chatRepository.addUserChat(userId, chatId, PermitionChat.MEMBER);
         }
