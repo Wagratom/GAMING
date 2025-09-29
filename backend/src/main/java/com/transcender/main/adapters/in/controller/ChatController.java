@@ -101,6 +101,16 @@ public class ChatController {
         return ResponseEntity.ok("sucesso");
     }
 
+    @PostMapping("/add-user-public-chat")
+    public ResponseEntity<String> addUserChatPublic(
+            @RequestHeader("Authorization") String jwt,
+            @RequestBody @Valid Long ChatId
+    ) {
+        logger.info("[INIT] controller add user in public chat", ChatId);
+        chatService.addUserPublicChat(jwt, ChatId);
+        return ResponseEntity.ok("sucesso");
+    }
+
     @GetMapping("/groups/{chatId}")
     public ResponseEntity<ChatResponse> getChatId(
             @RequestHeader("Authorization") String jwt,

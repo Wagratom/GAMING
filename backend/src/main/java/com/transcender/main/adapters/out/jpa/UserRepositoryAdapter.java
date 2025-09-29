@@ -29,7 +29,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
 
     @Override
     public Optional<UserCore> getUserById(Long userId) {
-        logger.info("UserRepositoryAdapter > getUserById > exec");
+        logger.info("[Database] getting user '{}' in database", userId);
         return userRepository.findById(userId)
                 .map((user) -> (mapperToJpaEntity.toUserCore(user, false, false)));
     }

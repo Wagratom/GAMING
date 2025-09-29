@@ -105,19 +105,4 @@ public class MessageCore {
     public boolean isDeletado() {
         return deletado;
     }
-
-    @Override
-    public String toString() {
-        return "MessageCore{" +
-                "id=" + id +
-                ", chatId=" + chat.getId() +
-                ", sender" + sender.getNickname() +
-                ", conteudo='" + conteudo + '\'' +
-                ", tipo=" + tipo +
-                ", criadoEm=" + criadoEm +
-                ", atualizadoEm=" + atualizadoEm +
-                ", editado=" + editado +
-                ", deletado=" + deletado +
-                '}';
-    }
 }

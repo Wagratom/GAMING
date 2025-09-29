@@ -31,6 +31,11 @@ export default function RightSide(props: propsRightSide) {
 		return () => void socket.deactivate();
 	}, [props.chatId])
 
+	useEffect(() => {
+		setMessages(props.messages);
+	}, [props.messages]);
+
+
 	return (
 		<>
 			<div>

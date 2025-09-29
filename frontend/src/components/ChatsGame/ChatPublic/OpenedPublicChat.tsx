@@ -3,6 +3,7 @@ import { ChatDataDto, UserData } from '../../InitialPage/Contexts/Contexts';
 
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DinamicProfile from '../../Profiles/DinamicProfile/DinamicProfile';
 import ModalIsBanned from './ModalIsBanned';
 import RightSide from './RightSide';
@@ -32,10 +33,8 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 	const [showDinamicProfile, setShowDinamicProfile] = useState<string>('');
 	const userData = useContext(UserData).user;
 	const [showModal, setShowModal] = useState<{ show: boolean, msg: String }>({ show: false, msg: "" });
-
-	const createMutedList = (muttedList: any[]) => {
-		return muttedList.map((item) => ({ id: item.userId[0].id }))
-	}
+	const [showAccessModal, setShowAccessModal] = useState(false);
+	const navigate = useNavigate()
 
 	//TODO: ADD NO BACKE
 	// function addNewMember(chat_id: String, data: ChatDataDto) {
@@ -71,7 +70,17 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 		}).then((res) => {
 			setDataChat(res.data)
 			// addNewMember(res.data.id, res.data)
-		}).catch(() => { })
+		}).catch((err) => {
+			const status = err.response?.status;
+
+			if (status === 401) {
+				alert("Sessão expirada ou não autorizada. Por favor, faça login novamente.");
+				navigate("/login");
+			}
+			if (status === 403) {
+				setShowAccessModal(true);
+			}
+		});
 	}
 
 	useEffect(() => {
@@ -117,19 +126,14 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 	// }, [userData.socket])
 	//##############################################################
 
-	if (!chatData.name) {
-		return <div className='d-flex justify-content-center w-100'>Erro ao abrir o chat </div>
-	}
-
 
 	// if (chatData.banned.map((member) => member.nickname).includes(userData.nickname)
 	// 	|| chatData.kicked.map((member) => member.nickname).includes(userData.nickname)) {
 	// 	return <div>Você foi banido ou expulso deste chat</div>
 	// }
 
-	if (!chatData) return <div>Carregando...</div>
+	if (!chatData && !showAccessModal) return <div>Carregando...</div>
 
-	// https://vetplus.vet.br/wp-content/uploads/2019/12/img_2427.jpg vc foi chutado
 	return (
 		<div className="rounded text-white position-absolute top-50 start-50 translate-middle h-75 w-75">
 			{showModal.show ? <ModalIsBanned openPageChats={openPageChats} msg={showModal.msg} /> : null}
@@ -161,6 +165,14 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 					id={dinamicProfile.id}
 				/>
 			}
+			{showAccessModal && (
+				<div className="access-modal-backdrop">
+					<div className="access-modal">
+						<p>👮‍♂️ Você não tem acesso a este chat.</p>
+						<button onClick={() => setShowAccessModal(false)}>Fechar</button>
+					</div>
+				</div>
+			)}
 		</div>
 	)
 }

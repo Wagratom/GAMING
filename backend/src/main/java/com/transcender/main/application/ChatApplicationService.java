@@ -6,6 +6,7 @@ import com.transcender.main.domain.entity.MessageCore;
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.ChatType;
 import com.transcender.main.domain.enuns.MessageType;
+import com.transcender.main.domain.enuns.PermitionChat;
 import com.transcender.main.domain.enuns.StatusChat;
 import com.transcender.main.domain.exceptions.*;
 import com.transcender.main.domain.port.in.ChatPort;
@@ -38,11 +39,14 @@ public class ChatApplicationService implements ChatPort {
     private final Logger logger = LoggerFactory.getLogger(ChatApplicationService.class);
 
     //records utilizados para gerar os objetos de resposta
-    private record UsersPair(UserCore requester, UserCore friend) {}
+    private record UsersPair(UserCore requester, UserCore friend) {
+    }
 
-    private record SenderDto(Long id, String nickname, String avatar, Boolean online) {}
+    private record SenderDto(Long id, String nickname, String avatar, Boolean online) {
+    }
 
-    public record MessageDto(Long id, String content, String date, SenderDto sender) {}
+    public record MessageDto(Long id, String content, String date, SenderDto sender) {
+    }
 
     private Long getIdByToken(String jwt) {
         if (jwt == null) throw new BadRequest("Token não enviado");
@@ -105,26 +109,30 @@ public class ChatApplicationService implements ChatPort {
         messagingTemplate.convertAndSend("/topic/directChats/" + friendId, toMessageDto(messageCore));
     }
 
+    public boolean isAtiveMember(ChatCore chat, Long userId) {
+        logger.info("[validation] checking if user is ative member");
+
+        Set<ChatUserCore> members = chat.getMembers();
+        if (members == null || members.isEmpty())
+            return false;
+
+        Optional<ChatUserCore> member = members.stream().
+                filter(memb -> memb.usuarioId().equals(userId))
+                .findFirst();
+
+        return member.isPresent() && member.get().statusChat().equals(StatusChat.ATIVE);
+    }
+
     @Override
     public void addMessageGroups(String jwt, Long chatId, String content) {
         Long userId = getIdByToken(jwt);
 
-        logger.info("[INFO] adding new message group, getting chat {}", chatId);
+        logger.info("[INIT] adding new message group, getting chat {}", chatId);
         ChatCore chat = chatRepository.getChatById(chatId, false)
                 .orElseThrow(() -> new ResourceNotFound("chat", chatId));
 
-        logger.info("[Parsing] checking if the user '{}' have permission to write in chat", userId);
-        Set<ChatUserCore> members = chat.getMembers();
-        if (members == null || members.isEmpty())
-            throw new Forbidden("Você não tem permissão para enviar mensagem nesse chat");
-
-        ChatUserCore member = members.stream().
-                filter(memb -> memb.usuarioId().equals(userId))
-                .findFirst()
-                .orElseThrow(() -> new Forbidden("Você não tem permissão para enviar mensagem nesse chat"));
-
-        if (!member.statusChat().equals(StatusChat.ATIVE))
-            throw new Forbidden("Você não tem permissão para enviar mensagem nesse chat");
+        if (!isAtiveMember(chat, userId))
+            throw new Forbidden("You don't have permission to send a message in this chat");
 
         logger.info("[Creating] creating a new message to chat");
         MessageCore msg = new MessageCore(
@@ -159,21 +167,33 @@ public class ChatApplicationService implements ChatPort {
 
     @Override
     public ChatCore openChat(String jwt, String chatName, String password) {
-        getIdByToken(jwt);
-        Optional<ChatCore> chat = chatRepository.getChatByName(chatName);
-        if (chat.isEmpty()) throw new BadRequest("Chat não existe");
+        Long userId = getIdByToken(jwt);
+        ChatCore chat = chatRepository.getChatByName(chatName)
+                .orElseThrow(() -> new ResourceNotFound("chat", chatName));
 
-        if (chat.get().getType().equals(ChatType.PROTECT) && !encriptyService.checkPassword(password, chat.get().getPassword())) {
+        if (chat.getType().equals(ChatType.PROTECT) && !encriptyService.checkPassword(password, chat.getPassword())) {
             throw new Forbidden("Password invalido");
         }
-        return chat.get();
+        return chat;
     }
 
     @Override
     public ChatCore getGroupChatById(String jwt, Long chatId) {
-        getIdByToken(jwt);
-        logger.info("[INIT] getting chat {}", chatId);
-        return chatRepository.getChatById(chatId, true).orElseThrow(() -> new BadRequest("Chat não existe"));
+        if (chatId == null || chatId <= 0)
+            throw new BadRequest("chat id invalid");
+
+        Long userId = getIdByToken(jwt);
+
+        logger.info("[INIT] opened chat by id '{}'", chatId);
+        ChatCore chat = chatRepository.getChatById(chatId, true)
+                .orElseThrow(() -> new ResourceNotFound("chat", chatId));
+
+        if (!isAtiveMember(chat, userId)) {
+            chatRepository.addUserChat(userId, chatId, PermitionChat.MEMBER);
+        }
+
+        logger.info("[END] return chat...");
+        return chat;
     }
 
     @Override
@@ -193,22 +213,6 @@ public class ChatApplicationService implements ChatPort {
         return chatRepository.deleteChat(chatId);
     }
 
-//    @Override
-//    public ChatCore updateChat(ChatCore chatUpdate, Long solicitanteId) {
-//        ChatCore oldChat = chatRepository.findChatById(chatUpdate.getId())
-//                .orElseThrow(() -> new ResourceNotFound("Chat", chatUpdate.getId()));
-//
-//        oldChat.validateUpdateChat(solicitanteId);
-//
-//        // Atualizações encapsuladas
-//        oldChat.updateChatName(chatUpdate.getChatName());
-//        oldChat.updateDescricao(chatUpdate.getDescricao());
-//        oldChat.updateType(chatUpdate.getType());
-//
-//        chatRepository.updateChat(oldChat);
-//        return oldChat;
-//    }
-
     @Override
     public List<ChatCore> getPublicsChats(String jwt) {
         getIdByToken(jwt);
@@ -216,9 +220,8 @@ public class ChatApplicationService implements ChatPort {
     }
 
     @Override
-    public boolean addUsuarioChat(Long chatId, UserCore usuario) {
-        // TODO: Implementar regra de negócio
-        return false;
+    public boolean addUserPublicChat(String jwt, Long chatId) {
+        return chatRepository.addUserChat(chatId, getIdByToken(jwt), PermitionChat.MEMBER);
     }
 
     @Override

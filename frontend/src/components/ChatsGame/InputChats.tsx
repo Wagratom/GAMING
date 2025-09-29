@@ -45,7 +45,7 @@ export default function InputChats({ resourceSend }: PropsInputChats) {
 				}
 
 				if (status === 403) {
-					setShowAccessModal(true); // Abre modal de acesso negado
+					setShowAccessModal(true);
 				}
 			});
 	};
@@ -65,13 +65,14 @@ export default function InputChats({ resourceSend }: PropsInputChats) {
 				</button>
 			</div>
 
+			{showAccessModal && (
 				<div className="access-modal-backdrop">
 					<div className="access-modal">
-						<p>🚫 Você não tem acesso a este chat.</p>
+						<p>👮‍♂️ Você não tem acesso a este chat.</p>
 						<button onClick={() => setShowAccessModal(false)}>Fechar</button>
 					</div>
 				</div>
-			
+			)}
 		</>
 	);
 }

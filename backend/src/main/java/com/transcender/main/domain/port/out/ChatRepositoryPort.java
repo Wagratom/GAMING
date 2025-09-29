@@ -3,6 +3,7 @@ package com.transcender.main.domain.port.out;
 import com.transcender.main.domain.entity.ChatCore;
 import com.transcender.main.domain.entity.MessageCore;
 import com.transcender.main.domain.entity.UserCore;
+import com.transcender.main.domain.enuns.PermitionChat;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public interface ChatRepositoryPort {
 
     List<ChatCore> getPublicChats();
 
-    boolean addUserChat(Long userId, Long chatId);
+    boolean addUserChat(Long userId, Long chatId, PermitionChat permission);
 
     boolean bloquearUsuarioChat(Long userId, Long chatId);
 

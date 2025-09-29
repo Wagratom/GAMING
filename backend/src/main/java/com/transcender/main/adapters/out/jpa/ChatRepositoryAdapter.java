@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -92,7 +93,8 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
 
     @Override
     public Optional<ChatCore> getChatById(Long chatId, boolean includeMessages) {
-        return chatRepository.findById(chatId).map((chat) -> mapperToJpaEntity.toChatCore(chat, includeMessages));
+        return chatRepository.findById(chatId)
+                .map((chat) -> mapperToJpaEntity.toChatCore(chat, includeMessages));
     }
 
     @Override
@@ -107,7 +109,6 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
                 false
         );
         messageRepository.save(newMessage);
-        logger.info("criei a msg");
         return mapperToJpaEntity.toMessageCore(newMessage);
     }
 
@@ -156,8 +157,30 @@ public class ChatRepositoryAdapter implements ChatRepositoryPort {
     }
 
     @Override
-    public boolean addUserChat(Long userId, Long chatId) {
-        return false;
+    public boolean addUserChat(Long userId, Long chatId, PermitionChat permission) {
+        ChatCoreJpa chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new ResourceNotFound("Chat", chatId));
+        UserCoreJpa user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFound("User", userId));
+
+        ChatUserCoreJpa newChatUser = new ChatUserCoreJpa(
+                chat,
+                user,
+                StatusChat.ATIVE, // verifique o nome correto
+                permission,
+                null,
+                Instant.now()
+        );
+
+        List<ChatUserCoreJpa> newList = chat.getUsuarios() != null
+                ? chat.getUsuarios()
+                : new ArrayList<>();
+
+        newList.add(newChatUser);
+        chat.setUsuarios(newList);
+
+        chatRepository.save(chat);
+        return true;
     }
 
     @Override

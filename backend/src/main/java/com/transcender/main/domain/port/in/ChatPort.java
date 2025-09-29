@@ -23,7 +23,7 @@ public interface ChatPort {
 
     boolean deleteChat(Long chatId, Long userId);
 
-    boolean addUsuarioChat(Long chatId, UserCore usuario);
+    boolean addUserPublicChat(String jwt, Long chatId) ;
 
     boolean bloquearUsuarioChat(Long chatId, UserCore usuario);
 
