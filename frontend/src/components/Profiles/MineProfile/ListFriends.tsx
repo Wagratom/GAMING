@@ -27,7 +27,6 @@ export default function ListFriends({ players, adms, openChat }: typeListChat) {
 		else setFriendSelectedForDirect(player)
 	}
 
-	console.log("players: ", players)
 	if (!players || players.length === 0) {
 		return (
 			<div className='d-flex flex-column justify-content-center align-items-center h-100'>
@@ -40,6 +39,9 @@ export default function ListFriends({ players, adms, openChat }: typeListChat) {
 
 	return (
 		<div className='text-white overflow-auto h-100'>
+			<div className="border-bottom d-flex align-items-end p-1" style={{ height: "55px" }}>
+				<h3 className='text-white'>Membros </h3>
+			</div>
 			{friendSelectedForDirect.nickname && <PrivateChat friend={friendSelectedForDirect} />}
 			{!dinamicProfile ? null :
 				<DinamicProfile
