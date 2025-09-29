@@ -82,7 +82,7 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 			}
 		});
 	}
-
+	
 	useEffect(() => {
 		getDataChat()
 		const socket = webSocketService('topic/updateChat', () => {

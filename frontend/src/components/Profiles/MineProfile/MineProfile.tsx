@@ -1,14 +1,13 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import MiniPerfilUser from './MiniPerfilUser';
-import Social from './Social';
-import OptionsEndBar from './OptionsEndBar';
+import bgMineProfile from '../../../assets/game/bgMineProfile.png';
+import { PlayerDto } from '../../InitialPage/Contexts/Contexts';
 import ListFriends from './ListFriends';
 import './MineProfile.css';
-import axios from 'axios';
-import { PlayerDto } from '../../InitialPage/Contexts/Contexts';
+import MiniPerfilUser from './MiniPerfilUser';
 import NotificacaoUX from './NotificacaoUX';
-import webSocketService from '../../webSocketService';
-import bgMineProfile from '../../../assets/game/bgMineProfile.png';
+import OptionsEndBar from './OptionsEndBar';
+import Social from './Social';
 
 type propsMiniProfile = {
 	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
@@ -31,34 +30,11 @@ export default function MiniProfile({ showMiniPerfil }: propsMiniProfile) {
 			.catch(() => { });
 	}, [resoucePlayer,]);
 
-	useEffect(() => {
-		const socket2 = webSocketService("/topic/login", (nickname: string) => {
-			setPlayers((prev) =>
-				prev.map((player) =>
-					player.nickname === nickname ? { ...player, online: true } : player
-				)
-			);
-
-		});
-
-		const socket = webSocketService("/topic/logout", (userId: string) => {
-			// Marca como inativo em vez de remover
-			setPlayers((prev) =>
-				prev.map((player) =>
-					player.id === userId ? { ...player, online: false } : player
-				)
-			)
-		})
-		return () => {
-			socket.deactivate();
-			socket2.deactivate();
-		}
-	}, []);
-
 	return (
 		<div
 			style={{ backgroundImage: `url(${bgMineProfile})`, backgroundSize: '100% 100%' }}
 			className="position-absolute top-0 end-0 h-100 miniprofile p-4"
+			onClick={(event) => event.stopPropagation()}
 		>
 			<MiniPerfilUser showMiniPerfil={showMiniPerfil} />
 			<hr className="m-0 w-100 text-white" />
