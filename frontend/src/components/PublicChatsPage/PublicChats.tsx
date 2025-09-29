@@ -16,7 +16,7 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 	const [showCreateChat, setShowCreateChat] = useState(false);
 	const [listChats, setListChats] = useState<chatDto[]>([])
 	const [allChats, setAllChats] = useState<chatDto[]>([])
-	const [idOpenedChat, setIdOpenedChat] = useState<string>('1');
+	const [idOpenedChat, setIdOpenedChat] = useState<string>('');
 
 	const getListChats = () => {
 		axios.get(`${process.env.REACT_APP_API_URL}/groups`, {

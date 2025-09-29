@@ -116,6 +116,7 @@ public class ChatController {
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long chatId
     ) {
+        logger.info("Entrei aqui {}", chatId);
         ChatCore chats = chatService.getGroupChatById(jwt, chatId);
         return ResponseEntity.ok(new ChatResponse(chats));
     }

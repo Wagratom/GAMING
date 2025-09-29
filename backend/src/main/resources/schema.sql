@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS chat_usuarios (
     usuario_id BIGINT NOT NULL,
     status_chat VARCHAR(10) NOT NULL COMMENT 'ativo, bloqueado, banido, removido',
     permition_chat VARCHAR(10) NOT NULL COMMENT 'admin, member, viewer, etc',
-    entrou_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    entrou_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     saiu_em TIMESTAMP NULL,
     PRIMARY KEY (chat_id, usuario_id),
     FOREIGN KEY (chat_id) REFERENCES chat(id),

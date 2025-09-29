@@ -9,6 +9,7 @@ import com.transcender.main.domain.enuns.MessageType;
 import com.transcender.main.domain.enuns.PermitionChat;
 import com.transcender.main.domain.enuns.StatusChat;
 import com.transcender.main.domain.exceptions.*;
+import com.transcender.main.domain.exceptions.InternalError;
 import com.transcender.main.domain.port.in.ChatPort;
 import com.transcender.main.domain.port.out.*;
 import com.transcender.main.domain.valueobject.CreateChatDto;
@@ -110,6 +111,8 @@ public class ChatApplicationService implements ChatPort {
     }
 
     public boolean isAtiveMember(ChatCore chat, Long userId) {
+        if (chat == null) throw new InternalError();
+
         logger.info("[validation] checking if user is ative member");
 
         Set<ChatUserCore> members = chat.getMembers();
@@ -189,6 +192,7 @@ public class ChatApplicationService implements ChatPort {
                 .orElseThrow(() -> new ResourceNotFound("chat", chatId));
 
         if (!isAtiveMember(chat, userId)) {
+            logger.info("add member in chat");
             chatRepository.addUserChat(userId, chatId, PermitionChat.MEMBER);
         }
 

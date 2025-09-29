@@ -47,7 +47,7 @@ public class ChatCoreJpa {
     @OrderBy("atualizadoEm ASC")
     private List<MessageCoreJpa> mensagens;
 
-    @OneToMany(mappedBy = "chat")
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatUserCoreJpa> usuarios;
 
     @Column(name = "criado_em", nullable = false)
