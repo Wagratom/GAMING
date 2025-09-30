@@ -25,6 +25,7 @@ export default function FormatMessages({ messages }: { messages: MessageDto[] })
 		return `${horas}:${minutos}`;
 	}
 
+	console.log("messages: ", messages);
 	return (
 		<div ref={containerRef} className="h-100 text-black p-3 overflow-auto">
 			{

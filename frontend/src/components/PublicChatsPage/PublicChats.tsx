@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { SetStateAction, useContext, useEffect, useState } from 'react';
-import OpenedPublicChat from '../ChatsGame/ChatPublic/OpenedPublicChat';
+import OpenedPublicChat from '../ChatsGame/OpenedPublicChat/OpenedPublicChat';
 import { chatDto, UserData } from '../InitialPage/Contexts/Contexts';
 import BarOptions from './BarOptions';
 import ChatList from './ChatsList';

@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { MessageDto, PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts';
 import PhotoWithOnlineStatus from '../../Profiles/MineProfile/PhotoWithOnlineStatus';
 import webSocketService from '../../webSocketService';
-import FormatMessages from '../ChatPublic/FormatMessagens';
+import FormatMessages from '../OpenedPublicChat/FormatMessagens';
 import InputChats from '../InputChats';
-import './ChatPrivate.css';
+import './PrivateChat.css';
 
 
 export default function PrivateChat({ friend }: { friend: PlayerDto }) {

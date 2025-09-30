@@ -49,6 +49,14 @@ export default function MatchHistory({ userId, matchers }: { userId: string, mat
 		)
 	}
 
+	if (!matchers || matchers.length == 0) {
+		return (
+			<div className='d-flex justify-content-center '>
+				<h3>Nenhuma partida encontrada</h3>
+			</div>
+		)
+	}
+
 	matchers.sort((a, b) => (new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
 	return (
 		<div>

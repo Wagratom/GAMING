@@ -4,9 +4,11 @@ import com.transcender.main.adapters.out.jpa.entity.FriendCoreJpa;
 import com.transcender.main.adapters.out.jpa.entity.UserCoreJpa;
 import com.transcender.main.adapters.out.jpa.mapper.MapperToJpaEntity;
 import com.transcender.main.adapters.out.jpa.repository.FriendRepository;
+import com.transcender.main.adapters.out.jpa.repository.UserRepository;
 import com.transcender.main.domain.entity.FriendCore;
 import com.transcender.main.domain.entity.UserCore;
 import com.transcender.main.domain.enuns.FriendStatus;
+import com.transcender.main.domain.exceptions.ResourceNotFound;
 import com.transcender.main.domain.port.out.FriendsRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -20,8 +22,8 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 public class FriendRepositoryAdapter implements FriendsRepositoryPort {
-
     private final FriendRepository friendsRepository;
+    private final UserRepository userRepository;
     private final MapperToJpaEntity mapperToJpaEntity;
     private final Logger logger = LoggerFactory.getLogger(FriendRepositoryAdapter.class);
 
@@ -36,32 +38,52 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
     }
 
     @Override
-    public FriendCore addFriend(UserCore solicitante, UserCore friend) {
+    public FriendCore addFriend(Long requesterId, Long friendId) {
         logger.info("FriendRepositoryAdapter::addFriend");
-        return updateFriendTable(solicitante, friend, FriendStatus.PENDING);
+        UserCoreJpa requester = userRepository.findById(requesterId).orElseThrow(() -> new ResourceNotFound("User", requesterId));
+        UserCoreJpa friend = userRepository.findById(friendId).orElseThrow(() -> new ResourceNotFound("User", friendId));
+
+        return updateFriendTable(requester, friend, FriendStatus.PENDING);
     }
 
     @Override
-    public FriendCore acceptFriend(UserCore solicitante, UserCore friend) {
+    public FriendCore acceptFriend(Long requesterId, Long friendId) {
         logger.info("FriendRepositoryAdapter::acceptFriend");
-        return updateFriendTable(solicitante, friend, FriendStatus.ACCEPTED);
-    }
 
-    public FriendCore declineFriend(UserCore solicitante, UserCore friend) {
-        logger.info("FriendRepositoryAdapter::acceptFriend");
-        return updateFriendTable(solicitante, friend, FriendStatus.DECLINED);
+        UserCoreJpa requester = userRepository.findById(requesterId).orElseThrow(() -> new ResourceNotFound("User", requesterId));
+        UserCoreJpa friend = userRepository.findById(friendId).orElseThrow(() -> new ResourceNotFound("User", friendId));
+
+        return updateFriendTable(requester, friend, FriendStatus.ACCEPTED);
     }
 
     @Override
-    public FriendCore removeFriend(UserCore solicitante, UserCore friend) {
+    public FriendCore declineFriend(Long requesterId, Long friendId) {
+        logger.info("FriendRepositoryAdapter::declineFriend");
+
+        UserCoreJpa requester = userRepository.findById(requesterId).orElseThrow(() -> new ResourceNotFound("User", requesterId));
+        UserCoreJpa friend = userRepository.findById(friendId).orElseThrow(() -> new ResourceNotFound("User", friendId));
+
+        return updateFriendTable(requester, friend, FriendStatus.DECLINED);
+    }
+
+    @Override
+    public FriendCore removeFriend(Long requesterId, Long friendId) {
         logger.info("FriendRepositoryAdapter::removeFriend");
-        return updateFriendTable(solicitante, friend, FriendStatus.REMOVED);
+
+        UserCoreJpa requester = userRepository.findById(requesterId).orElseThrow(() -> new ResourceNotFound("User", requesterId));
+        UserCoreJpa friend = userRepository.findById(friendId).orElseThrow(() -> new ResourceNotFound("User", friendId));
+
+        return updateFriendTable(requester, friend, FriendStatus.REMOVED);
     }
 
     @Override
-    public FriendCore blockFriend(UserCore solicitante, UserCore friend) {
+    public FriendCore blockFriend(Long requesterId, Long friendId) {
         logger.info("FriendRepositoryAdapter::blockFriend");
-        return updateFriendTable(solicitante, friend, FriendStatus.BLOCKED);
+
+        UserCoreJpa requester = userRepository.findById(requesterId).orElseThrow(() -> new ResourceNotFound("User", requesterId));
+        UserCoreJpa friend = userRepository.findById(friendId).orElseThrow(() -> new ResourceNotFound("User", friendId));
+
+        return updateFriendTable(requester, friend, FriendStatus.BLOCKED);
     }
 
     @Override
@@ -86,19 +108,17 @@ public class FriendRepositoryAdapter implements FriendsRepositoryPort {
         return exist;
     }
 
-    private FriendCore updateFriendTable(UserCore solicitante, UserCore friend, FriendStatus status) {
-        UserCoreJpa solicitanteJpa = mapperToJpaEntity.toUserCoreJpa(solicitante);
-        UserCoreJpa friendJpa = mapperToJpaEntity.toUserCoreJpa(friend);
+    private FriendCore updateFriendTable(UserCoreJpa solicitante, UserCoreJpa friend, FriendStatus status) {
 
         Optional<FriendCoreJpa> amizadeExistente = friendsRepository.findFriendshipBetweenUsers(
-                solicitanteJpa.getId(), friendJpa.getId()
+                solicitante.getId(), friend.getId()
         );
 
         FriendCoreJpa newFriend = friendsRepository.save(
                 amizadeExistente.map(amz -> {
                     amz.setStatus(status);
                     return amz;
-                }).orElseGet(() -> new FriendCoreJpa(solicitanteJpa, friendJpa, status))
+                }).orElseGet(() -> new FriendCoreJpa(solicitante, friend, status))
         );
         return mapperToJpaEntity.toFriendCore(newFriend);
     }

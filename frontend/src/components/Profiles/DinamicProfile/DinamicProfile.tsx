@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 import { ProfileDto } from "../../InitialPage/Contexts/Contexts";
 import BannerProfile from "../ProfilePage/BannerProfile";
 import MatchHistory from "../ProfilePage/MatchHistory";
 import '../ProfilePage/rank.css';
 import HandleRank from "../RankMapings";
-import { useNavigate } from "react-router-dom";
 
 type propsDinamicProfile = {
     id: string;
@@ -63,7 +63,11 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
     const { rank, borderImg } = HandleRank(getPoints());
     const allMatches = profile ? profile.matches.wins.concat(profile.matches.losses) : []
     return (
-        <div className="text-white h-75 w-75 position-fixed top-50 start-50 translate-middle d-flex" style={cssBackgroundTerra}>
+        <div
+            className="text-white h-75 w-75 position-fixed top-50 start-50 translate-middle d-flex"
+            style={cssBackgroundTerra}
+            onClick={(event) => event.stopPropagation()}
+        >
             <IoMdClose
                 className="button-close"
                 style={{

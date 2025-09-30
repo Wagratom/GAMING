@@ -10,12 +10,12 @@ import java.util.Optional;
 public interface FriendsRepositoryPort {
     List<FriendCore> getFriendsCore(Long id, FriendStatus status);
 
-    FriendCore addFriend(UserCore solicitante, UserCore friend);
-    FriendCore acceptFriend(UserCore solicitante, UserCore friend);
-    FriendCore declineFriend(UserCore solicitante, UserCore friend);
+    FriendCore addFriend(Long requester, Long friendId);
+    FriendCore acceptFriend(Long requesterId, Long friendId);
+    FriendCore declineFriend(Long requesterId, Long friendId);
 
-    FriendCore removeFriend(UserCore solicitante, UserCore friend);
-    FriendCore blockFriend(UserCore solicitante, UserCore friend);
+    FriendCore removeFriend(Long requesterId, Long friendId);
+    FriendCore blockFriend(Long requesterId, Long friendId);
 
     Optional<FriendCore> getFriendCore(Long userId1, Long userId2);
     boolean existsFriends(Long userId1, Long userId2);

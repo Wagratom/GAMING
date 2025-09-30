@@ -82,11 +82,10 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 			}
 		});
 	}
-	
+
 	useEffect(() => {
 		getDataChat()
-		const socket = webSocketService('topic/updateChat', () => {
-		})
+		const socket = webSocketService('topic/updateChat', () => { })
 
 		return () => { socket.deactivate() };
 	}, [])
@@ -99,7 +98,6 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 
 	//##############################################################
 
-
 	// if (chatData.banned.map((member) => member.nickname).includes(userData.nickname)
 	// 	|| chatData.kicked.map((member) => member.nickname).includes(userData.nickname)) {
 	// 	return <div>Você foi banido ou expulso deste chat</div>
@@ -107,7 +105,6 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 
 	if (!chatData && !showAccessModal) return <div>Carregando...</div>
 
-	console.log("chatData: ", chatData)
 	return (
 		<div className="rounded text-white position-absolute top-50 start-50 translate-middle h-75 w-75" onClick={(event) => event.stopPropagation()}>
 			{showModal.show ? <ModalIsBanned openPageChats={openPageChats} msg={showModal.msg} /> : null}

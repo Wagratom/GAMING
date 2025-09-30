@@ -5,7 +5,7 @@ import { UserData } from "../../../InitialPage/Contexts/Contexts";
 import { ChatContext } from "../OpenedPublicChat";
 import AllButtons from "./AllButtons";
 
-import "./../ChatPublic.css"; // 👈 Import do CSS
+import "../ChatPublic.css"; // 👈 Import do CSS
 
 const rules: string[] = [
 	"2 anos de Free Fire",
