@@ -38,9 +38,6 @@ public class ChatApplicationService implements ChatPort {
     private final EncriptyService encriptyService;
     private final Logger logger = LoggerFactory.getLogger(ChatApplicationService.class);
 
-    //records utilizados para gerar os objetos de resposta
-    private record UsersPair(UserCore requester, UserCore friend) {}
-
     private record SenderDto(Long id, String nickname, String avatar, Boolean online) {}
 
     public record MessageDto(Long id, String content, String date, SenderDto sender) {}
