@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import base from '../../../assets/game/planets/base.png';
-import planetaFire from '../../../assets/game/planets/planetaFire.png';
+import planetGame from '../../../assets/game/planets/planetGame.png';
 import planetaLua from '../../../assets/game/planets/PlanetaLua.png';
 import Lua from '../../../assets/game/planets/lua.png';
 import planetaTerra from '../../../assets/game/planets/PlanetaTerra.png';
@@ -13,7 +13,7 @@ import naveLateral from '../../../assets/game/nave/naveLateral.png';
 export default class GameScene extends Phaser.Scene {
     nave!: Phaser.Physics.Arcade.Sprite;
     pntBase!: Phaser.Physics.Arcade.Sprite;
-    pntFire!: Phaser.Physics.Arcade.Sprite;
+    pntGame!: Phaser.Physics.Arcade.Sprite;
     pntLua!: Phaser.Physics.Arcade.Sprite;
     luaTerra!: Phaser.Physics.Arcade.Sprite;
     pntTerra!: Phaser.Physics.Arcade.Sprite;
@@ -32,7 +32,7 @@ export default class GameScene extends Phaser.Scene {
     preload() {
         // Planetas
         this.load.image("pntBase", base);
-        this.load.image("planetFire", planetaFire);
+        this.load.image("planetGame", planetGame);
         this.load.image("planetLua", planetaLua);
         this.load.image("planetTerra", planetaTerra);
         this.load.image("satelete", satelete);
@@ -52,11 +52,11 @@ export default class GameScene extends Phaser.Scene {
         this.nave = this.physics.add.sprite(w / 2, h / 2, "naveFrente").setCollideWorldBounds(true);
 
         // 🔥 Planeta Fire
-        this.pntFire = this.physics.add.sprite(w * 0.1, h * 0.2, "planetFire").setScale(1.5);
-        this.pntFire.setCircle(this.pntFire.width / 2, 0, 0);
+        this.pntGame = this.physics.add.sprite(w * 0.9, h * 0.15, "planetGame").setScale(0.3);
+        this.pntGame.setCircle(this.pntGame.width / 2, 0, 0);
 
         // 🌙 Lua planeta
-        this.pntLua = this.physics.add.sprite(w * 0.9, h * 0.1, "planetLua");
+        this.pntLua = this.physics.add.sprite(w * 0.1, h * 0.2, "planetLua");
         this.pntLua.setCircle(this.pntLua.width / 2, 0, 0);
 
         // 🪐 Planeta com anel
@@ -81,7 +81,7 @@ export default class GameScene extends Phaser.Scene {
         // Escala inicial da nave
         this.updateNaveScale();
 
-        [this.pntTerra, this.pntLua, this.pntFire, this.pntBase, this.luaTerra, this.sateleteChat].forEach(planet => {
+        [this.pntTerra, this.pntLua, this.pntGame, this.pntBase, this.luaTerra, this.sateleteChat].forEach(planet => {
             planet.setImmovable(true);
             planet.body!.pushable = false;
         });
@@ -100,12 +100,16 @@ export default class GameScene extends Phaser.Scene {
         this.pntTerra.y = containerHeight * 0.3;
         this.luaTerra.x = containerWidth * 0.57;
         this.luaTerra.y = containerHeight * 0.25;
-        this.pntLua.x = containerWidth * 0.9;
-        this.pntLua.y = containerHeight * 0.1;
-        this.pntFire.x = containerWidth * 0.1;
-        this.pntFire.y = containerHeight * 0.2;
+
+        this.pntGame.x = containerWidth * 0.9;
+        this.pntGame.y = containerHeight * 0.15;
+
+        this.pntLua.x = containerWidth * 0.1;
+        this.pntLua.y = containerHeight * 0.2;
+
         this.pntBase.x = containerWidth * 0.9;
         this.pntBase.y = containerHeight * 0.8;
+
         this.sateleteChat.x = containerWidth * 0.6;
         this.sateleteChat.y = containerHeight * 0.7;
 
@@ -123,7 +127,7 @@ export default class GameScene extends Phaser.Scene {
         const colliders = [
             [this.nave, this.pntTerra, "planetTerra"],
             [this.nave, this.pntLua, "planetLua"],
-            [this.nave, this.pntFire, "planetFire"],
+            [this.nave, this.pntGame, "planetGame"],
             [this.nave, this.pntBase, "pntBase"],
             [this.nave, this.sateleteChat, "satelite"],
             [this.nave, this.luaTerra, "Lua"]
@@ -136,11 +140,10 @@ export default class GameScene extends Phaser.Scene {
                     this.collisionCallback(name);
                     if (name === 'planetTerra') {
                         //sumir o planeta lua
-                        this.pntLua.setVisible(false);
+                        this.pntGame.setVisible(false);
                     } else {
-                        this.pntLua.setVisible(true);
+                        this.pntGame.setVisible(true);
                     }
-
                 }
             });
         });

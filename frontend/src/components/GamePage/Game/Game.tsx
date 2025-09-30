@@ -58,15 +58,16 @@ export default function Game() {
 				<div >
 					{collisionPnt === 'planetTerra' && <MiniProfile showMiniPerfil={setCollisionPnt} />}
 					{collisionPnt === 'planetLua' && <SettingsStore openSettingsStore={setCollisionPnt} />}
-					{collisionPnt === 'planetFire' && <ChooseGameMode openSettingsPath={setCollisionPnt} />}
+					{collisionPnt === 'planetGame' && <ChooseGameMode openSettingsPath={setCollisionPnt} />}
 					{collisionPnt === 'satelite' && <PublicsChats openPublicChat={setCollisionPnt} />}
 					{collisionPnt === 'base' && <Ranking openStore={setCollisionPnt} />}
 					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={setCollisionPnt} id={userData.id} />}
+
 					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
 					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
 					{/* <PublicsChats openPublicChat={setCollisionPnt} /> */}
 					{/* <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} /> */}
-					{/* <ChooseGameMode openSettingsPath={setCollisionPnt} /> */}
+					<ChooseGameMode openSettingsPath={setCollisionPnt} />
 				</div>
 			</div>
 		</div>

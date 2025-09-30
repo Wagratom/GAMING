@@ -8,8 +8,8 @@
 	height: 3rem;
 	width: 3rem;
 	border-radius: 0.5rem;
-	background-color: #e56e23;
-	box-shadow: 2px 2px 1px #fff inset, -8px -8px 8px #d81716 inset;
+	background-color: #2a4798;
+	box-shadow: 2px 2px 1px #fff inset, -8px -8px 8px #181b34 inset;
 	cursor: pointer;
 }
 
@@ -24,9 +24,9 @@
 	border: none;
 	border-top-left-radius: 1rem;
 	border-top-right-radius: 1rem;
-	box-shadow: 6px 4px 2px #d81716 inset, 2px 0px 2px #d81716;
+	box-shadow: 6px 4px 2px #181b34 inset, 2px 0px 2px #2a4798;
 
-	background-image: url("../../../assets/game/planets/backgrounds/bgFireCima.jpg");
+	background-image: url("../../../assets/game/planets/backgrounds/bgPlanetGame.jpg");
 	background-size: cover;
 }
 
@@ -42,9 +42,9 @@
 	border: none;
 	border-top-left-radius: 0.5rem;
 	border-top-right-radius: 0.5rem;
-	box-shadow: 6px 4px 2px #d81716 inset, 2px 0px 2px #d81716;
+	box-shadow: 6px 4px 2px #181b34 inset, 2px 0px 2px #2a4798;
 
-	background-image: url("../../../assets/game/planets/backgrounds/bgFireCima2.jpg");
+	background-image: url("../../../assets/game/planets/backgrounds/bgPlanetGame.jpg");
 	background-size: cover;
 }
 
@@ -54,26 +54,9 @@
 	padding: 1.3rem;
 	border-radius: 1.5rem;
 	color: white;
-	background-image: url("../../../assets/game/planets/backgrounds/bgFire.jpg");
+	background-image: url("../../../assets/game/planets/backgrounds/bgPlanetGame.jpg");
 	background-size: cover;
 }
-
-/* Overlay */
-.game-overlay {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 1;
-
-	height: calc(100% + 0.5rem);
-	width: 100%;
-	margin-left: 0.5rem;
-	border-radius: 1.5rem;
-	opacity: 0.7;
-	background-color: #e56e23;
-}
-
-
 
 /* Botoes para selecionar a partida */
 .button-models-game {
@@ -112,11 +95,25 @@
   position: relative;
   z-index: 2;
 
-  background-color: #ed9121;
   border-radius: 1rem;
   box-shadow: 1px 2px 2px black inset, 0px -2px 2px #FFF inset;
   opacity: 1 !important;
 
   background-size: cover;
   background-position: center;
+}
+
+/* Overlay */
+.game-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+
+	height: 100%;
+	width: calc(554px - 1rem);
+	margin-left: 1rem;
+	border-radius: 1.5rem;
+	opacity: 0.4;
+	background-color: #2a4798;
 }
