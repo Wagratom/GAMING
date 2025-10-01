@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import Phaser, { Game as PhaserGame } from "phaser";
 import { useContext, useEffect, useRef, useState } from "react";
 import GameScene from "./GameScene";
 
@@ -13,16 +13,34 @@ import SettingsStore from "../SettingsStore/SettingsStore";
 
 export default function Game() {
 	const gameContainerRef = useRef<HTMLDivElement>(null);
+	const game = useRef<PhaserGame>();
 	const userData = useContext(UserData).user;
 	const [collisionPnt, setCollisionPnt] = useState("");
 
 	const [openModalConvite, setOpenModalConvite] = useState(false);
 	const [dataConvite, setDataConvite] = useState({} as any);
 
+	function updateColition(name: string) {
+		setCollisionPnt((prev) => {
+			if (game.current) {
+				const scene = game.current.scene.getScene("GameScene") as any;
+
+				if (scene && scene.pntGame) {
+					if (name !== "planetTerra") {
+						scene.pntGame.setVisible(true);
+					} else {
+						scene.pntGame.setVisible(false);
+					}
+				}
+			}
+			return name;
+		});
+	}
+
 	useEffect(() => {
 		if (!gameContainerRef.current) return;
 
-		const game = new Phaser.Game({
+		game.current = new Phaser.Game({
 			type: Phaser.AUTO,
 			parent: gameContainerRef.current,
 			width: window.innerWidth,
@@ -34,9 +52,13 @@ export default function Game() {
 		});
 
 		// Passa callback para a cena usando dados iniciais
-		game.scene.start('GameScene', { collisionCallback: setCollisionPnt });
+		game.current.scene.start('GameScene', { collisionCallback: updateColition });
 
-		return () => game.destroy(true);
+		return () => {
+			if (game.current) {
+				game.current.destroy(true)
+			}
+		}
 	}, []);
 
 
@@ -56,18 +78,17 @@ export default function Game() {
 			>
 				{/* Componentes React */}
 				<div >
-					{collisionPnt === 'planetTerra' && <MiniProfile showMiniPerfil={setCollisionPnt} />}
-					{collisionPnt === 'planetLua' && <SettingsStore openSettingsStore={setCollisionPnt} />}
-					{collisionPnt === 'planetGame' && <ChooseGameMode openSettingsPath={setCollisionPnt} />}
-					{collisionPnt === 'satelite' && <PublicsChats openPublicChat={setCollisionPnt} />}
-					{collisionPnt === 'base' && <Ranking openStore={setCollisionPnt} />}
-					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={setCollisionPnt} id={userData.id} />}
+					{collisionPnt === 'planetTerra' && <MiniProfile showMiniPerfil={updateColition} />}
+					{collisionPnt === 'planetLua' && <SettingsStore openSettingsStore={updateColition} />}
+					{collisionPnt === 'planetGame' && <ChooseGameMode openSettingsPath={updateColition} />}
+					{collisionPnt === 'satelite' && <PublicsChats openPublicChat={updateColition} />}
+					{collisionPnt === 'base' && <Ranking openStore={updateColition} />}
+					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={updateColition} id={userData.id} />}
 
 					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
 					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
 					{/* <PublicsChats openPublicChat={setCollisionPnt} /> */}
 					{/* <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} /> */}
-					<ChooseGameMode openSettingsPath={setCollisionPnt} />
 				</div>
 			</div>
 		</div>

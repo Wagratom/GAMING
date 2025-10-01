@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { IoMdSettings } from "react-icons/io";
 import { UserData } from '../../InitialPage/Contexts/Contexts';
 import ConfigurationGame from './Configurations/Configurations';
@@ -6,7 +6,7 @@ import OptionsMiniProfile from './OptionsMiniProfile';
 import PhotoWithOnlineStatus from "./PhotoWithOnlineStatus";
 
 type propsMiniProfile = {
-	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
+	showMiniPerfil: (name: string) => void;
 }
 
 export default function MiniPerfilUser(props: propsMiniProfile) {

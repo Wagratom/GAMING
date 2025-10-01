@@ -2,7 +2,7 @@ import Modal from 'react-bootstrap/Modal';
 import { Button } from "react-bootstrap";
 
 type propsModalIsBanned =  {
-	openPageChats: React.Dispatch<React.SetStateAction<string>>,
+	openPageChats: (name: string) => void,
 	msg: String,
 }
 

@@ -10,7 +10,7 @@ import HandleRank from "../RankMapings";
 
 type propsDinamicProfile = {
     id: string;
-    openDinamicProfile: React.Dispatch<React.SetStateAction<string>>;
+    openDinamicProfile: (name: string) => void;
 }
 
 export default function DinamicProfile(props: propsDinamicProfile): JSX.Element {

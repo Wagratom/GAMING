@@ -1,4 +1,4 @@
-import React, { SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import bgLua from "../../../assets/game/planets/backgrounds/bgLua.jpg";
 import bgLua2 from "../../../assets/game/planets/backgrounds/bgLua2.jpg";
@@ -6,7 +6,7 @@ import FakeApiStore from "./FakeApiStore";
 import ShowItemsStore from "./ShowItemsStore";
 
 type propsSettingsStore = {
-	openSettingsStore: React.Dispatch<SetStateAction<string>>;
+	openSettingsStore: (name: string) => void;
 }
 
 export default function SettingsStore(props: propsSettingsStore): JSX.Element {

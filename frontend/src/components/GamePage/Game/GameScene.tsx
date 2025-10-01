@@ -98,6 +98,7 @@ export default class GameScene extends Phaser.Scene {
         // Reposicionar todos os elementos na tela
         this.pntTerra.x = containerWidth * 0.6;
         this.pntTerra.y = containerHeight * 0.3;
+    
         this.luaTerra.x = containerWidth * 0.57;
         this.luaTerra.y = containerHeight * 0.25;
 
@@ -107,7 +108,7 @@ export default class GameScene extends Phaser.Scene {
         this.pntLua.x = containerWidth * 0.1;
         this.pntLua.y = containerHeight * 0.2;
 
-        this.pntBase.x = containerWidth * 0.9;
+        this.pntBase.x = containerWidth * 0.1;
         this.pntBase.y = containerHeight * 0.8;
 
         this.sateleteChat.x = containerWidth * 0.6;
@@ -138,12 +139,6 @@ export default class GameScene extends Phaser.Scene {
             this.physics.add.collider(obj1, obj2, () => {
                 if (this.collisionCallback) {
                     this.collisionCallback(name);
-                    if (name === 'planetTerra') {
-                        //sumir o planeta lua
-                        this.pntGame.setVisible(false);
-                    } else {
-                        this.pntGame.setVisible(true);
-                    }
                 }
             });
         });

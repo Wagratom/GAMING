@@ -1,16 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { MessageDto, UserData } from "../../InitialPage/Contexts/Contexts";
-import FormatMessages from "./FormatMessagens";
+import webSocketService from "../../webSocketService";
 import InputChats from "../InputChats";
 import BarTitlePublicChat from "./BarTitlePublicChat";
 import Configurations from "./Configurations/Configurations";
-import webSocketService from "../../webSocketService";
+import FormatMessages from "./FormatMessagens";
 
 type propsRightSide = {
 	chatName: string;
 	messages: MessageDto[];
 	chatId: string;
-	openPageChats: React.Dispatch<React.SetStateAction<string>>;
+	openPageChats: (name: string) => void;
 }
 
 export default function RightSide(props: propsRightSide) {

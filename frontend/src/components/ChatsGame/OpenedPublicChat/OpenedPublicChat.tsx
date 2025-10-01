@@ -25,7 +25,7 @@ export const ChatContext = createContext<{
 
 
 type propsPageChats = {
-	openPageChats: React.Dispatch<React.SetStateAction<string>>;
+	openPageChats: (name: string) => void;
 	chatId: string;
 }
 

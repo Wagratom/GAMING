@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SetStateAction, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import OpenedPublicChat from '../ChatsGame/OpenedPublicChat/OpenedPublicChat';
 import { chatDto, UserData } from '../InitialPage/Contexts/Contexts';
 import BarOptions from './BarOptions';
@@ -8,7 +8,7 @@ import './PublicChats.css';
 import ScreenCreateNewChat from './ScreenCreateNewChat';
 
 type propsRanking = {
-	openPublicChat: React.Dispatch<SetStateAction<string>>;
+	openPublicChat:  (name: string) => void;
 }
 
 export default function PublicsChats({ openPublicChat }: propsRanking) {

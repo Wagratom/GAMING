@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import bgMineProfile from '../../../assets/game/bgMineProfile.png';
 import { PlayerDto } from '../../InitialPage/Contexts/Contexts';
 import ListFriends from './ListFriends';
@@ -10,7 +10,7 @@ import OptionsEndBar from './OptionsEndBar';
 import Social from './Social';
 
 type propsMiniProfile = {
-	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
+	showMiniPerfil: (name: string) => void
 };
 
 export default function MiniProfile({ showMiniPerfil }: propsMiniProfile) {

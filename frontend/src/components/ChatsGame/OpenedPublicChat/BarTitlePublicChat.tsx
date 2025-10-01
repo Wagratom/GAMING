@@ -1,9 +1,9 @@
+import React from 'react';
 import { AiTwotoneSetting } from 'react-icons/ai';
 import { LiaWindowClose } from "react-icons/lia";
-import React from 'react';
 
 type propsBarConfigurations = {
-	openPageChats: React.Dispatch<React.SetStateAction<string>>;
+	openPageChats: (name: string) => void;
 	openOrClosedConf: () => void;
 	chatName: string;
 }

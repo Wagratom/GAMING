@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 type propsSelectConfiuration = {
-	showMiniPerfil: React.Dispatch<React.SetStateAction<string>>;
+	showMiniPerfil: (name: string) => void;
 	id: string;
 	setShowConfigurations: React.Dispatch<React.SetStateAction<boolean>>;
 }

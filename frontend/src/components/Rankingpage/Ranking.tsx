@@ -1,11 +1,10 @@
+import { IoMdClose } from "react-icons/io";
+import bgTerra from '../../assets/game/planets/backgrounds/bgTerra.jpg';
 import Bar from "./Bar";
 import TopRank from "./TopRank/TopRank";
-import bgTerra from '../../assets/game/planets/backgrounds/bgTerra.jpg'
-import { SetStateAction } from "react";
-import { IoMdClose } from "react-icons/io";
 
 type propsRanking = {
-	openStore: React.Dispatch<SetStateAction<string>>;
+	openStore: (name: string) => void;
 }
 
 export default function Ranking(props: propsRanking): JSX.Element {

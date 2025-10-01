@@ -3,7 +3,7 @@ import "./ChooseGameMode.css";
 import MatchTypes from "./MatchTypes";
 
 type propsSettingsPath = {
-	openSettingsPath: React.Dispatch<React.SetStateAction<string>>;
+	openSettingsPath:  (name: string) => void;
 };
 
 export default function ChooseGameMode(props: propsSettingsPath): JSX.Element {
