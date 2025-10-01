@@ -9,7 +9,7 @@ import PublicsChats from "../../PublicChatsPage/PublicChats";
 import Ranking from "../../Rankingpage/Ranking";
 import ChooseGameMode from "../SettingsGame/ChooseGameMode";
 import SettingsStore from "../SettingsStore/SettingsStore";
-
+import Perfil from "../../Perfil/Perfil";
 
 export default function Game() {
 	const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -84,6 +84,7 @@ export default function Game() {
 					{collisionPnt === 'satelite' && <PublicsChats openPublicChat={updateColition} />}
 					{collisionPnt === 'base' && <Ranking openStore={updateColition} />}
 					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={updateColition} id={userData.id} />}
+					{collisionPnt === 'pntBase' && <Perfil />}
 
 					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
 					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
