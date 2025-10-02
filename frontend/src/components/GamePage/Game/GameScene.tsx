@@ -76,6 +76,7 @@ export default class GameScene extends Phaser.Scene {
 
         // Colisores + limites do mundo
         this.setupColliders();
+        this.setupPntClicaveis();
         this.physics.world.setBounds(0, 0, w, h);
 
         // Escala inicial da nave
@@ -98,7 +99,7 @@ export default class GameScene extends Phaser.Scene {
         // Reposicionar todos os elementos na tela
         this.pntTerra.x = containerWidth * 0.6;
         this.pntTerra.y = containerHeight * 0.3;
-    
+
         this.luaTerra.x = containerWidth * 0.57;
         this.luaTerra.y = containerHeight * 0.25;
 
@@ -122,6 +123,20 @@ export default class GameScene extends Phaser.Scene {
         if (this.physics.world) {
             this.physics.world.setBounds(0, 0, containerWidth, containerHeight);
         }
+    }
+
+    setupPntClicaveis() {
+        // Deixa planetas clicáveis
+        [this.pntTerra, this.pntLua, this.pntGame, this.pntBase, this.luaTerra, this.sateleteChat].forEach((planet, i) => {
+            planet.setInteractive({ useHandCursor: true });
+
+            planet.on('pointerdown', () => {
+                const planetNames = ["planetTerra", "planetLua", "planetGame", "pntBase", "Lua", "satelite"];
+                if (this.collisionCallback) {
+                    this.collisionCallback(planetNames[i]); // simula a colisão
+                }
+            });
+        });
     }
 
     setupColliders() {

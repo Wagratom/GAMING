@@ -148,6 +148,4 @@ public class GameApplicationService {
                 game.getPlayerRight().getId()
         );
     }
-
-
 }
