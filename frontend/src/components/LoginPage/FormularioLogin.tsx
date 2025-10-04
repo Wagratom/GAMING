@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 type propsFormulario = {
-	handleForm: React.Dispatch<React.SetStateAction<string>>
+	handleForm: React.Dispatch<React.SetStateAction<"Register" | "Login">>
 }
 
-export default function FormularioLogin(props: propsFormulario) {
+export default function FormularioLogin({ handleForm }: propsFormulario) {
 	// Component that renders the login form
 	// The HTML blocks are created in functions to facilitate code readability and are called within the form in the function's return
 	const navidate = useNavigate();
@@ -60,7 +60,7 @@ export default function FormularioLogin(props: propsFormulario) {
 				<button type="submit" className="btn btn-primary w-75 d-block mb-2">Login</button>
 				{/* botão para trocar de logar para registrar */}
 				<span>Need an account?
-					<span className='singUp' onClick={() => props.handleForm('Register')}> Sign up </span>
+					<span className='singUp' onClick={() => handleForm('Register')}> Sign up </span>
 				</span>
 			</div>
 		)

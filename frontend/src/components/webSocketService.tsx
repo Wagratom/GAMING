@@ -9,7 +9,6 @@ export default function webSocketService(topic: string, callback: (msg: any) => 
     connectHeaders: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     reconnectDelay: 5000,
     onConnect: () => {
-      console.log("connect topic: ", topic);
       attempts = 0;
       client.subscribe(topic, (msg) => msg.body && callback(JSON.parse(msg.body)));
     },

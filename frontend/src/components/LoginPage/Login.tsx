@@ -1,27 +1,56 @@
-import { useState } from 'react';
-
+import { useEffect, useState } from 'react';
 import FormularioLogin from './FormularioLogin';
 import FormularioRegistration from './FormularioRegistration';
-import PhotoMobal from '../../assets/game/PhotoLoginPage.jpg'
+import PhotoMobal from '../../assets/game/PhotoLoginPage.jpg';
 import './Login.css';
 
-
 export function Login() {
-	const [handleForm, setHandleForm] = useState<string>('Login');
+	const [handleForm, setHandleForm] = useState<'Login' | 'Register'>('Login');
+	const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1024);
+	const [showWarning, setShowWarning] = useState<boolean>(false);
 
-	const HtmlToMobile = () => {
-		return (
-			<>
-				<div className='photoLoginInFormToMobile'>
-					<img className='img-thumbnail' src={PhotoMobal} alt="image in pixel art style for a game titled 'SPACE PONG'. The layout features a space theme with a dark, starry background and colorful nebulae. In the background, on the left side, a small astronaut passing deep in red spacesuit with reflective helmet visor is floating in space. Below the astronaut, a small spaceship is represented. The right side prominently displays the game title 'SPACE PONG 42SP' in bold, 3D pixelated letters with an orange to red gradient, outlined in yellow. Above the title are the '42 São Paulo' and 'WW' logos in small, pixelated text. The overall design is vibrant and engaging, with a retro gaming aesthetic." />
-				</div>
-				<h1 className='singIn'>SING IN</h1>
-			</>
-		)
-	}
+	// Monitora o tamanho da tela
+	useEffect(() => {
+		const handleResize = () => setIsMobile(window.innerWidth < 1024);
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	}, []);
+
+	// Mostra o aviso se for mobile
+	useEffect(() => {
+		if (isMobile) {
+			setShowWarning(true);
+		}
+	}, [isMobile]);
+
+	const HtmlToMobile = () => (
+		<>
+			<div className='photoLoginInFormToMobile'>
+				<img
+					className='img-thumbnail'
+					src={PhotoMobal}
+					alt="Pixel art for a game titled 'SPACE PONG', with astronaut, spaceship, and colorful space background."
+				/>
+			</div>
+			<h1 className='singIn'>SIGN IN</h1>
+		</>
+	);
 
 	return (
 		<div className='loginPage'>
+			{showWarning && (
+				<div className='mobile-warning-modal'>
+					<div className='mobile-warning-content'>
+						<h2>🚀 Tela muito pequena!</h2>
+						<p>
+							Este portfólio foi criado pensando em dispositivos maiores.
+							Alguns elementos podem não funcionar corretamente em telas pequenas.
+						</p>
+						<button onClick={() => setShowWarning(false)}>Entendi</button>
+					</div>
+				</div>
+			)}
+
 			<div className='photoLoginBackground'></div>
 			<div className='loginScreen'>
 				<div className='formulario'>
@@ -30,7 +59,11 @@ export function Login() {
 						<h1 className='text-center'>SPACE PONG</h1>
 					</div>
 					{HtmlToMobile()}
-					{handleForm === 'Login' ? <FormularioLogin handleForm={setHandleForm} /> : <FormularioRegistration handleForm={setHandleForm}/>}
+					{handleForm === 'Login' ? (
+						<FormularioLogin handleForm={setHandleForm} />
+					) : (
+						<FormularioRegistration handleForm={setHandleForm} />
+					)}
 				</div>
 				<div className='text-center photoLoginInLoginScreen'></div>
 			</div>

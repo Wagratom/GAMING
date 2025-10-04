@@ -38,8 +38,8 @@ export default function PrivateChat({ friend }: { friend: PlayerDto }) {
 
 		getMessages()
 
-		const socket = webSocketService("/topic/login", (nickname: string) => {
-			if (friend.nickname === nickname) setOnline(true)
+		const socket = webSocketService("/topic/login", (userId: string) => {
+			if (friend.id === userId) setOnline(true)
 		})
 
 		const socket2 = webSocketService("/topic/logout", (userId: string) => {

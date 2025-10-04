@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 
 
 type propsFormulario = {
-	handleForm: React.Dispatch<React.SetStateAction<string>>
+	handleForm: React.Dispatch<React.SetStateAction<"Register" | "Login">>
 }
 
 export default function Formulario(props: propsFormulario) {

@@ -11,6 +11,7 @@ import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserApplication implements UserPortIn {
 
+    private final SimpMessagingTemplate messagingTemplate;
     private final UserRepositoryPort userRepository;
     private final EncriptyService encriptyService;
     private final JwtService jwtService;
@@ -71,6 +73,7 @@ public class UserApplication implements UserPortIn {
 
         logger.info("update user: online=true");
         user.setOnline(true);
+        messagingTemplate.convertAndSend("/topic/login", user.getNickname());
         userRepository.updateUser(user);
 
         logger.info("[END] Gerando token JWT");
@@ -88,6 +91,7 @@ public class UserApplication implements UserPortIn {
         user.setOnline(false);
         logger.info("Atualizando online=false");
         userRepository.updateUser(user);
+        messagingTemplate.convertAndSend("/topic/logout", userId);
         return userId;
     }
 

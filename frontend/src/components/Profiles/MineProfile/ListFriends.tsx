@@ -26,19 +26,17 @@ export default function ListFriends({ players, adms, openChat }: typeListChat) {
 		setAdms(adms)
 		setPlayers(players)
 
-		const socket2 = webSocketService("/topic/login", (nickname: string) => {
-			console.log("nickname: ", nickname)
+		const socket2 = webSocketService("/topic/login", (userId: string) => {
 			setPlayers((prev) => {
-				console.log("prev: ", prev);
 				return prev.map((player) =>
-					player.nickname === nickname ? { ...player, online: true } : player
+					player.id === userId ? { ...player, online: true } : player
 				)
 			}
 			);
 
 			setAdms((prev) =>
 				prev.map((player) =>
-					player.nickname === nickname ? { ...player, online: true } : player
+					player.id === userId ? { ...player, online: true } : player
 				)
 			);
 

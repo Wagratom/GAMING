@@ -26,16 +26,18 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Chat API", description = "Endpoints para chats diretos, grupos e mensagens")
+@Tag(name = "Chat API", description = "Endpoints para gerenciamento de chats diretos, grupos e mensagens")
 public class ChatController {
 
     private final ChatPort chatService;
     private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 
-    @Operation(summary = "Obter chat direto com outro usuário", description = "Retorna o chat direto com base no ID do amigo")
+    @Operation(summary = "Obter chat direto com amigo", description = "Retorna o chat privado entre o usuário autenticado e outro usuário (amigo).")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Chat direto retornado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Chat ou usuário não encontrado")
+            @ApiResponse(responseCode = "403", description = "Usuário não tem amizade com o outro usuário"),
+            @ApiResponse(responseCode = "404", description = "Chat ou usuário não encontrado"),
+            @ApiResponse(responseCode = "401", description = "Token inválido ou expirado")
     })
     @GetMapping("/directChats/{friendId}")
     public ResponseEntity<DirectChatResponse> getDirectChat(
@@ -46,10 +48,11 @@ public class ChatController {
         return ResponseEntity.ok(new DirectChatResponse(directChat.getMessagens()));
     }
 
-    @Operation(summary = "Adicionar mensagem em chat direto", description = "Adiciona uma nova mensagem para o chat direto com outro usuário")
+    @Operation(summary = "Adicionar mensagem em chat direto", description = "Adiciona uma nova mensagem para o chat direto entre o usuário autenticado e outro usuário.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Mensagem adicionada com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Mensagem vazia")
+            @ApiResponse(responseCode = "400", description = "Mensagem vazia"),
+            @ApiResponse(responseCode = "403", description = "Usuário não tem amizade com o destinatário")
     })
     @PostMapping("/directChats/{friendId}")
     public ResponseEntity<String> addMessageChat(
@@ -58,12 +61,12 @@ public class ChatController {
             @RequestBody @Valid NewMessageChat content
     ) {
         if (content.content().isBlank()) throw new BadRequest("Message empty");
-        logger.info("[INIT] controller add new message direct chat friendId ={}", friendId);
+        logger.info("[INIT] add new message direct chat friendId={}", friendId);
         chatService.addMessageDirectChat(jwt, Long.parseLong(friendId), content.content());
-        return ResponseEntity.ok("sucesso");
+        return ResponseEntity.ok("Mensagem enviada com sucesso");
     }
 
-    @Operation(summary = "Listar chats públicos", description = "Retorna todos os grupos de chat públicos")
+    @Operation(summary = "Listar chats públicos", description = "Retorna todos os grupos de chat públicos disponíveis.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista de chats retornada com sucesso")
     })
@@ -78,7 +81,7 @@ public class ChatController {
         );
     }
 
-    @Operation(summary = "Criar novo chat público ou protegido", description = "Cria um novo grupo de chat do tipo PUBLIC ou PROTECT")
+    @Operation(summary = "Criar novo grupo de chat", description = "Cria um novo grupo de chat do tipo PUBLIC ou PROTECT. Para PROTECT é necessário fornecer uma senha.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Chat criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Tipo de chat inválido")
@@ -88,18 +91,19 @@ public class ChatController {
             @RequestHeader("Authorization") String jwt,
             @Valid @RequestBody ChatDtoCreate chatDto
     ) {
-        logger.info("[INIT] controller create grupo chat name {}", chatDto.getChatName());
+        logger.info("[INIT] create group chat name={}", chatDto.getChatName());
         if (!chatDto.getType().name().equals("PUBLIC") && !chatDto.getType().name().equals("PROTECT")) {
-            throw new BadRequest("Tipo de chat invalido, deve ser PROTECT ou PUBLIC");
+            throw new BadRequest("Tipo de chat inválido, deve ser PUBLIC ou PROTECT");
         }
         ChatCore chats = chatService.createChat(chatDto.toChatCore(), jwt);
         return ResponseEntity.ok(new ChatResponse(chats));
     }
 
-    @Operation(summary = "Adicionar mensagem em chat de grupo", description = "Adiciona uma nova mensagem em um grupo de chat existente")
+    @Operation(summary = "Adicionar mensagem em grupo", description = "Adiciona uma nova mensagem em um grupo de chat existente do qual o usuário faz parte.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Mensagem adicionada com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Mensagem vazia")
+            @ApiResponse(responseCode = "400", description = "Mensagem vazia"),
+            @ApiResponse(responseCode = "403", description = "Usuário não tem permissão de enviar mensagem neste grupo")
     })
     @PostMapping("/add-message-groups/{chatId}")
     public ResponseEntity<String> addMessageGroups(
@@ -108,28 +112,29 @@ public class ChatController {
             @RequestBody @Valid NewMessageChat content
     ) {
         if (content.content().isBlank()) throw new BadRequest("Message empty");
-        logger.info("[INIT] controller add message group name {}", chatId);
+        logger.info("[INIT] add message group chatId={}", chatId);
         chatService.addMessageGroups(jwt, Long.parseLong(chatId), content.content());
-        return ResponseEntity.ok("sucesso");
+        return ResponseEntity.ok("Mensagem enviada com sucesso");
     }
 
-    @Operation(summary = "Adicionar usuário em chat público", description = "Adiciona o usuário autenticado em um chat público existente")
+    @Operation(summary = "Adicionar usuário em chat público", description = "Adiciona o usuário autenticado a um grupo público existente.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuário adicionado com sucesso")
     })
     @PostMapping("/add-user-public-chat")
     public ResponseEntity<String> addUserChatPublic(
             @RequestHeader("Authorization") String jwt,
-            @RequestBody @Valid Long ChatId
+            @RequestBody @Valid Long chatId
     ) {
-        logger.info("[INIT] controller add user in public chat", ChatId);
-        chatService.addUserPublicChat(jwt, ChatId);
-        return ResponseEntity.ok("sucesso");
+        logger.info("[INIT] add user in public chat chatId={}", chatId);
+        chatService.addUserPublicChat(jwt, chatId);
+        return ResponseEntity.ok("Usuário adicionado com sucesso");
     }
 
-    @Operation(summary = "Obter chat por ID", description = "Retorna um grupo de chat pelo seu ID")
+    @Operation(summary = "Obter chat por ID", description = "Retorna um grupo de chat pelo seu ID, adicionando automaticamente o usuário caso ele ainda não seja membro.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Chat retornado com sucesso")
+            @ApiResponse(responseCode = "200", description = "Chat retornado com sucesso"),
+            @ApiResponse(responseCode = "403", description = "Usuário não tem permissão para acessar chat protegido")
     })
     @GetMapping("/groups/{chatId}")
     public ResponseEntity<ChatResponse> getChatId(
@@ -140,10 +145,11 @@ public class ChatController {
         return ResponseEntity.ok(new ChatResponse(chats));
     }
 
-    @Operation(summary = "Abrir chat por nome", description = "Retorna um grupo de chat pelo nome, com opção de senha para chats protegidos")
+    @Operation(summary = "Abrir chat por nome", description = "Retorna um grupo de chat pelo nome. Para chats protegidos, é possível fornecer uma senha.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Chat retornado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Nome do chat obrigatório")
+            @ApiResponse(responseCode = "400", description = "Nome do chat obrigatório ou senha inválida"),
+            @ApiResponse(responseCode = "403", description = "Senha inválida para chat protegido")
     })
     @GetMapping("/open-groups")
     public ResponseEntity<ChatResponse> openGroups(
