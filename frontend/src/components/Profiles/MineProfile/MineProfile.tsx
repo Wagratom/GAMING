@@ -34,14 +34,18 @@ export default function MiniProfile({ showMiniPerfil }: propsMiniProfile) {
 		<div
 			style={{ backgroundImage: `url(${bgMineProfile})`, backgroundSize: '100% 100%' }}
 			className="position-absolute top-0 end-0 h-100 miniprofile p-4"
-			onClick={(event) => event.stopPropagation()}
 		>
 			<MiniPerfilUser showMiniPerfil={showMiniPerfil} />
 			<hr className="m-0 w-100 text-white" />
 			<Social setResourcePlayer={setResourcePlayer} />
 			{
 				resoucePlayer.startsWith("/users") || resoucePlayer.startsWith("/friends")
-					? <ListFriends adms={[]} players={players} openChat={resoucePlayer === "/friends?status=ACCEPTED"} />
+					? <ListFriends
+						adms={[]}
+						players={players}
+						openChat={resoucePlayer === "/friends?status=ACCEPTED"}
+						membersTitle={false}
+					/>
 					: resoucePlayer.startsWith("/notifications")
 						? <NotificacaoUX resoucePlayer={resoucePlayer} />
 						: null

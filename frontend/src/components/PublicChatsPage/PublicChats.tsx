@@ -73,7 +73,7 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 	}
 
 	return (
-		<div className='position-fixed top-50 start-50 translate-middle public-chats-screen' onClick={(event) => event.stopPropagation()}>
+		<div className='position-fixed top-50 start-50 translate-middle public-chats-screen'>
 			<div className='d-flex flex-column h-100'>
 				<BarOptions
 					setShowCreateChat={setShowCreateChat}

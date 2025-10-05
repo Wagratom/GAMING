@@ -2,9 +2,13 @@ import PersonalInformation from './PersonalInformation';
 import PhotoPerfil from './PhotoPerfil';
 import background from '../../assets/perfil/bg.png'
 import FolderPerfil from './Footer';
+import { IoMdClose } from 'react-icons/io';
 
+type propsDinamicProfile = {
+	close: (name: string) => void;
+}
 
-export default function Perfil() {
+export default function Perfil({ close }: propsDinamicProfile) {
 
 	const cssPerfil: React.CSSProperties = {
 		position: 'absolute',
@@ -30,7 +34,14 @@ export default function Perfil() {
 	}
 
 	return (
-		<div style={cssPerfil} onClick={(event) => event.stopPropagation()}>
+		<div style={cssPerfil}>
+			<IoMdClose
+				className="button-close"
+				style={{
+					backgroundColor: '#079fb5',
+					boxShadow: 'rgb(255, 255, 255) 2px 2px 1px inset, #03505e -8px -8px 8px inset'
+				}}
+				onClick={() => close('')} />
 			<div style={cssDivAux}>
 				<PhotoPerfil />
 				<PersonalInformation />

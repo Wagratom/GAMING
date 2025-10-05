@@ -63,7 +63,7 @@ export default function SettingsStore(props: propsSettingsStore): JSX.Element {
 	}
 
 	return (
-		<div className="position-absolute top-50 start-50 translate-middle" onClick={(event) => event.stopPropagation()}>
+		<div className="position-absolute top-50 start-50 translate-middle">
 			<div className="d-flex">
 				<button onClick={() => setBarPerfil(true)}
 					style={ButtonSelected}

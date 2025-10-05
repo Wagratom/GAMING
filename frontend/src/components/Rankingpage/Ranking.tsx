@@ -16,11 +16,7 @@ export default function Ranking(props: propsRanking): JSX.Element {
 	}
 
 	return (
-		<div
-			className="h-75 w-75 rounded position-absolute top-50 start-50 translate-middle"
-			style={cssBackgroundTerra}
-			onClick={(event) => event.stopPropagation()}
-		>
+		<div className="h-75 w-75 rounded position-absolute top-50 start-50 translate-middle" style={cssBackgroundTerra}>
 			<IoMdClose
 				className="button-close"
 				style={{

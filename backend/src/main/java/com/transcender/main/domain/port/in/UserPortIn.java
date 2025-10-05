@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface UserPortIn {
 
-    String login(Optional<String> nickname, Optional<String> email, String senha);
+    String login(String nickname, String email, String senha);
 
     Long logout(String jwt);
 
@@ -24,4 +24,5 @@ public interface UserPortIn {
     UserCore registerUser(UserCore user);
 
     UserCore updateUser(String newNickname, Long userId);
+
 }

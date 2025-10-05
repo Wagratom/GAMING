@@ -19,7 +19,7 @@ export default class GameScene extends Phaser.Scene {
     pntTerra!: Phaser.Physics.Arcade.Sprite;
     sateleteChat!: Phaser.Physics.Arcade.Sprite;
 
-    collisionCallback: ((planet: string) => void) | null = null;
+    collisionCallback: ((planet: string, isclick? : boolean) => void) | null = null;
 
     init(data: { collisionCallback?: (planet: string) => void }) {
         if (data.collisionCallback) this.collisionCallback = data.collisionCallback;
@@ -52,7 +52,7 @@ export default class GameScene extends Phaser.Scene {
         this.nave = this.physics.add.sprite(w / 2, h / 2, "naveFrente").setCollideWorldBounds(true);
 
         // 🔥 Planeta Fire
-        this.pntGame = this.physics.add.sprite(w * 0.9, h * 0.15, "planetGame").setScale(0.3);
+        this.pntGame = this.physics.add.sprite(w * 0.9, h * 0.8, "planetGame").setScale(0.3);
         this.pntGame.setCircle(this.pntGame.width / 2, 0, 0);
 
         // 🌙 Lua planeta
@@ -104,7 +104,7 @@ export default class GameScene extends Phaser.Scene {
         this.luaTerra.y = containerHeight * 0.25;
 
         this.pntGame.x = containerWidth * 0.9;
-        this.pntGame.y = containerHeight * 0.15;
+        this.pntGame.y = containerHeight * 0.8;
 
         this.pntLua.x = containerWidth * 0.1;
         this.pntLua.y = containerHeight * 0.2;
@@ -133,7 +133,7 @@ export default class GameScene extends Phaser.Scene {
             planet.on('pointerdown', () => {
                 const planetNames = ["planetTerra", "planetLua", "planetGame", "pntBase", "Lua", "satelite"];
                 if (this.collisionCallback) {
-                    this.collisionCallback(planetNames[i]); // simula a colisão
+                    this.collisionCallback(planetNames[i], true); // simula a colisão
                 }
             });
         });

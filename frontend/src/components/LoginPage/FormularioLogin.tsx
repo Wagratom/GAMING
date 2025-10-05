@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Login.css';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -11,6 +11,7 @@ export default function FormularioLogin({ handleForm }: propsFormulario) {
 	// Component that renders the login form
 	// The HTML blocks are created in functions to facilitate code readability and are called within the form in the function's return
 	const navidate = useNavigate();
+	const [loginInlivado, setLoginInvalido] = useState<boolean>(false)
 
 	function sendFormLogin(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -25,6 +26,10 @@ export default function FormularioLogin({ handleForm }: propsFormulario) {
 				navidate("/game");
 			})
 			.catch(error => {
+				console.log(error.response)
+				if (error.response.status === '403') {
+					setLoginInvalido(true)
+				}
 				console.error("Erro ao logar:", error);
 			});
 	}
@@ -32,6 +37,11 @@ export default function FormularioLogin({ handleForm }: propsFormulario) {
 	const formLogin = () => {
 		return (
 			<>
+				{loginInlivado && (
+					<div className='d-flex justify-content-center mb-3'>
+						<p style={{ color: '#ff0909ff' }}>Login invalido</p>
+					</div>
+				)}
 				<div className="form-group mb-3">
 					<label htmlFor="nicknameiD">username</label>
 					<input name="nickname" type="nickname" className="form-control my-2" id="nicknameiD" placeholder="Login Name" />
@@ -48,7 +58,7 @@ export default function FormularioLogin({ handleForm }: propsFormulario) {
 	const ForgetPassword = () => {
 		return (
 			<div className='d-flex justify-content-between mb-5'>
-				<a style={{ color: '#b61758' }} href="bla">Forget your password?</a>
+				<p style={{ color: '#b61758' }}>Forget your password?</p>
 			</div>
 		)
 	}

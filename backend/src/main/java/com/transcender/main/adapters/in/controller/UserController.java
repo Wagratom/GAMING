@@ -2,6 +2,7 @@ package com.transcender.main.adapters.in.controller;
 
 import com.transcender.main.adapters.in.controller.dto.responses.ProfileResponse;
 import com.transcender.main.adapters.in.controller.dto.responses.UserResponse;
+import com.transcender.main.application.GameApplicationService;
 import com.transcender.main.application.UserApplication;
 import com.transcender.main.domain.port.in.UserPortIn;
 import io.swagger.v3.oas.annotations.Operation;

@@ -25,9 +25,11 @@ export default function BannerProfile({ rank, borderImg, avatar, nickname }: pro
 		)
 	}
 	return (
-		<div className="h-100 d-flex align-items-center justify-content-center">
-			<div className="spinner-border text-danger h-100" role="status">
-				<span className="visually-hidden">Loading...</span>
+		<div className='banner-profile'>
+			<div className="h-25 d-flex align-items-center justify-content-center">
+				<div className="spinner-border text-danger h-100" role="status">
+					<span className="visually-hidden">Loading...</span>
+				</div>
 			</div>
 		</div>
 	)

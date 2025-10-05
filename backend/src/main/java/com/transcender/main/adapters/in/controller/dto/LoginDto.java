@@ -1,13 +1,9 @@
 package com.transcender.main.adapters.in.controller.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Optional;
-
-public record LoginDto (
-        Optional<String> nickname,
-        Optional<String> email,
-
-        @NotBlank(message = "A senha não pode ser vazio ou nulo")
-        String password
-){};
+public record LoginDto(
+        @JsonProperty("nickname") String nickname,
+        @JsonProperty("email") String email,
+        @JsonProperty("password") String password
+) {}

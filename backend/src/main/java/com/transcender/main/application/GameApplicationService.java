@@ -3,8 +3,10 @@ package com.transcender.main.application;
 import com.transcender.main.domain.entity.MatchCore;
 import com.transcender.main.domain.entity.PongGame;
 import com.transcender.main.domain.entity.UserCore;
+import com.transcender.main.domain.port.in.GamePort;
 import com.transcender.main.domain.port.out.MatchRepositoryPort;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
+import com.transcender.main.domain.valueobject.GamePongDto;
 import com.transcender.main.domain.valueobject.PlayerMoveDto;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +20,12 @@ import java.util.concurrent.*;
 
 @Service
 @RequiredArgsConstructor
-public class GameApplicationService {
+public class GameApplicationService implements GamePort {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final UserRepositoryPort userRepository;
     private final MatchRepositoryPort matchRepository;
+    private final Logger logger = LoggerFactory.getLogger(GameApplicationService.class);
 
     // Jogos ativos
     private final Map<String, PongGame> games = new ConcurrentHashMap<>();
@@ -34,30 +37,15 @@ public class GameApplicationService {
     // Controle de tempo na fila
     private final Map<Long, Long> waitingSince = new ConcurrentHashMap<>();
 
-    private final Logger logger = LoggerFactory.getLogger(GameApplicationService.class);
 
+    private final Map<String, InviteData> pendingInvites = new ConcurrentHashMap<>();
     // ===================== DTO =====================
 
-    private record GamePongDto(
-            BallDto ball,
-            PaddleDto paddleLeft,
-            PaddleDto paddleRight,
-            int placarLeft,
-            int placarRight,
-            Long winner,
-            WindowDto window,
-            PowerDto power,
-            Long playerLeftId,
-            Long playerRightId
-    ) {
-        public record BallDto(int positionX, int positionY, int size) {}
-        public record PaddleDto(int positionX, int positionFront, int height, int width, int velocity) {}
-        public record WindowDto(int height, int width) {}
-        public record PowerDto(int x, int y, int size) {}
+    // Classe auxiliar para armazenar o convite
+    private record InviteData(Long inviterId, Long invitedId, long createdAt) {
     }
 
-    // ===================== Matchmaking =====================
-
+    @Override
     public void addToQueue(Long playerId, String typeMode) {
         if (playersInMatcher.contains(playerId)) return;
 
@@ -89,8 +77,17 @@ public class GameApplicationService {
         }
     }
 
-    private void createRoom(String roomId, UserCore player1, UserCore player2, String mode) {
+    @Override
+    public void createRoom(String roomId, UserCore player1, UserCore player2, String mode) {
         logger.info("Criando uma nova partida entre player1={} player2={}", player1.getId(), player2.getId());
+
+        // Remove convites antigos envolvendo esses jogadores
+        pendingInvites.entrySet().removeIf(entry ->
+                entry.getValue().inviterId().equals(player1.getId())
+                        || entry.getValue().inviterId().equals(player2.getId())
+                        || entry.getValue().invitedId().equals(player1.getId())
+                        || entry.getValue().invitedId().equals(player2.getId())
+        );
 
         PongGame game = games.computeIfAbsent(roomId, r -> new PongGame(roomId, mode));
         game.addPlayer(player1, player2);
@@ -126,7 +123,7 @@ public class GameApplicationService {
             try {
                 games.values().forEach(game -> {
                     game.updateBall();
-                    messagingTemplate.convertAndSend("/topic/game/" + game.getRoomId(), toDto(game));
+                    messagingTemplate.convertAndSend("/topic/game/" + game.getRoomId(), new GamePongDto(game));
 
                     if (game.isFinished()) {
                         MatchCore newMatch = matchRepository.createMatch(
@@ -137,7 +134,7 @@ public class GameApplicationService {
                                 game.getScoreLoser()
                         );
 
-                        messagingTemplate.convertAndSend("/topic/game/" + game.getRoomId(), toDto(game));
+                        messagingTemplate.convertAndSend("/topic/game/" + game.getRoomId(),  new GamePongDto(game));
                         games.remove(game.getRoomId());
                         playersInMatcher.remove(game.getPlayerLeft().getId());
                         playersInMatcher.remove(game.getPlayerRight().getId());
@@ -171,20 +168,109 @@ public class GameApplicationService {
         }, 0, 1, TimeUnit.SECONDS);
     }
 
-    // ===================== DTO Mapping =====================
+    // ===================== INVITES =====================
 
-    private GamePongDto toDto(PongGame game) {
-        return new GamePongDto(
-                new GamePongDto.BallDto(game.getBallX(), game.getBallY(), game.getBallSize()),
-                new GamePongDto.PaddleDto(0, game.getLeftPaddleY(), game.getPaddleHeight(), game.getPaddleWidth(), 5),
-                new GamePongDto.PaddleDto(game.getWidth() - game.getPaddleWidth(), game.getRightPaddleY(), game.getPaddleHeight(), game.getPaddleWidth(), 5),
-                game.getScoreLeft(),
-                game.getScoreRight(),
-                game.isFinished() ? game.getWinnerId() : null,
-                new GamePongDto.WindowDto(game.getHeight(), game.getWidth()),
-                new GamePongDto.PowerDto(0, 0, 0),
-                game.getPlayerLeft().getId(),
-                game.getPlayerRight().getId()
-        );
+    @Override
+    public String createInviteRoom(Long inviterId, Long invitedId) {
+        if (playersInMatcher.contains(inviterId)) {
+            messagingTemplate.convertAndSend("/topic/invite/" + inviterId,
+                    Map.of("error", "Você já está na fila e não pode criar convite."));
+            return null;
+        }
+
+        Optional<UserCore> inviter = userRepository.getUserById(inviterId);
+        Optional<UserCore> invited = userRepository.getUserById(invitedId);
+
+        if (inviter.isEmpty() || invited.isEmpty()) {
+            return null;
+        }
+
+        // Cria uma sala UUID exclusiva
+        String roomId = UUID.randomUUID().toString();
+
+        pendingInvites.put(roomId, new InviteData(inviterId, invitedId, System.currentTimeMillis()));
+
+        // Notifica o convidado
+        messagingTemplate.convertAndSend("/topic/invite/" + invitedId,
+                Map.of("roomId", roomId, "inviterId", inviterId, "message", "Você recebeu um convite para jogar!"));
+
+        // Agenda timeout de 1 minuto
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.schedule(() -> cancelInviteAfterTimeout(roomId), 1, TimeUnit.MINUTES);
+
+        logger.info("Convite criado: roomId={} inviter={} invited={}", roomId, inviterId, invitedId);
+
+        return roomId;
     }
+
+    @Override
+    public void acceptInvite(Long invitedId, String roomId) {
+        InviteData invite = pendingInvites.get(roomId);
+        if (invite == null) {
+            messagingTemplate.convertAndSend("/topic/invite/" + invitedId,
+                    Map.of("error", "Convite expirado ou inválido."));
+            return;
+        }
+
+        if (!Objects.equals(invite.invitedId(), invitedId)) {
+            messagingTemplate.convertAndSend("/topic/invite/" + invitedId,
+                    Map.of("error", "Você não é o convidado desta sala."));
+            return;
+        }
+
+        Optional<UserCore> inviter = userRepository.getUserById(invite.inviterId());
+        Optional<UserCore> invited = userRepository.getUserById(invite.invitedId());
+
+        if (inviter.isEmpty() || invited.isEmpty()) {
+            pendingInvites.remove(roomId);
+            return;
+        }
+
+        // Remove ambos da fila normal (caso estejam esperando)
+        waitingPlayersNomalGame.removeIf(u ->
+                u.getId().equals(invite.inviterId()) || u.getId().equals(invite.invitedId()));
+
+        playersInMatcher.remove(invite.inviterId());
+        playersInMatcher.remove(invite.invitedId());
+        waitingSince.remove(invite.inviterId());
+        waitingSince.remove(invite.invitedId());
+
+
+        PongGame game = games.computeIfAbsent(roomId, r -> new PongGame(roomId, "invite"));
+        game.addPlayer(inviter.get(), invited.get());
+
+        Map<String, Object> response = Map.of(
+                "roomId", roomId,
+                "playerLeft", game.getPlayerLeft(),
+                "playerRight", game.getPlayerRight()
+        );
+
+        messagingTemplate.convertAndSend("/topic/matchmaking/" + invite.inviterId(), response);
+        messagingTemplate.convertAndSend("/topic/matchmaking/" + invite.invitedId(), response);
+
+        // Remove o convite ativo
+        pendingInvites.remove(roomId);
+        logger.info("Convite aceito e jogo iniciado: {}", roomId);
+    }
+
+    private void cancelInviteAfterTimeout(String roomId) {
+        InviteData invite = pendingInvites.remove(roomId);
+        if (invite != null) {
+            messagingTemplate.convertAndSend("/topic/invite/" + invite.inviterId(),
+                    Map.of("message", "Convite expirou após 1 minuto."));
+            messagingTemplate.convertAndSend("/topic/invite/" + invite.invitedId(),
+                    Map.of("message", "Convite expirou antes de ser aceito."));
+            logger.info("Convite expirado: {}", roomId);
+        }
+    }
+
+    public void notifyPlayer(Long playerId, Map<String, Object> payload) {
+        messagingTemplate.convertAndSend("/topic/invite/" + playerId, payload);
+    }
+
+    public void notifyError(Long playerId, String message) {
+        messagingTemplate.convertAndSend("/topic/invite/" + playerId,
+                Map.of("error", message));
+    }
+
 }

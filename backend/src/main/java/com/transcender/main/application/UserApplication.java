@@ -24,6 +24,7 @@ public class UserApplication implements UserPortIn {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final UserRepositoryPort userRepository;
+    private final GameApplicationService gameApplicationService;
     private final EncriptyService encriptyService;
     private final JwtService jwtService;
     private static final Logger logger = LoggerFactory.getLogger(UserApplication.class);
@@ -58,12 +59,12 @@ public class UserApplication implements UserPortIn {
     }
 
     @Override
-    public String login(Optional<String> nickname, Optional<String> email, String senha) {
+    public String login(String nickname, String email, String senha) {
         logger.info("[INIT] login user | nickname={}, email={}", nickname, email);
         if (nickname.isEmpty()) throw new BadRequest("Nickname não informado");
         if (senha.isEmpty()) throw new BadRequest("Senha não informado");
 
-        UserCore user = userRepository.getUserByNickname(nickname.get())
+        UserCore user = userRepository.getUserByNickname(nickname)
                 .orElseThrow(() -> new Forbidden("Credenciais inválidas"));
 
         logger.info("user found. checking password");
@@ -73,7 +74,7 @@ public class UserApplication implements UserPortIn {
 
         logger.info("update user: online=true");
         user.setOnline(true);
-        messagingTemplate.convertAndSend("/topic/login", user.getNickname());
+        messagingTemplate.convertAndSend("/topic/login", Map.of("userId", user.getId()));
         userRepository.updateUser(user);
 
         logger.info("[END] Gerando token JWT");
@@ -91,7 +92,7 @@ public class UserApplication implements UserPortIn {
         user.setOnline(false);
         logger.info("Atualizando online=false");
         userRepository.updateUser(user);
-        messagingTemplate.convertAndSend("/topic/logout", userId);
+        messagingTemplate.convertAndSend("/topic/logout", Map.of("userId", user.getId()));
         return userId;
     }
 

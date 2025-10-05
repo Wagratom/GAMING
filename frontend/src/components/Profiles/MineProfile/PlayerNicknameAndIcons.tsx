@@ -1,7 +1,7 @@
 import React from "react";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
-import { VscEye } from "react-icons/vsc";
 import { TbEyeClosed } from "react-icons/tb";
+import { VscEye } from "react-icons/vsc";
 
 import { GoMute } from "react-icons/go";
 import { PlayerDto } from "../../InitialPage/Contexts/Contexts";
@@ -17,14 +17,6 @@ type PropsStatus = {
 }
 
 export default function PlayerNicknameAndIcons(props: PropsStatus): JSX.Element {
-
-	const handleWatchPath = (e: React.MouseEvent<SVGElement, MouseEvent>): void => {
-		e.stopPropagation();
-		let obj = {
-			playerId: props.my_id,
-			watcherId: props.player_id
-		}
-	}
 
 	const getIcons = (): JSX.Element => {
 
@@ -53,7 +45,7 @@ export default function PlayerNicknameAndIcons(props: PropsStatus): JSX.Element 
 				{props.admin.find((item) => item.id === props.player_id) && (
 					<MdOutlineAdminPanelSettings key={props.player_id} style={cssSecond} />
 				)}
-				
+
 				{/* // verify if the player is watching a game */}
 				{props.match_status === "WATCHING" && (
 					<TbEyeClosed style={cssWatch} title="watching a game" />
@@ -62,7 +54,7 @@ export default function PlayerNicknameAndIcons(props: PropsStatus): JSX.Element 
 
 				{/* //verify if the player is playing a game */}
 				{props.match_status === "PLAYING" && (
-					<VscEye style={cssWatch} onClick={handleWatchPath} title="Watch game" />
+					<VscEye style={cssWatch} title="Watch game" />
 				)}
 			</>
 		)

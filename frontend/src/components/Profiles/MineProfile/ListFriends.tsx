@@ -1,66 +1,63 @@
 import PlayerNicknameAndIcons from './PlayerNicknameAndIcons';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import PrivateChat from '../../ChatsGame/ChatPrivate/PrivateChat';
 import DinamicProfile from '../DinamicProfile/DinamicProfile';
 import { UserData, PlayerDto } from '../../InitialPage/Contexts/Contexts';
 import PhotoWithOnlineStatus from './PhotoWithOnlineStatus';
 import { TbPingPong } from 'react-icons/tb';
 import webSocketService from '../../webSocketService';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 type typeListChat = {
 	players: PlayerDto[]
 	adms: PlayerDto[]
-	openChat: boolean
+	openChat: boolean,
+	membersTitle: boolean
 }
 
-export default function ListFriends({ players, adms, openChat }: typeListChat) {
+export default function ListFriends({ players, adms, openChat, membersTitle }: typeListChat) {
 	const { user } = useContext(UserData);
 	const [_players, setPlayers] = useState<PlayerDto[]>(players)
 	const [_adms, setAdms] = useState<PlayerDto[]>(adms)
 	const [friendSelectedForDirect, setFriendSelectedForDirect] = useState<PlayerDto>({} as PlayerDto);
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>({ id: '', nickname: '' });
+	const navigate = useNavigate()
 
+
+	// useRef para armazenar os sockets
+	const loginSocketRef = useRef<any>(null);
+	const logoutSocketRef = useRef<any>(null);
+	const [modalInviteOpen, setModalInviteOpen] = useState(false);
+	const [modalMessage, setModalMessage] = useState("");
 
 	useEffect(() => {
-		setAdms(adms)
-		setPlayers(players)
+		setPlayers(players);
+		setAdms(adms);
 
-		const socket2 = webSocketService("/topic/login", (userId: string) => {
-			setPlayers((prev) => {
-				return prev.map((player) =>
-					player.id === userId ? { ...player, online: true } : player
-				)
-			}
-			);
+		if (!loginSocketRef.current) {
+			loginSocketRef.current = webSocketService("/topic/login", (user: { userId: string }) => {
+				const id = user.userId;
+				setPlayers(prev => prev.map(p => p.id === id ? { ...p, online: true } : p));
+				setAdms(prev => prev.map(p => p.id === id ? { ...p, online: true } : p));
+			});
+		}
 
-			setAdms((prev) =>
-				prev.map((player) =>
-					player.id === userId ? { ...player, online: true } : player
-				)
-			);
-
-		});
-
-		const socket = webSocketService("/topic/logout", (userId: string) => {
-			// Marca como inativo em vez de remover
-			setPlayers((prev) =>
-				prev.map((player) =>
-					player.id === userId ? { ...player, online: false } : player
-				)
-			)
-
-			setAdms((prev) =>
-				prev.map((player) =>
-					player.id === userId ? { ...player, online: false } : player
-				)
-			)
-		})
+		if (!logoutSocketRef.current) {
+			logoutSocketRef.current = webSocketService("/topic/logout", (user: { userId: string }) => {
+				const id = user.userId;
+				setPlayers(prev => prev.map(p => p.id === id ? { ...p, online: false } : p));
+				setAdms(prev => prev.map(p => p.id === id ? { ...p, online: false } : p));
+			});
+		}
 
 		return () => {
-			socket.deactivate();
-			socket2.deactivate();
-		}
+			loginSocketRef.current?.deactivate();
+			logoutSocketRef.current?.deactivate();
+			loginSocketRef.current = null;
+			logoutSocketRef.current = null;
+		};
 	}, [players, adms]);
 
 	function handleOpenChatPrivate(player: PlayerDto) {
@@ -70,6 +67,26 @@ export default function ListFriends({ players, adms, openChat }: typeListChat) {
 			setFriendSelectedForDirect({} as PlayerDto);
 		}
 		else setFriendSelectedForDirect(player)
+	}
+
+	const invitePath = (playerId: string): void => {
+		const route = `${process.env.REACT_APP_API_URL}/invite-path${playerId}`;
+
+		axios.post(route, {}, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
+			.then((res) => {
+				// Exibe o modal com mensagem de sucesso
+				setModalMessage("Convite enviado com sucesso!");
+				setModalInviteOpen(true);
+			})
+			.catch((err) => {
+				if (err.response?.status === 401) {
+					alert("Sessão expirada ou não autorizada. Por favor, faça login novamente.");
+					navigate("/login");
+				} else {
+					setModalMessage("Erro ao enviar convite.");
+					setModalInviteOpen(true);
+				}
+			});
 	}
 
 	if (!_players || _players.length === 0) {
@@ -84,10 +101,28 @@ export default function ListFriends({ players, adms, openChat }: typeListChat) {
 
 	return (
 		<div className='text-white overflow-auto h-100'>
-			<div className="border-bottom d-flex align-items-end p-1" style={{ height: "55px" }}>
-				<h3 className='text-white'>Membros </h3>
-			</div>
+
+			{/* abre o direct entre os 2 chats */}
 			{friendSelectedForDirect.nickname && <PrivateChat friend={friendSelectedForDirect} />}
+
+			{/* modal de envio pedido para partida */}
+			{modalInviteOpen && (
+				<div className="modal-overlay">
+					<div className="modal-content">
+						<p>{modalMessage}</p>
+						<button onClick={() => setModalInviteOpen(false)}>Fechar</button>
+					</div>
+				</div>
+			)}
+
+			{/* aparacer titulo membros utilados em chats publicos */}
+			{membersTitle && (
+				<div className="border-bottom d-flex align-items-end p-1" style={{ height: "55px" }}>
+					<h3 className='text-white'>Membros </h3>
+				</div>
+			)}
+
+			{/* abre o profile do usuario ao clicar na foto */}
 			{!dinamicProfile ? null :
 				<DinamicProfile
 					openDinamicProfile={setDinamicProfile}
@@ -126,7 +161,7 @@ export default function ListFriends({ players, adms, openChat }: typeListChat) {
 									size={25}
 									style={{ color: "#808287" }}
 									title='Invite to play'
-									onClick={() => { }}
+									onClick={() => invitePath(play.id)}
 								/>
 							</div>
 						</div>

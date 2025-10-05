@@ -106,7 +106,7 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 	if (!chatData && !showAccessModal) return <div>Carregando...</div>
 
 	return (
-		<div className="rounded text-white position-absolute top-50 start-50 translate-middle h-75 w-75" onClick={(event) => event.stopPropagation()}>
+		<div className="rounded text-white position-absolute top-50 start-50 translate-middle h-75 w-75">
 			{showModal.show ? <ModalIsBanned openPageChats={openPageChats} msg={showModal.msg} /> : null}
 			<div className="row g-0 h-100 p-2">
 				<ChatContext.Provider value={{ chatData: chatData, setDataChat, setDinamicProfile }}>
@@ -115,6 +115,7 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 							players={chatData.members}
 							adms={chatData.adms}
 							openChat={false}
+							membersTitle={true}
 						/>
 					</div>
 

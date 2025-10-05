@@ -64,10 +64,7 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
     const allMatches = profile ? profile.matches.wins.concat(profile.matches.losses) : []
     return (
         <div
-            className="text-white h-75 w-75 position-fixed top-50 start-50 translate-middle d-flex"
-            style={cssBackgroundTerra}
-            onClick={(event) => event.stopPropagation()}
-        >
+            className="text-white h-75 w-75 position-fixed top-50 start-50 translate-middle d-flex" style={cssBackgroundTerra}>
             <IoMdClose
                 className="button-close"
                 style={{
