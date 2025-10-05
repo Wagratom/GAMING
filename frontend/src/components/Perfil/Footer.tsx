@@ -1,6 +1,8 @@
 import { IoLogoInstagram } from "react-icons/io";
 import { FaGithub } from "react-icons/fa";
 import { AiOutlineLinkedin } from "react-icons/ai";
+import { TbFileTypeDoc } from "react-icons/tb";
+import { GiLoveLetter } from "react-icons/gi";
 
 export default function FolderPerfil(): JSX.Element {
 	const cssFooter: React.CSSProperties = {
@@ -27,11 +29,12 @@ export default function FolderPerfil(): JSX.Element {
 	}
 
 	return (
-		<footer style={cssFooter}>
-			<hr />
+		<footer style={cssFooter} id="footerProfile">
+			<hr style={{ margin: 0 }} />
 			<div style={contentFooter}>
 				<div style={contentRedirectsIcons}>
 					<a
+						title="github"
 						className="text-white"
 						target="_blank"
 						rel="noreferrer"
@@ -39,6 +42,7 @@ export default function FolderPerfil(): JSX.Element {
 						<FaGithub size={30} />
 					</a>
 					<a
+						title="instagram"
 						className="text-white"
 						target="_blank"
 						rel="noreferrer"
@@ -46,11 +50,29 @@ export default function FolderPerfil(): JSX.Element {
 						<IoLogoInstagram size={30} />
 					</a>
 					<a
+						title="linkedin"
 						className="text-white"
 						target="_blank"
 						rel="noreferrer"
 						type="button" href="https://www.linkedin.com/in/wagraton-wallas/">
 						<AiOutlineLinkedin size={30} />
+					</a>
+					<a
+						title="currículo"
+						className="text-white"
+						href="wagratonCv.pdf" // Caminho do seu PDF na pasta public
+						download='wagraton wallas cv' // Nome do arquivo que será baixado
+					>
+						<TbFileTypeDoc size={30} />
+					</a>
+
+					<a
+						title="momento especial"
+						className="text-white"
+						target="_blank"
+						rel="noreferrer"
+						type="button" href="https://www.momentoespecial.com.br/">
+						<GiLoveLetter size={30} />
 					</a>
 				</div>
 			</div>

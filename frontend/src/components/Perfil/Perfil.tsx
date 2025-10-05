@@ -3,6 +3,7 @@ import PhotoPerfil from './PhotoPerfil';
 import background from '../../assets/perfil/bg.png'
 import FolderPerfil from './Footer';
 import { IoMdClose } from 'react-icons/io';
+import './Perfil.css'
 
 type propsDinamicProfile = {
 	close: (name: string) => void;
@@ -18,12 +19,10 @@ export default function Perfil({ close }: propsDinamicProfile) {
 		width: '75%',
 		height: '75%',
 
-
 		backgroundImage: `url(${background})`,
 		backgroundSize: '100% 100%',
 		backgroundPosition: 'center',
 		backgroundRepeat: 'no-repeat',
-
 	}
 
 	const cssDivAux: React.CSSProperties = {
@@ -31,6 +30,8 @@ export default function Perfil({ close }: propsDinamicProfile) {
 		width: '100%',
 		height: '100%',
 		padding: '5rem',
+		display: "flex",
+		flexDirection: "column"
 	}
 
 	return (

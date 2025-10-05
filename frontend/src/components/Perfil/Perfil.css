@@ -1,0 +1,85 @@
+.photo-perfil-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	margin-right: 5%;
+	font-family: pixel, Roboto, sans-serif;
+	flex-wrap: wrap; /* permite quebrar linha em telas menores */
+	gap: 1rem;
+}
+
+/* Botões */
+.photo-buttons {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	flex: 1;
+	min-width: 180px;
+}
+
+/* Área da imagem */
+.photo-wrapper {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 16rem;
+	height: 8rem;
+}
+
+/* Imagem do Luffy */
+.photo-gif {
+	width: 100%;
+	height: 100%;
+	padding: 1rem;
+	border-radius: 3rem;
+	opacity: 0.5;
+	object-fit: cover;
+}
+
+/* Fundo */
+.photo-background {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-image: url('../../assets/perfil/bgPhoto.png');
+	background-size: 100% 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	opacity: 0.5;
+	border-radius: 3rem;
+	z-index: -1;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+	.photo-perfil-container {
+		flex-direction: column;
+		align-items: center;
+		margin-right: 0;
+	}
+
+	.photo-wrapper {
+		width: 12rem;
+		height: 6rem;
+	}
+
+	.photo-gif {
+		padding: 0.5rem;
+	}
+
+	.photo-buttons {
+		order: 2; /* deixa os botões abaixo da imagem se quiser */
+	}
+}
+
+@media (max-width: 480px) {
+	.photo-wrapper {
+		width: 10rem;
+		height: 5rem;
+	}
+}
