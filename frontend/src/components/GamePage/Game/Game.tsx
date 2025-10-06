@@ -2,23 +2,26 @@ import Phaser, { Game as PhaserGame } from "phaser";
 import { useContext, useEffect, useRef, useState } from "react";
 import GameScene from "./GameScene";
 
-import { PlayerDto, UserData } from "../../InitialPage/Contexts/Contexts";
+import { UserData } from "../../InitialPage/Contexts/Contexts";
+import Perfil from "../../Perfil/Perfil";
 import DinamicProfile from "../../Profiles/DinamicProfile/DinamicProfile";
 import MiniProfile from "../../Profiles/MineProfile/MineProfile";
 import PublicsChats from "../../PublicChatsPage/PublicChats";
 import Ranking from "../../Rankingpage/Ranking";
+import webSocketService from "../../webSocketService";
 import ChooseGameMode from "../SettingsGame/ChooseGameMode";
 import SettingsStore from "../SettingsStore/SettingsStore";
-import Perfil from "../../Perfil/Perfil";
-import webSocketService from "../../webSocketService";
+import { ModalConvite } from "./ModalConvite";
+import InviteErro from "./ModalErroInvite";
 
 export default function Game() {
 	const gameContainerRef = useRef<HTMLDivElement>(null);
 	const game = useRef<PhaserGame>();
-	const userData = useContext(UserData).user;
-	const [collisionPnt, setCollisionPnt] = useState("pntBase");
+	const { user } = useContext(UserData);
+	const [collisionPnt, setCollisionPnt] = useState("");
 	const [openModalConvite, setOpenModalConvite] = useState(false);
-	const [dataConvite, setDataConvite] = useState({} as any);
+	const [userInviter, setUsernviter] = useState<any>({});
+	const [erroInvite, setErroInvite] = useState<string>("");
 
 	// Variável para guardar o último objeto colidido
 	let oldest = "";
@@ -60,7 +63,6 @@ export default function Game() {
 		});
 	}
 
-	const loginSocketRef = useRef<any>(null);
 	useEffect(() => {
 		if (!gameContainerRef.current) return;
 
@@ -79,21 +81,24 @@ export default function Game() {
 		game.current.scene.start('GameScene', { collisionCallback: updateColition });
 
 
-		if (!loginSocketRef.current) {
-			loginSocketRef.current = webSocketService("/topic/invite-path", (user: PlayerDto) => {
-				
-			});
-		}
+		const socket = webSocketService(`/topic/invite/${user.id}`, (resp: any) => {
+			if (resp.msg) {
+				setErroInvite(resp.msg)
+			} else {
+				setUsernviter(resp)
+				setOpenModalConvite(true)
+			}
+		});
 
+		setCollisionPnt("pntBase")
 		return () => {
 			game.current?.destroy(true)
-			loginSocketRef.current?.deactivate();
+			socket?.deactivate();
 		}
-	}, []);
+	}, [user]);
 
 	return (
 		<div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
-			{/* GIF de fundo */}
 			<div style={{
 				position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
 				backgroundImage: `url(${require('../../../assets/game/planets/backgrounds/background3.gif')})`,
@@ -111,13 +116,15 @@ export default function Game() {
 					{collisionPnt === 'planetGame' && <ChooseGameMode openSettingsPath={updateColition} />}
 					{collisionPnt === 'satelite' && <PublicsChats openPublicChat={updateColition} />}
 					{collisionPnt === 'base' && <Ranking openStore={updateColition} />}
-					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={updateColition} id={userData.id} />}
+					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={updateColition} id={user.id} />}
 					{collisionPnt === 'pntBase' && <Perfil close={updateColition} />}
 
-					{/* <ModalConvite setOpenChat={setOpenModalConvite} /> */}
-					{/* <MiniProfile showMiniPerfil={setCollisionPnt} /> */}
-					{/* <PublicsChats openPublicChat={setCollisionPnt} /> */}
-					{/* <DinamicProfile openDinamicProfile={setCollisionPnt} nickName={userData.nickname} id={userData.id} /> */}
+					{openModalConvite && (
+						<ModalConvite setOpenChat={setOpenModalConvite} me={user} userInviter={userInviter.player} roomId={userInviter.roomId} />
+					)}
+					{erroInvite && (
+						<InviteErro msg={erroInvite} close={setErroInvite} />
+					)}
 				</div>
 			</div>
 		</div>
