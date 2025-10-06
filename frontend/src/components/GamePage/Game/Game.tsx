@@ -2,7 +2,7 @@ import Phaser, { Game as PhaserGame } from "phaser";
 import { useContext, useEffect, useRef, useState } from "react";
 import GameScene from "./GameScene";
 
-import { UserData } from "../../InitialPage/Contexts/Contexts";
+import { UserData, UserDto } from "../../InitialPage/Contexts/Contexts";
 import Perfil from "../../Perfil/Perfil";
 import DinamicProfile from "../../Profiles/DinamicProfile/DinamicProfile";
 import MiniProfile from "../../Profiles/MineProfile/MineProfile";
@@ -13,6 +13,13 @@ import ChooseGameMode from "../SettingsGame/ChooseGameMode";
 import SettingsStore from "../SettingsStore/SettingsStore";
 import { ModalConvite } from "./ModalConvite";
 import InviteErro from "./ModalErroInvite";
+import { useNavigate } from "react-router-dom";
+
+type responseCreateMatch = {
+	roomId: string;
+	playerLeft: UserDto;
+	playerRight: UserDto;
+}
 
 export default function Game() {
 	const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -22,6 +29,7 @@ export default function Game() {
 	const [openModalConvite, setOpenModalConvite] = useState(false);
 	const [userInviter, setUsernviter] = useState<any>({});
 	const [erroInvite, setErroInvite] = useState<string>("");
+	const navigate = useNavigate();
 
 	// Variável para guardar o último objeto colidido
 	let oldest = "";
@@ -90,10 +98,24 @@ export default function Game() {
 			}
 		});
 
+		const socket2 = webSocketService(
+			`/topic/matchmaking/${user.id}`,
+			(response: responseCreateMatch) => {
+				navigate(`room/${response.roomId}`, {
+					state: {
+						playerLeft: response.playerLeft,
+						playerRight: response.playerRight
+					}
+				});
+			}
+		);
+
 		setCollisionPnt("pntBase")
 		return () => {
 			game.current?.destroy(true)
 			socket?.deactivate();
+			socket2?.deactivate();
+
 		}
 	}, [user]);
 

@@ -3,21 +3,15 @@ import ButtonModelsGame from "./ButtonModelsGame";
 import playPong from '../../../assets/settingsGame/playPong.jpg'
 import playSpecialPong from '../../../assets/settingsGame/playSpecialPong.jpg'
 import ModalRules from "./ModalRules";
-import { UserData, UserDto } from "../../InitialPage/Contexts/Contexts";
-import { useNavigate } from "react-router-dom";
+import { UserData } from "../../InitialPage/Contexts/Contexts";
 import webSocketService from "../../webSocketService";
 
-type responseCreateMatch = {
-	roomId: string;
-	playerLeft: UserDto;
-	playerRight: UserDto;
-}
+
 
 export default function MatchTypes(): JSX.Element {
 	const [isOpen, setIsOpen] = useState(false);
 	const { user } = useContext(UserData);
 	const matchRequestClientRef = useRef<any>(null);
-	const navigate = useNavigate();
 
 	// Só chama o hook depois que user.id estiver disponível
 	useEffect(() => {
@@ -26,21 +20,7 @@ export default function MatchTypes(): JSX.Element {
 			({ message }: { message: string }) => alert(message)
 		)
 
-		const socket = webSocketService(
-			`/topic/matchmaking/${user.id}`,
-			(response: responseCreateMatch) => {
-				navigate(`room/${response.roomId}`, {
-					state: {
-						playerLeft: response.playerLeft,
-						playerRight: response.playerRight
-					}
-				});
-			}
-		);
-
-
 		return () => {
-			socket.deactivate();
 			matchRequestClientRef.current.deactivate();
 		}
 	}, [user.id])

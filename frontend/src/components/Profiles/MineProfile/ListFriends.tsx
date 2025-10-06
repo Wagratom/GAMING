@@ -72,7 +72,6 @@ export default function ListFriends({ players, adms, openChat, membersTitle }: t
 		});
 	};
 
-
 	if (!_players || _players.length === 0) {
 		return (
 			<div className='d-flex flex-column justify-content-center align-items-center h-100'>

@@ -16,6 +16,7 @@ export function ModalConvite({ setOpenChat, userInviter, me, roomId }: propsModa
 		backgroundSize: "cover",
 		backgroundPosition: "center",
 		color: "white",
+		width: '500px'
 	}
 
 	const accertPathSocketRef = useRef<any>(null);
