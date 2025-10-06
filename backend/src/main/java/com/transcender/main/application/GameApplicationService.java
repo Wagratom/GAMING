@@ -3,6 +3,7 @@ package com.transcender.main.application;
 import com.transcender.main.domain.entity.MatchCore;
 import com.transcender.main.domain.entity.PongGame;
 import com.transcender.main.domain.entity.UserCore;
+import com.transcender.main.domain.exceptions.ResourceNotFound;
 import com.transcender.main.domain.port.in.GamePort;
 import com.transcender.main.domain.port.out.MatchRepositoryPort;
 import com.transcender.main.domain.port.out.UserRepositoryPort;
@@ -110,7 +111,7 @@ public class GameApplicationService implements GamePort {
         PongGame game = games.get(move.roomID());
         if (game != null) {
             game.movePlayer(move);
-            messagingTemplate.convertAndSend("/topic/game/" + move.roomID(), toDto(game));
+            messagingTemplate.convertAndSend("/topic/game/" + move.roomID(), new GamePongDto(game));
         }
     }
 
@@ -178,6 +179,19 @@ public class GameApplicationService implements GamePort {
             return null;
         }
 
+        // Verifica se já existe convite pendente entre os dois jogadores
+        boolean alreadyInvited = pendingInvites.values().stream().anyMatch(invite ->
+                (invite.inviterId().equals(inviterId) && invite.invitedId().equals(invitedId)) ||
+                        (invite.inviterId().equals(invitedId) && invite.invitedId().equals(inviterId))
+        );
+
+        if (alreadyInvited) {
+            messagingTemplate.convertAndSend("/topic/invite/" + inviterId,
+                    Map.of("error", "Já existe um convite pendente entre vocês. So poderá criar outro daqui 1m"));
+            return null;
+        }
+
+
         Optional<UserCore> inviter = userRepository.getUserById(inviterId);
         Optional<UserCore> invited = userRepository.getUserById(invitedId);
 
@@ -191,8 +205,11 @@ public class GameApplicationService implements GamePort {
         pendingInvites.put(roomId, new InviteData(inviterId, invitedId, System.currentTimeMillis()));
 
         // Notifica o convidado
+        UserCore userInviter = userRepository.getUserById(inviterId).orElseThrow(() -> new ResourceNotFound("user", inviterId));
+
         messagingTemplate.convertAndSend("/topic/invite/" + invitedId,
-                Map.of("roomId", roomId, "inviterId", inviterId, "message", "Você recebeu um convite para jogar!"));
+                Map.of("roomId", roomId, "player", userInviter, "message", "Você recebeu um convite para jogar!")
+        );
 
         // Agenda timeout de 1 minuto
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();

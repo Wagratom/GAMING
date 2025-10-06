@@ -109,7 +109,6 @@ public class ChatApplicationService implements ChatPort {
                 .filter(u -> u.user().getId().equals(userId))
                 .map(ChatUserCore::statusChat)
                 .anyMatch(status -> status == StatusChat.ATIVE);
-
     }
 
     @Override
