@@ -16,15 +16,13 @@ export function ModalConvite({ setOpenChat, userInviter, me, roomId }: propsModa
 		backgroundSize: "cover",
 		backgroundPosition: "center",
 		color: "white",
-		width: '500px'
 	}
 
 	const accertPathSocketRef = useRef<any>(null);
 
 	useEffect(() => {
-		if (!accertPathSocketRef.current) {
-			accertPathSocketRef.current = webSocketService("/topic/game/invite", () => { });
-		}
+		accertPathSocketRef.current = webSocketService("/topic/game/invite", () => { });
+		return () => accertPathSocketRef.current.deactivate()
 	}, [])
 
 	if (!userInviter || !roomId) return null
@@ -32,16 +30,16 @@ export function ModalConvite({ setOpenChat, userInviter, me, roomId }: propsModa
 	const invitePath = (): void => {
 		if (accertPathSocketRef.current) {
 			accertPathSocketRef.current.publish({
-				destination: "/game/invite/accept",
-				body: JSON.stringify({ roomId: roomId, invitedId: userInviter.id }),
+				destination: "/app/game/invite/accept",
+				body: JSON.stringify({ roomId: roomId, invitedId: me.id }),
 			});
 		}
 	}
 
 	return (
-		<Modal show={true} onHide={() => setOpenChat(false)}>
-			<Modal.Header closeButton style={cssBackgroundModal}>
-				<div style={{display: 'flex', justifyContent: 'space-between', width: "100%", marginRight: "20px"}}>
+		<Modal show={true} onHide={() => setOpenChat(false)} contentClassName="bankai">
+			<Modal.Header closeButton style={cssBackgroundModal} >
+				<div style={{ display: 'flex', justifyContent: 'space-between', width: "500px", marginRight: "20px" }}>
 					<p className="fs-5 fw-bold">{userInviter.nickname}</p>
 					<p className="fs-5 fw-bold">{me.nickname}</p>
 				</div>

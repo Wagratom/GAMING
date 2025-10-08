@@ -26,7 +26,6 @@ export default function FormularioLogin({ handleForm }: propsFormulario) {
 				navidate("/game");
 			})
 			.catch(error => {
-				console.log(error.response)
 				if (error.response.status === '403') {
 					setLoginInvalido(true)
 				}

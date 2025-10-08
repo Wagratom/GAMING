@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import loserImg from "../../../assets/game/loser.jpg";
 import winnerImg from "../../../assets/game/winner.jpg";
@@ -105,14 +105,15 @@ export default function TableGame() {
     //#############################################################
     //CSS de cria
     //#############################################################
-    const paddleStyle = (paddle: typeof game.paddleLeft) => ({
+    const paddleStyle = useCallback((paddle: typeof game.paddleLeft) => ({
         height: `${paddle.height}px`,
         width: `${paddle.width}px`,
         backgroundColor: 'white',
         position: 'absolute' as 'absolute',
         top: `${paddle.positionFront}px`,
         left: `${paddle.positionX}px`,
-    });
+    }), []);
+
 
     const ballStyle: React.CSSProperties = {
         height: `${game.ball.size}px`,
@@ -137,12 +138,13 @@ export default function TableGame() {
 
     //criando o user como um useRef para não fica recriando toda vez que atualiza a mesa
     const userRef = useRef<UserDto>(useContext(UserData).user);
-    const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
         if (game.winner) return;
-        // if (game.watchs.includes(userRef.current.id)) return;
         if (!socketRef.current) return;
 
-        if ((e.key === 'w' || e.key === 's') && game.playerLeftId === userRef.current.id) {
+        const userId = userRef.current.id;
+
+        if ((e.key === 'w' || e.key === 's') && game.playerLeftId === userId) {
             socketRef.current?.publish({
                 destination: "/app/game/move",
                 body: JSON.stringify({
@@ -150,8 +152,8 @@ export default function TableGame() {
                     isLeft: true,
                     isUp: (e.key === 'w')
                 }),
-            })
-        } else if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && game.playerRightId === userRef.current.id) {
+            });
+        } else if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && game.playerRightId === userId) {
             socketRef.current?.publish({
                 destination: "/app/game/move",
                 body: JSON.stringify({
@@ -159,16 +161,17 @@ export default function TableGame() {
                     isLeft: false,
                     isUp: (e.key === 'ArrowUp')
                 }),
-            })
+            });
         }
-    };
+    }, [game.winner, game.playerLeftId, game.playerRightId, room]);
 
     //If que verifica se o game ja acabou
     const navigate = useNavigate();
     if (game.winner) {
         const winnerStyle: React.CSSProperties = {
             backgroundImage: `url(${game.winner === userRef.current.id ? winnerImg : loserImg})`,
-            backgroundSize: 'cover',
+            backgroundSize: 'contain',
+            backgroundRepeat: "no-repeat",
             backgroundPosition: 'center',
         };
 

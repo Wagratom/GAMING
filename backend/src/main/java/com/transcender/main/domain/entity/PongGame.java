@@ -103,11 +103,21 @@ public class PongGame {
     }
 
     public Long getWinnerId() {
-        return (scoreLeft >= 3) ? playerLeft.getId() : playerRight.getId();
+        if (scoreLeft >= 3) {
+            return playerLeft.getId();
+        } else if (scoreRight >= 3) {
+            return playerRight.getId();
+        }
+        return null;
     }
 
     public Long getLoserId() {
-        return (scoreLeft < 3) ? playerLeft.getId() : playerRight.getId();
+        if (scoreLeft < 3) {
+            return playerLeft.getId();
+        } else if (scoreRight < 3) {
+            return playerRight.getId();
+        }
+        return null;
     }
 
     public Integer getScoreWinner() {

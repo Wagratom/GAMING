@@ -31,13 +31,10 @@ export default function Game() {
 	const [erroInvite, setErroInvite] = useState<string>("");
 	const navigate = useNavigate();
 
-	// Variável para guardar o último objeto colidido
 	let oldest = "";
 
-	// Função de atualização da colisão
 	function updateColition(name: string, isclick?: boolean) {
 		// Se o nome for o mesmo do último, não faz nada
-
 		if (name !== "" && oldest === name && isclick !== true) {
 			return;
 		}
@@ -90,8 +87,8 @@ export default function Game() {
 
 
 		const socket = webSocketService(`/topic/invite/${user.id}`, (resp: any) => {
-			if (resp.msg) {
-				setErroInvite(resp.msg)
+			if (resp.msg || resp.error) {
+				setErroInvite(resp.msg ? resp.msg : resp.error )
 			} else {
 				setUsernviter(resp)
 				setOpenModalConvite(true)
@@ -141,8 +138,13 @@ export default function Game() {
 					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={updateColition} id={user.id} />}
 					{collisionPnt === 'pntBase' && <Perfil close={updateColition} />}
 
-					{openModalConvite && (
-						<ModalConvite setOpenChat={setOpenModalConvite} me={user} userInviter={userInviter.player} roomId={userInviter.roomId} />
+					{openModalConvite&& (
+						<ModalConvite
+							setOpenChat={setOpenModalConvite}
+							me={user}
+							userInviter={userInviter.player}
+							roomId={userInviter.roomId}
+						/>
 					)}
 					{erroInvite && (
 						<InviteErro msg={erroInvite} close={setErroInvite} />

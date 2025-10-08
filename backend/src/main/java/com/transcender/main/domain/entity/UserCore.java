@@ -204,14 +204,15 @@ public class UserCore {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true; // mesmo objeto na memória
-        if (o == null || getClass() != o.getClass()) return false; // tipos diferentes
-        UserCore user = (UserCore) o;
-        return Objects.equals(id, user.id); // comparação só pelo id
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserCore userCore = (UserCore) o;
+        return Objects.equals(id, userCore.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id); // usa só o id para calcular o hash
+        return Objects.hash(id);
     }
+
 }

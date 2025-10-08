@@ -46,7 +46,7 @@ public class GameController {
         String roomId = gameService.createInviteRoom(invite.inviterId(), invite.invitedId());
         if (roomId == null) {
             gameService.notifyError(invite.inviterId(),
-                    "Não foi possível criar o convite. Verifique se você já está em uma partida ou fila.");
+                    "Não foi possível criar o convite. Verifique se você já está em uma partida ou fila. As filas e partidas expiram entre 1 e 5 minutos");
         }
     }
 

@@ -29,15 +29,15 @@ public class GamePongDto {
     public record PowerDto(int x, int y, int size) {
     }
 
-    public GamePongDto (PongGame game) {
+    public GamePongDto(PongGame game) {
         this.ball = new BallDto(game.getBallX(), game.getBallY(), game.getBallSize());
         this.paddleLeft = new PaddleDto(0, game.getLeftPaddleY(), game.getPaddleHeight(), game.getPaddleWidth(), 5);
-        this.paddleRight =        new PaddleDto(game.getWidth() - game.getPaddleWidth(), game.getRightPaddleY(), game.getPaddleHeight(), game.getPaddleWidth(), 5);
+        this.paddleRight = new PaddleDto(game.getWidth() - game.getPaddleWidth(), game.getRightPaddleY(), game.getPaddleHeight(), game.getPaddleWidth(), 5);
         this.placarLeft = game.getScoreLeft();
         this.placarRight = game.getScoreRight();
         this.winner = game.getWinnerId();
         this.power = new PowerDto(0, 0, 0);
-        this.window =  new WindowDto(game.getHeight(), game.getWidth());
+        this.window = new WindowDto(game.getHeight(), game.getWidth());
         this.playerLeftId = game.getPlayerRight().getId();
         this.playerRightId = game.getPlayerLeft().getId();
     }

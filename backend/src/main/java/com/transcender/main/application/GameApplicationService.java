@@ -31,44 +31,59 @@ public class GameApplicationService implements GamePort {
     // Jogos ativos
     private final Map<String, PongGame> games = new ConcurrentHashMap<>();
 
-    // Jogadores esperando partida
-    private final Queue<UserCore> waitingPlayersNomalGame = new ConcurrentLinkedQueue<>();
+    // Jogadores esperando partida (agora armazenamos apenas IDs)
+    private final Queue<Long> waitingPlayersNormalGame = new ConcurrentLinkedQueue<>();
     private final List<Long> playersInMatcher = new CopyOnWriteArrayList<>();
 
     // Controle de tempo na fila
     private final Map<Long, Long> waitingSince = new ConcurrentHashMap<>();
 
-
+    // Convites pendentes
     private final Map<String, InviteData> pendingInvites = new ConcurrentHashMap<>();
-    // ===================== DTO =====================
 
     // Classe auxiliar para armazenar o convite
-    private record InviteData(Long inviterId, Long invitedId, long createdAt) {
-    }
+    private record InviteData(Long inviterId, Long invitedId, long createdAt) {}
+
+    private record Player(String nickname, Long id, String avatar){};
+    // ===================== FILA NORMAL =====================
 
     @Override
     public void addToQueue(Long playerId, String typeMode) {
+        logger.info("[INIT] add queue");
         if (playersInMatcher.contains(playerId)) return;
 
         Optional<UserCore> user = userRepository.getUserById(playerId);
         if (user.isEmpty()) return;
 
-        if (waitingPlayersNomalGame.contains(user.get())) return;
+        if (waitingPlayersNormalGame.contains(playerId)) return;
 
-        waitingPlayersNomalGame.add(user.get());
-        playersInMatcher.add(playerId);
+        logger.info("Adicionando player {} à fila normal", playerId);
+        waitingPlayersNormalGame.add(playerId);
         waitingSince.put(playerId, System.currentTimeMillis());
 
         // Se houver pelo menos 2 jogadores → cria partida
-        if (waitingPlayersNomalGame.size() >= 2) {
-            UserCore player1 = waitingPlayersNomalGame.poll();
-            UserCore player2 = waitingPlayersNomalGame.poll();
+        if (waitingPlayersNormalGame.size() >= 2) {
+            Long player1Id = waitingPlayersNormalGame.poll();
+            Long player2Id = waitingPlayersNormalGame.poll();
 
-            playersInMatcher.add(player1.getId());
-            playersInMatcher.add(player2.getId());
+            if (player1Id == null || player2Id == null) return;
 
-            waitingSince.remove(player1.getId());
-            waitingSince.remove(player2.getId());
+            playersInMatcher.add(player1Id);
+            playersInMatcher.add(player2Id);
+
+            waitingSince.remove(player1Id);
+            waitingSince.remove(player2Id);
+
+            // Remove convites antigos envolvendo esses jogadores
+            pendingInvites.entrySet().removeIf(entry ->
+                    entry.getValue().inviterId().equals(player1Id)
+                            || entry.getValue().inviterId().equals(player2Id)
+                            || entry.getValue().invitedId().equals(player1Id)
+                            || entry.getValue().invitedId().equals(player2Id)
+            );
+
+            UserCore player1 = userRepository.getUserById(player1Id).orElseThrow();
+            UserCore player2 = userRepository.getUserById(player2Id).orElseThrow();
 
             String roomId = UUID.randomUUID().toString();
             createRoom(roomId, player1, player2, typeMode);
@@ -80,15 +95,7 @@ public class GameApplicationService implements GamePort {
 
     @Override
     public void createRoom(String roomId, UserCore player1, UserCore player2, String mode) {
-        logger.info("Criando uma nova partida entre player1={} player2={}", player1.getId(), player2.getId());
-
-        // Remove convites antigos envolvendo esses jogadores
-        pendingInvites.entrySet().removeIf(entry ->
-                entry.getValue().inviterId().equals(player1.getId())
-                        || entry.getValue().inviterId().equals(player2.getId())
-                        || entry.getValue().invitedId().equals(player1.getId())
-                        || entry.getValue().invitedId().equals(player2.getId())
-        );
+        logger.info("Criando nova partida entre player1={} e player2={}", player1.getId(), player2.getId());
 
         PongGame game = games.computeIfAbsent(roomId, r -> new PongGame(roomId, mode));
         game.addPlayer(player1, player2);
@@ -105,7 +112,7 @@ public class GameApplicationService implements GamePort {
         logger.info("Games ativos: {}", games.size());
     }
 
-    // ===================== Jogo =====================
+    // ===================== MOVIMENTOS =====================
 
     public void handleMove(PlayerMoveDto move) {
         PongGame game = games.get(move.roomID());
@@ -114,6 +121,8 @@ public class GameApplicationService implements GamePort {
             messagingTemplate.convertAndSend("/topic/game/" + move.roomID(), new GamePongDto(game));
         }
     }
+
+    // ===================== LOOP PRINCIPAL =====================
 
     @PostConstruct
     public void startLoop() {
@@ -135,10 +144,14 @@ public class GameApplicationService implements GamePort {
                                 game.getScoreLoser()
                         );
 
-                        messagingTemplate.convertAndSend("/topic/game/" + game.getRoomId(),  new GamePongDto(game));
+                        messagingTemplate.convertAndSend("/topic/game/" + game.getRoomId(), new GamePongDto(game));
+
+                        // Remove ambos os jogadores de todas as filas e convites
+                        removePlayerFromAllQueues(game.getPlayerLeft().getId());
+                        removePlayerFromAllQueues(game.getPlayerRight().getId());
+
                         games.remove(game.getRoomId());
-                        playersInMatcher.remove(game.getPlayerLeft().getId());
-                        playersInMatcher.remove(game.getPlayerRight().getId());
+                        logger.info("Partida finalizada e jogadores limpos: {}", game.getRoomId());
                     }
                 });
             } catch (Exception e) {
@@ -154,7 +167,7 @@ public class GameApplicationService implements GamePort {
 
                 waitingSince.forEach((playerId, since) -> {
                     if (now - since > maxWaiting) {
-                        waitingPlayersNomalGame.removeIf(u -> u.getId().equals(playerId));
+                        waitingPlayersNormalGame.remove(playerId);
                         playersInMatcher.remove(playerId);
                         waitingSince.remove(playerId);
 
@@ -175,11 +188,10 @@ public class GameApplicationService implements GamePort {
     public String createInviteRoom(Long inviterId, Long invitedId) {
         if (playersInMatcher.contains(inviterId)) {
             messagingTemplate.convertAndSend("/topic/invite/" + inviterId,
-                    Map.of("error", "Você já está na fila e não pode criar convite."));
+                    Map.of("msg", "Você já está na fila e não pode criar convite."));
             return null;
         }
 
-        // Verifica se já existe convite pendente entre os dois jogadores
         boolean alreadyInvited = pendingInvites.values().stream().anyMatch(invite ->
                 (invite.inviterId().equals(inviterId) && invite.invitedId().equals(invitedId)) ||
                         (invite.inviterId().equals(invitedId) && invite.invitedId().equals(inviterId))
@@ -187,42 +199,42 @@ public class GameApplicationService implements GamePort {
 
         if (alreadyInvited) {
             messagingTemplate.convertAndSend("/topic/invite/" + inviterId,
-                    Map.of("error", "Já existe um convite pendente entre vocês. So poderá criar outro daqui 1m"));
+                    Map.of("msg", "Já existe um convite pendente entre vocês. Tente novamente em 1 minuto."));
             return null;
         }
-
 
         Optional<UserCore> inviter = userRepository.getUserById(inviterId);
         Optional<UserCore> invited = userRepository.getUserById(invitedId);
 
-        if (inviter.isEmpty() || invited.isEmpty()) {
-            return null;
-        }
+        if (inviter.isEmpty() || invited.isEmpty()) return null;
 
-        // Cria uma sala UUID exclusiva
         String roomId = UUID.randomUUID().toString();
-
         pendingInvites.put(roomId, new InviteData(inviterId, invitedId, System.currentTimeMillis()));
 
-        // Notifica o convidado
-        UserCore userInviter = userRepository.getUserById(inviterId).orElseThrow(() -> new ResourceNotFound("user", inviterId));
-
+        UserCore userInviter = inviter.get();
         messagingTemplate.convertAndSend("/topic/invite/" + invitedId,
-                Map.of("roomId", roomId, "player", userInviter, "message", "Você recebeu um convite para jogar!")
+                Map.of(
+                        "roomId", roomId,
+                        "player", new Player(userInviter.getNickname(), userInviter.getId(), userInviter.getAvatar()),
+                        "message", "Você recebeu um convite para jogar!"
+                )
         );
+
+        messagingTemplate.convertAndSend("/topic/invite/" + inviterId,
+                Map.of("msg", "Convite enviado com sucesso"));
 
         // Agenda timeout de 1 minuto
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.schedule(() -> cancelInviteAfterTimeout(roomId), 1, TimeUnit.MINUTES);
 
         logger.info("Convite criado: roomId={} inviter={} invited={}", roomId, inviterId, invitedId);
-
         return roomId;
     }
 
     @Override
     public void acceptInvite(Long invitedId, String roomId) {
         InviteData invite = pendingInvites.get(roomId);
+        logger.info("Accept invite {} invitedId {}", invite, invitedId);
         if (invite == null) {
             messagingTemplate.convertAndSend("/topic/invite/" + invitedId,
                     Map.of("error", "Convite expirado ou inválido."));
@@ -243,15 +255,9 @@ public class GameApplicationService implements GamePort {
             return;
         }
 
-        // Remove ambos da fila normal (caso estejam esperando)
-        waitingPlayersNomalGame.removeIf(u ->
-                u.getId().equals(invite.inviterId()) || u.getId().equals(invite.invitedId()));
-
-        playersInMatcher.remove(invite.inviterId());
-        playersInMatcher.remove(invite.invitedId());
-        waitingSince.remove(invite.inviterId());
-        waitingSince.remove(invite.invitedId());
-
+        // Remove ambos de todas as filas, convites e matcher
+        removePlayerFromAllQueues(invite.inviterId());
+        removePlayerFromAllQueues(invite.invitedId());
 
         PongGame game = games.computeIfAbsent(roomId, r -> new PongGame(roomId, "invite"));
         game.addPlayer(inviter.get(), invited.get());
@@ -262,10 +268,10 @@ public class GameApplicationService implements GamePort {
                 "playerRight", game.getPlayerRight()
         );
 
+        logger.info("notificando players {} e {}", invite.inviterId(), invite.invitedId());
         messagingTemplate.convertAndSend("/topic/matchmaking/" + invite.inviterId(), response);
         messagingTemplate.convertAndSend("/topic/matchmaking/" + invite.invitedId(), response);
 
-        // Remove o convite ativo
         pendingInvites.remove(roomId);
         logger.info("Convite aceito e jogo iniciado: {}", roomId);
     }
@@ -281,6 +287,19 @@ public class GameApplicationService implements GamePort {
         }
     }
 
+    // ===================== UTIL =====================
+
+    private void removePlayerFromAllQueues(Long playerId) {
+        waitingPlayersNormalGame.remove(playerId);
+        playersInMatcher.remove(playerId);
+        waitingSince.remove(playerId);
+
+        pendingInvites.entrySet().removeIf(entry ->
+                entry.getValue().inviterId().equals(playerId) ||
+                        entry.getValue().invitedId().equals(playerId)
+        );
+    }
+
     public void notifyPlayer(Long playerId, Map<String, Object> payload) {
         messagingTemplate.convertAndSend("/topic/invite/" + playerId, payload);
     }
@@ -289,5 +308,4 @@ public class GameApplicationService implements GamePort {
         messagingTemplate.convertAndSend("/topic/invite/" + playerId,
                 Map.of("error", message));
     }
-
 }

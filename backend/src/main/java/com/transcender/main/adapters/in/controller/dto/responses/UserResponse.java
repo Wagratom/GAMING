@@ -9,7 +9,6 @@ import java.time.Instant;
 public class UserResponse {
 
     private final Long id;
-    private final String email;
     private final String nickname;
     private final String avatar;
     private final boolean online;
@@ -17,7 +16,6 @@ public class UserResponse {
 
     public UserResponse(UserCore user) {
         this.id = user.getId();
-        this.email = user.getEmail();
         this.nickname = user.getNickname();
         this.avatar = user.getAvatar();
         this.online = user.getOnline();

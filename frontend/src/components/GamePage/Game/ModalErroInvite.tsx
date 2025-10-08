@@ -7,7 +7,7 @@ export default function InviteErro({ msg, close }: { msg: string, close: React.D
         padding: "20px 30px",
         borderRadius: "10px",
         textAlign: "center",
-        width: "250px",
+        width: "350px",
         boxShadow: "0 0 15px env(--modal-shadow, rgba(0,0,0,0.3))",
     };
 
