@@ -135,7 +135,6 @@ public class FriendsApplication implements FriendsPort {
         FriendCore friendship = friendsRepository.getFriendCore(requesterId, friendId)
                 .orElseThrow(() -> new BadRequest("Amizade não encontrada"));
 
-        validateFriendShip(friendship, requesterId, friendId);
         messagingTemplate.convertAndSend("/topic/friends/" + requesterId,
                 notificationsToJson(friendsRepository.declineFriend(requesterId, friendId))
         );
