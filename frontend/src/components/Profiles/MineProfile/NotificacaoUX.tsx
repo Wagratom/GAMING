@@ -4,53 +4,23 @@ import { PlayerDto, UserData } from '../../InitialPage/Contexts/Contexts';
 import { FaCheck } from "react-icons/fa";
 import { ImCancelCircle } from "react-icons/im";
 import { LiaRobotSolid } from "react-icons/lia";
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import axios from 'axios';
-import webSocketService from '../../webSocketService';
 import { useNavigate } from 'react-router-dom';
 
-
-type Notifications = {
-	sender: PlayerDto;
-	receiver: PlayerDto;
+type propsMiniProfile = {
+	players: PlayerDto[];
+	setPlayers: React.Dispatch<React.SetStateAction<PlayerDto[]>>;
+	setReceivedNotification: React.Dispatch<React.SetStateAction<boolean>>;
 };
-
-
-export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String }) {
+export default function NotificacaoUX({ players, setPlayers, setReceivedNotification }: propsMiniProfile) {
 	const { user } = useContext(UserData)
-	const [friendshipRequests, setFriendshipRequests] = useState<PlayerDto[]>([]);
 
 	const [dinamicProfile, setDinamicProfile] = useState<string>("");
 	const [profileData, setProfileData] = useState<{ id: string, nickname: string }>({ id: '', nickname: '' });
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		if (!resoucePlayer.startsWith("/notifications")) return;
-
-		const route = `${process.env.REACT_APP_API_URL}/notifications?status=PENDING`;
-
-		axios.get(route, { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
-			.then((res) => {
-				setFriendshipRequests(res.data.map((notification: Notifications) => notification.sender));
-			})
-			.catch(() => { });
-	}, [resoucePlayer]);
-
-	useEffect(() => {
-		if (!user.id) return;
-
-		const socket = webSocketService(
-			`/topic/friends/${user.id}`,
-			(msg: string) => {
-				const not = msg as unknown as Notifications
-				setFriendshipRequests((prev) => [...prev, not.sender])
-			}
-		)
-		return () => void socket.deactivate();
-	}, [user.id])
-
-
-	if (friendshipRequests.length === 0) {
+	if (players.length === 0) {
 		return (
 			<div className='d-flex flex-column justify-content-center align-items-center h-100'>
 				<div className='d-flex justify-content-center'>
@@ -68,7 +38,8 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 		})
 			.then((res) => {
 				if (res.status === 200) {
-					setFriendshipRequests((prevRequests) => prevRequests.filter((p) => p.id !== player.id));
+					setPlayers((prevRequests) => prevRequests.filter((p) => p.id !== player.id));
+					if (players.length === 1) setReceivedNotification(false)
 				}
 			})
 			.catch((err) => {
@@ -90,7 +61,7 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 
 			{/* Map for show players list */}
 			{
-				friendshipRequests.map((userRequests) => {
+				players.map((userRequests) => {
 					if (user.id === userRequests.id) return null;
 					return (
 						<div className='d-flex  p-1 position relative z-1 ' key={userRequests.id}>
@@ -102,6 +73,10 @@ export default function NotificacaoUX({ resoucePlayer }: { resoucePlayer: String
 									photoWidth='2.5rem'
 									positionTop='70%'
 									positionEnd='47%'
+									callback={() => {
+										setDinamicProfile("open")
+										setProfileData({ id: userRequests.id, nickname: userRequests.nickname })
+									}}
 								/>
 								<p className='d-flex align-items-center'>
 									<LiaRobotSolid size={30} className='pe-2' />

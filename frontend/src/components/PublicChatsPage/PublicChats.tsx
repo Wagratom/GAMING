@@ -6,9 +6,10 @@ import BarOptions from './BarOptions';
 import ChatList from './ChatsList';
 import './PublicChats.css';
 import ScreenCreateNewChat from './ScreenCreateNewChat';
+import { IoMdClose } from 'react-icons/io';
 
 type propsRanking = {
-	openPublicChat:  (name: string) => void;
+	openPublicChat: (name: string) => void;
 }
 
 export default function PublicsChats({ openPublicChat }: propsRanking) {
@@ -74,6 +75,16 @@ export default function PublicsChats({ openPublicChat }: propsRanking) {
 
 	return (
 		<div className='position-fixed top-50 start-50 translate-middle public-chats-screen'>
+			<IoMdClose
+				className="button-close"
+				style={{
+					backgroundColor: '#2b2b3d',
+					boxShadow: 'rgb(255, 255, 255) 2px 2px 1px inset, rgba(30, 30, 47, 0.95) -8px -8px 8px inset',
+					top: '-50px',
+					right: '-50px',
+				}}
+				onClick={() => openPublicChat('')}
+			/>
 			<div className='d-flex flex-column h-100'>
 				<BarOptions
 					setShowCreateChat={setShowCreateChat}

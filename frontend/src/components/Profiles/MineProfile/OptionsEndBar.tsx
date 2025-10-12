@@ -1,4 +1,5 @@
-import { PiEnvelopeSimpleThin } from "react-icons/pi";
+import { BsEnvelope } from "react-icons/bs";
+import { BsEnvelopePaper } from "react-icons/bs";
 import { MdOutlinePersonAddAlt1, MdOutlinePersonRemove } from "react-icons/md";
 import axios from "axios";
 import { useState } from "react";
@@ -8,6 +9,7 @@ type Props = {
     setPlayersList: React.Dispatch<React.SetStateAction<PlayerDto[]>>;
     allPlayers: PlayerDto[];
     setResourcePlayer: React.Dispatch<React.SetStateAction<string>>;
+    receivedNotification: boolean;
 };
 
 type OpenState = {
@@ -16,7 +18,7 @@ type OpenState = {
 };
 
 
-export default function OptionsEndBar({ setPlayersList, setResourcePlayer, allPlayers }: Props) {
+export default function OptionsEndBar({ setPlayersList, setResourcePlayer, allPlayers, receivedNotification }: Props) {
     const [openInputSearch, setOpenInputSearch] = useState<OpenState>({ openSearch: false, method: "" });
     const [searchValue, setSearchValue] = useState<string>("");
 
@@ -47,9 +49,7 @@ export default function OptionsEndBar({ setPlayersList, setResourcePlayer, allPl
         if (allPlayers.length === 0) setResourcePlayer('/users')
 
         setSearchValue(value);
-        const filtered = allPlayers.filter((p) =>
-            p.nickname.toLowerCase().includes(value.toLowerCase())
-        );
+        const filtered = allPlayers.filter((p) => p.nickname.toLowerCase().includes(value.toLowerCase()));
         setPlayersList(filtered);
     }
 
@@ -87,6 +87,8 @@ export default function OptionsEndBar({ setPlayersList, setResourcePlayer, allPl
     }
 
     const styleButton: React.CSSProperties = { margin: "5px", cursor: "pointer" };
+
+    const EnvelopIcon = receivedNotification ? BsEnvelope : BsEnvelopePaper;
     const placeholderText = openInputSearch.method === "POST" ? "Add Friend" : "Remove Friend";
     return (
         <div className="d-flex align-items-center px-2 text-white">
@@ -122,7 +124,7 @@ export default function OptionsEndBar({ setPlayersList, setResourcePlayer, allPl
             }
 
             <div className="d-flex justify-content-end options ms-auto">
-                <PiEnvelopeSimpleThin
+                <EnvelopIcon
                     title="Notifications"
                     className="me-2"
                     style={styleButton}

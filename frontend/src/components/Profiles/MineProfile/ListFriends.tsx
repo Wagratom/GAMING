@@ -31,6 +31,9 @@ export default function ListFriends({ players, adms, openChat, membersTitle }: t
 		setPlayers(players);
 		setAdms(adms);
 
+	}, [players, adms]);
+
+	useEffect(() => {
 		if (!loginSocketRef.current) {
 			loginSocketRef.current = webSocketService("/topic/login", (user: { userId: string }) => {
 				const id = user.userId;
@@ -47,17 +50,16 @@ export default function ListFriends({ players, adms, openChat, membersTitle }: t
 			});
 		}
 
-
 		return () => {
 			loginSocketRef.current?.deactivate();
 			logoutSocketRef.current?.deactivate();
 			loginSocketRef.current = null;
 			logoutSocketRef.current = null;
 		};
-	}, [players, adms]);
+	}, []);
 
 	function handleOpenChatPrivate(player: PlayerDto) {
-		if (!openChat) return
+		if (!openChat && player.nickname !== friendSelectedForDirect.nickname ) return
 
 		if (player.nickname === friendSelectedForDirect.nickname) {
 			setFriendSelectedForDirect({} as PlayerDto);

@@ -42,7 +42,8 @@ export default function Perfil({ close }: propsDinamicProfile) {
 					backgroundColor: '#079fb5',
 					boxShadow: 'rgb(255, 255, 255) 2px 2px 1px inset, #03505e -8px -8px 8px inset'
 				}}
-				onClick={() => close('')} />
+				onClick={() => close('')}
+			/>
 			<div style={cssDivAux}>
 				<PhotoPerfil />
 				<PersonalInformation />

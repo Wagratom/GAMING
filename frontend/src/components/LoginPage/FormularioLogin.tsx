@@ -16,7 +16,6 @@ export default function FormularioLogin({ handleForm }: propsFormulario) {
 	function sendFormLogin(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 
-
 		const formData = new FormData(event.currentTarget);
 		const jsonData = Object.fromEntries(formData.entries());
 
@@ -26,7 +25,7 @@ export default function FormularioLogin({ handleForm }: propsFormulario) {
 				navidate("/game");
 			})
 			.catch(error => {
-				if (error.response.status === '403') {
+				if (error.response.status == "403") {
 					setLoginInvalido(true)
 				}
 				console.error("Erro ao logar:", error);
@@ -37,7 +36,7 @@ export default function FormularioLogin({ handleForm }: propsFormulario) {
 		return (
 			<>
 				{loginInlivado && (
-					<div className='d-flex justify-content-center mb-3'>
+					<div className='d-flex justify-content-center mb-3 ms-auto'>
 						<p style={{ color: '#ff0909ff' }}>Login invalido</p>
 					</div>
 				)}
