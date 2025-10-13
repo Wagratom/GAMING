@@ -24,7 +24,6 @@ import java.util.Optional;
 
 @Tag(name = "Autenticação", description = "Endpoints relacionados à autenticação de usuários (login, logout e registro).")
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthController {
 
     private final UserApplication userApplication;

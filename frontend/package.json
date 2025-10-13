@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "version": "0.1.0",
+  "homepage": "/bankai",
   "private": true,
   "dependencies": {
     "@stomp/stompjs": "^7.1.1",

@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @Tag(name = "User", description = "Operações de usuários")
 public class UserController {
 
