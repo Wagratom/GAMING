@@ -98,7 +98,7 @@ export default function Game() {
 		const socket2 = webSocketService(
 			`/topic/matchmaking/${user.id}`,
 			(response: responseCreateMatch) => {
-				navigate(`room/${response.roomId}`, {
+				navigate(`bankai/room/${response.roomId}`, {
 					state: {
 						playerLeft: response.playerLeft,
 						playerRight: response.playerRight

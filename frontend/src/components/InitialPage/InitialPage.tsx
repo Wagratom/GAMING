@@ -39,7 +39,7 @@ export default function InicialPage() {
 		} finally {
 			Cookies.remove("jwtToken");
 			localStorage.removeItem("token");
-			navigate("/");
+			navigate("/bankai");
 		}
 	}, [navigate]);
 
@@ -65,7 +65,7 @@ export default function InicialPage() {
 
 			if (err?.response?.status === 401) {
 				alert("Sessão expirada ou não autorizada. Faça login novamente.");
-				return navigate("/login");
+				return navigate("/bankai/login");
 			}
 
 			// ✅ apenas em erro agenda nova tentativa
@@ -84,7 +84,7 @@ export default function InicialPage() {
 		const token = localStorage.getItem("token");
 		if (!token) {
 			alert("Você precisa estar logado para acessar esta página.");
-			return navigate("/login");
+			return navigate("/bankai/login");
 		}
 
 		// Primeira chamada

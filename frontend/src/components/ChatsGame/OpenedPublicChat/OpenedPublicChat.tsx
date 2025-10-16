@@ -75,7 +75,7 @@ export default function OpenedPublicChat({ chatId, openPageChats }: propsPageCha
 
 			if (status === 401) {
 				alert("Sessão expirada ou não autorizada. Por favor, faça login novamente.");
-				navigate("/login");
+				navigate("/bankai/login");
 			}
 			if (status === 403) {
 				setShowAccessModal(true);

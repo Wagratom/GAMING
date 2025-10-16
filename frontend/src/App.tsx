@@ -10,12 +10,12 @@ export default function App() {
 		<div>
 			<BrowserRouter>
 				<Routes>
-					<Route path="/login" element={<Login />} />
-					<Route path="/" element={<InicialPage />}>
+					<Route path="bankai/login" element={<Login />} />
+					<Route path="bankai" element={<InicialPage />}>
 						<Route index element={<Game />} />
-						<Route path="room/:room" element={<GameWW />} />
+						<Route path="bankai/room/:room" element={<GameWW />} />
 					</Route>
-					<Route path="*" element={<Navigate to="/" replace />} />
+					<Route path="*" element={<Navigate to="/bankai" replace />} />
 
 				</Routes>
 			</BrowserRouter>

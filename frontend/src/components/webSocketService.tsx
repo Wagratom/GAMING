@@ -2,7 +2,7 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
 export default function webSocketService(topic: string, callback: (msg: any) => void, maxReconnects = 5) {
-  let attempts = 0; // ✅ agora é só uma variável
+  let attempts = 0;
 
   const client = new Client({
     webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_URL}/ws`),

@@ -28,7 +28,7 @@ export default function OptionsMiniProfile(props: propsSelectConfiuration): JSX.
 			.then((res) => {
 				if (res.status === 200) {
 					Cookies.remove("jwtToken");
-					navigate("/login");
+					navigate("/bankai/login");
 				}
 			})
 			.catch((err) => {
