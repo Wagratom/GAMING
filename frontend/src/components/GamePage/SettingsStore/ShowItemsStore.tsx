@@ -21,13 +21,6 @@ export default function ShowItemsStore({items}: {items: StoreItems}): JSX.Elemen
 		flexDirection: 'column',
 	}
 
-	const cssCoins: React.CSSProperties = {
-		position: 'absolute',
-		top: '0',
-		right: '0',
-		zIndex: 3,
-	}
-
 	return (
 		<div style={cssDivFilhoSelectGame}>
 			<Coins />

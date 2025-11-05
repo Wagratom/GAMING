@@ -14,17 +14,10 @@ import { UserData } from "../../../InitialPage/Contexts/Contexts";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import { BiMessageRoundedX } from "react-icons/bi";
 
-type UsersGame = {
-	id: string;
-	nickname: string;
-	avatar: string;
-	is_active: boolean;
-}
 
 export default function AllButtons(): JSX.Element {
 	const { chatData: { name, id } } = useContext(ChatContext);
 	const dataUser = useContext(UserData).user;
-	const userData = useContext(UserData).user;
 
 	async function getUserId(avatar_name: string): Promise<string> {
 		const users = await axios.get(`${process.env.REACT_APP_HOST_URL}/users/find-all`, {
@@ -38,73 +31,23 @@ export default function AllButtons(): JSX.Element {
 
 	const addedNewMember = async (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key !== 'Enter') return;
-		const userId = await getUserId(event.currentTarget.value);
-		if (userId) {
-			let obj = {
-				my_id: dataUser.id,
-				other_id: userId,
-				chat_name: name,
-				chat_id: id,
-			}
-			// userData.socket?.emit('add-member-group', obj);
-		}
 	}
 
 	const addAdm = async (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key !== 'Enter') return;
-		const userId = await getUserId(event.currentTarget.value);
-		if (userId) {
-			if (userId) {
-				let obj = {
-					my_id: dataUser.id,
-					other_id: userId,
-					chat_name: name,
-					chat_id: id,
-				}
-				// userData.socket?.emit('add-adm-group', obj);
-			}
-		}
 	}
 
 	const removedAdm = async (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key !== 'Enter') return;
-		const userId = await getUserId(event.currentTarget.value);
-		if (userId) {
-			let obj = {
-				my_id: dataUser.id,
-				other_id: userId,
-				chat_name: name,
-				chat_id: id,
-			}
-			// userData.socket?.emit('remove-adm-group', obj);
-		}
 	}
 
 	const banMember = async (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key !== 'Enter') return;
-		const userId = await getUserId(event.currentTarget.value);
-
-		if (userId) {
-			let obj = {
-				my_id: dataUser.id,
-				other_id: userId,
-				chat_name: name,
-				chat_id: id,
-			}
-			// userData.socket?.emit('ban-member-group', obj);
-		}
 	}
 
 	const deleteChat = async (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key !== 'Enter') return;
 		if (event.currentTarget.value !== name) return;
-		let obj = {
-			my_id: dataUser.id,
-			chat_name: name,
-			password: event.currentTarget.value,
-			chatId: id,
-		}
-		// userData.socket?.emit('delete-group', obj);
 	}
 
 	const removePassword = async (event: React.KeyboardEvent<HTMLInputElement>) => {

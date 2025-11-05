@@ -1,7 +1,3 @@
-import { useContext } from "react";
-import HandleRank from "../RankMapings";
-import { UserData } from "../../InitialPage/Contexts/Contexts";
-
 type propsBannerProfile = {
 	rank: string;
 	borderImg: string;

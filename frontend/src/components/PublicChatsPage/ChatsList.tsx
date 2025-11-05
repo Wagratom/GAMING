@@ -15,7 +15,6 @@ export default function ChatList({ setIdOpenedChat, listChats }: PropsChatList) 
 	const [showWarningBan, setShowWarningBan] = useState(false);
 	const [messageErro, setMessageError] = useState('');
 	const navigate = useNavigate();
-	const [openedChat, setOpenedChat] = useState<boolean>(false);
 
 	// ---- Função para abrir grupo (público ou protegido) ----
 	const OpenGrupo = async (chatName: string, password?: string) => {

@@ -1,4 +1,4 @@
-import { FormEvent, useContext, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import IdentifyInputName from "./IdentifyInputName";
 import InputEditName from "./InputEditName";
 import FolderSettingsGame from "./Folder";
@@ -10,7 +10,6 @@ import ButtonEdit from './ButtonsEdit';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-import { UserData } from '../../../InitialPage/Contexts/Contexts';
 import { IoIosClose } from "react-icons/io";
 import { useEffect } from 'react';
 
@@ -20,17 +19,10 @@ type propsConfigurationGame = {
 	closed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-type infoUpdate = {
-	nick_name: string,
-	avatar: string,
-	twoFA: boolean,
-}
-
 export default function ConfigurationGame(props: propsConfigurationGame): JSX.Element {
 	const [handleOption, setHandleOption] = useState<boolean>(false);
 	const [QRCODE, setQRCODE] = useState<string>('');
 	const [show, setShow] = useState(false);
-	const { user, updateDataUser } = useContext(UserData);
 
 	const handleShow = () => {
 		const checkbox = document.querySelector('#flexSwitchCheckDefault') as HTMLInputElement;

@@ -29,7 +29,7 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
     });
     const navigate = useNavigate();
 
-    function fetchGetProfile() {
+    useEffect(() => {
         if (!props.id) return;
 
         const url = `${process.env.REACT_APP_API_URL}/users/profile/${props.id}`;
@@ -47,11 +47,7 @@ export default function DinamicProfile(props: propsDinamicProfile): JSX.Element 
                     navigate('/login')
                 }
             });
-    }
-
-    useEffect(() => {
-        fetchGetProfile();
-    }, [props.id]);
+    }, [props.id, navigate]);
 
     function getPoints() {
         if (!profile) return 0;
