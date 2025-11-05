@@ -33,7 +33,7 @@ export default function PhotoWithOnlineStatus(props: PhotoWithOnlineStatusProps)
     return (
         <div className="position-relative" onClick={handleClick}>
             <img
-                className="rounded-circle me-3"
+                className="rounded-circle me-3 border border border-info"
                 src={props.imgSrc}
                 alt="foto"
                 style={sizePhoto}

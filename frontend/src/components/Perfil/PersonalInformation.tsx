@@ -1,81 +1,52 @@
-import { useState, useEffect } from "react";
-
-type TypewriterProps = {
-	text: string;
-	speed?: number; // milissegundos entre cada letra
-};
-
-function Typewriter({ text, speed = 30 }: TypewriterProps) {
-	const [displayedText, setDisplayedText] = useState("");
-
-	useEffect(() => {
-		let index = 0;
-		const interval = setInterval(() => {
-			setDisplayedText((prev) => prev + text.charAt(index));
-			index++;
-			if (index >= text.length) clearInterval(interval);
-		}, speed);
-
-		return () => clearInterval(interval);
-	}, [text, speed]);
-
-	// Substitui \n por <br /> para respeitar quebras de linha
-	const formattedText = displayedText.split("\n").map((line, i) => (
-		<span key={i}>
-			{line}
-			<br />
-		</span>
-	));
-
-	return (
-		<p style={{ fontFamily: "pixel, monospace", fontSize: "1.1rem", color: "rgba(255,255,255,0.85)", textAlign: "justify" }}>
-			{formattedText}
-			<span className="cursor">|</span>
-			<style>
-				{`
-					.cursor {
-						display: inline-block;
-						animation: blink 0.7s infinite;
-					}
-					@keyframes blink {
-						0%, 50%, 100% { opacity: 1; }
-						25%, 75% { opacity: 0; }
-					}
-				`}
-			</style>
-		</p>
-	);
-}
+import { TypeAnimation } from "react-type-animation";
 
 export default function PersonalInformation() {
-	const cssInfoProfile: React.CSSProperties = {
-		color: 'rgba(255,255,255,0.85)', // menos branco
-		fontSize: '110%',
-		fontFamily: 'pixel, Roboto, sans-serif',
-		textAlign: 'justify',
-		display: 'flex',
-		overflowY: 'auto',
-		flexDirection: 'column',
-		height: 'calc(100% - 12rem)',
-		paddingRight: '0.5rem',
-		opacity: 0.7
-	};
+	const text = `
+💾 Acessando o banco de dados: Punk Records...
 
-	const text = `Olá, invocador! 🧙‍♂️
-Bem-vindo ao meu mundo! Aqui você pode ver toda a minha história e experiências.
+Identificação: Wagraton Wallas — Engenheiro Backend e Arquiteto de Sistemas Distribuídos.
 
-Sou formado pela Escola 42 São Paulo — referência em fundamentos sólidos de programação — e atualmente curso Análise e Desenvolvimento de Sistemas. Tenho experiência prática em linguagens como C/C++, Java, Python, JavaScript e TypeScript, além de frameworks e ferramentas como React, Node.js, Docker, Terraform e LangChain para aplicações de IA generativa.
+Especialista na construção e sustentação de aplicações escaláveis, resilientes e observáveis em ambientes cloud.
+Atuação guiada por princípios de DDD, SOLID e Clean Architecture — onde cada domínio é uma entidade viva, cada camada cumpre seu papel e cada dependência é tratada com respeito e propósito.
 
-Atuo no Itaú Unibanco como Desenvolvedor Júnior, com foco em Python, AWS e boas práticas de arquitetura em nuvem. Minha rotina envolve a criação e manutenção de infraestrutura como código com Terraform, além do desenvolvimento de serviços serverless altamente disponíveis. Faço parte da área de sustentação da squad, sendo responsável por analisar, investigar e levantar insumos a partir de dashboards e alarmes de monitoramento que geram incidentes proativos — permitindo antecipar falhas antes que impactem o cliente.
+Domínio de linguagens como Python e Java, com forte experiência em AWS, microsserviços e automação de infraestrutura utilizando Terraform.
+Também realizo manutenção e aprimoramentos em aplicações escritas em JavaScript, TypeScript, Node.js e React, garantindo integração fluida entre front e backend quando necessário.
 
-Também atuo diretamente na investigação e mitigação de incidentes de negócio, normalmente os mais críticos. Por conta disso, possuo ampla experiência com ferramentas como AWS CloudWatch, X-Ray, Datadog e Logs Insights para análise de métricas, rastreamento de logs e correlação de eventos.
+Minhas memórias são armazenadas no Punk Records — um espaço onde ideias e experiências ficam registradas entre métricas, traces e dashboards.
+É lá, entre os grupos de logs do CloudWatch e os gráficos do Datadog, que encontro padrões, inspiro novas soluções e lapido minha visão sobre engenharia de software moderna.
 
-Tenho experiência com diversos serviços AWS, incluindo Lambda, Step Functions, SQS, SNS, ECS, EC2 e API Gateway, além da criação de APIs REST seguindo as boas práticas do OpenAPI 2.0. Atualmente, venho estudando Spring Boot, pagamentos via PIX e métodos de autenticação, aprimorando meus conhecimentos em orquestração de serviços e observabilidade em ambientes cloud-native.`;
+Status atual: em constante evolução, aprimorando processos e pronto para a próxima missão tecnológica.
+`;
 
 	return (
-		<div style={cssInfoProfile}>
-			<h2 >Wagraton Wallas</h2>
-			<Typewriter text={text} speed={20} />
+		<div
+			style={{
+				color: 'rgba(255,255,255,0.85)', // menos branco
+				fontSize: '110%',
+				fontFamily: 'pixel, Roboto, sans-serif',
+				textAlign: 'justify',
+				display: 'flex',
+				overflowY: 'auto',
+				flexDirection: 'column',
+				height: 'calc(100% - 12.5rem)',
+				paddingRight: '0.5rem',
+				opacity: 0.7
+			}}
+		>
+			<div style={{ display: "inline-block", width: "100%" }}>
+				<TypeAnimation
+					sequence={[text, 1000]} // pausa ao fim
+					speed={80} // ✅ rápido e natural
+					cursor={true}
+					style={{
+						display: "inline-block",
+						whiteSpace: "pre-line",
+						width: "100%",
+						wordWrap: "break-word",
+						height: "100%"
+					}}
+				/>
+			</div>
 		</div>
 	);
 }
