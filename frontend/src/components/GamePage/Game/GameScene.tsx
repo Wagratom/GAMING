@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import base from '../../../assets/game/planets/base.png';
 import planetGame from '../../../assets/game/planets/planetGame.png';
+import Estudo from '../../../assets/game/planets/Estudo.png';
 import planetaLua from '../../../assets/game/planets/PlanetaLua.png';
 import Lua from '../../../assets/game/planets/lua.png';
 import planetaTerra from '../../../assets/game/planets/PlanetaTerra.png';
@@ -18,8 +19,9 @@ export default class GameScene extends Phaser.Scene {
     luaTerra!: Phaser.Physics.Arcade.Sprite;
     pntTerra!: Phaser.Physics.Arcade.Sprite;
     sateleteChat!: Phaser.Physics.Arcade.Sprite;
+    pntEstudo!: Phaser.Physics.Arcade.Sprite;
 
-    collisionCallback: ((planet: string, isclick? : boolean) => void) | null = null;
+    collisionCallback: ((planet: string, isclick?: boolean) => void) | null = null;
 
     init(data: { collisionCallback?: (planet: string) => void }) {
         if (data.collisionCallback) this.collisionCallback = data.collisionCallback;
@@ -37,6 +39,7 @@ export default class GameScene extends Phaser.Scene {
         this.load.image("planetTerra", planetaTerra);
         this.load.image("satelete", satelete);
         this.load.image("Lua", Lua);
+        this.load.image("pntEstudo", Estudo);
         // Nave
         this.load.image('naveFrente', naveFrente);
         this.load.image('naveCostas', naveCostas);
@@ -51,9 +54,13 @@ export default class GameScene extends Phaser.Scene {
         // Nave
         this.nave = this.physics.add.sprite(w / 2, h / 2, "naveFrente").setCollideWorldBounds(true);
 
-        // 🔥 Planeta Fire
+        // 🔥 Planeta Estudo
+        this.pntEstudo = this.physics.add.sprite(w * 0.7, h * 0.1, "pntEstudo").setScale(0.1);
+
+        // 🔥 Planeta Game
         this.pntGame = this.physics.add.sprite(w * 0.9, h * 0.8, "planetGame").setScale(0.3);
         this.pntGame.setCircle(this.pntGame.width / 2, 0, 0);
+
 
         // 🌙 Lua planeta
         this.pntLua = this.physics.add.sprite(w * 0.1, h * 0.2, "planetLua");
@@ -114,6 +121,9 @@ export default class GameScene extends Phaser.Scene {
 
         this.sateleteChat.x = containerWidth * 0.6;
         this.sateleteChat.y = containerHeight * 0.7;
+
+        this.pntEstudo.x = containerWidth * 0.7;
+        this.pntEstudo.y = containerHeight * 0.1;
 
         // Reposicionar a nave no centro da tela
         this.nave.x = containerWidth / 2;

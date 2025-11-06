@@ -14,6 +14,7 @@ import SettingsStore from "../SettingsStore/SettingsStore";
 import { ModalConvite } from "./ModalConvite";
 import InviteErro from "./ModalErroInvite";
 import { useNavigate } from "react-router-dom";
+import EstudoList from "../../Estudos/EstudoList";
 
 type responseCreateMatch = {
 	roomId: string;
@@ -110,7 +111,8 @@ export default function Game() {
 			}
 		);
 
-		setCollisionPnt("pntBase")
+		// setCollisionPnt("pntBase")
+		setCollisionPnt("pntEstudo")
 		return () => {
 			game.current?.destroy(true)
 			socket?.deactivate();
@@ -141,6 +143,8 @@ export default function Game() {
 					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={updateColition} id={user.id} />}
 					{collisionPnt === 'pntBase' && <Perfil close={updateColition} />}
 
+
+					<EstudoList openPublicChat={updateColition} />
 					{openModalConvite && (
 						<ModalConvite
 							setOpenChat={setOpenModalConvite}
