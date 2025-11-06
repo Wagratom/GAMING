@@ -80,6 +80,9 @@ export default function Game() {
 			physics: { default: 'arcade', arcade: { gravity: { x: 0, y: 0 } } },
 			scale: { mode: Phaser.Scale.RESIZE, autoCenter: Phaser.Scale.CENTER_BOTH },
 			transparent: true,
+			audio: {
+				disableWebAudio: true, // ← desativa o WebAudioContext
+			},
 		});
 
 		// Passa callback para a cena usando dados iniciais
