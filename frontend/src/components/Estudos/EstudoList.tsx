@@ -5,6 +5,8 @@ import { useState, MouseEvent } from 'react';
 import SOLIDArticle from './SOLIDArticle';
 import CleanArchitectureArticle from './CleanArchitectureArticle';
 import JwtArticle from './JwtArticle';
+import OAuthArticle from './OAuthArticle';
+import SessionArticle from './SessionArticle';
 
 type PropsRanking = {
     openPublicChat: (name: string) => void;
@@ -28,8 +30,10 @@ export default function EstudoList({ openPublicChat }: PropsRanking) {
     const estudos: EstudoItem[] = [
         { nome: 'DDD', autor: 'bankai', component: <DDDArticle closeEstudo={handleClick} /> },
         { nome: 'SOLID', autor: 'bankai', component: <SOLIDArticle closeEstudo={handleClick} /> },
-        { nome: 'Clean Architecture', autor: 'bankai', component: <CleanArchitectureArticle closeEstudo={handleClick} />},
-        { nome: 'JWT Authentication', autor: 'bankai', component: <JwtArticle closeEstudo={handleClick} />},
+        { nome: 'Clean Architecture', autor: 'bankai', component: <CleanArchitectureArticle closeEstudo={handleClick} /> },
+        { nome: 'Session Authentication', autor: 'bankai', component: <SessionArticle closeEstudo={handleClick} /> },
+        { nome: 'JWT Authentication', autor: 'bankai', component: <JwtArticle closeEstudo={handleClick} /> },
+        { nome: 'OAuth Authentication', autor: 'bankai', component: <OAuthArticle closeEstudo={handleClick} /> },
         // Adicione quantos estudos quiser
     ];
 
@@ -59,26 +63,28 @@ export default function EstudoList({ openPublicChat }: PropsRanking) {
                 </div>
             )}
 
-            {!selected && (
-                <div className="col-12 col-md-6 col-lg-4">
-                    <div className="d-flex p-3 overflow" id="showChats">
-                        {estudos.map((estudo) => (
+            <div className='d-flex p-3 overflow-auto' id='showChats'>
+                <div className="row g-0 w-100">
+
+                    {!selected && (
+                        estudos.map((estudo) => (
                             <div
-                                key={estudo.nome}
                                 className="col-12 col-md-6 col-lg-4"
+                                key={estudo.nome}
                                 onClick={(e) => handleClick(e, estudo.nome)}
                             >
                                 <div className="chat-card">
                                     <div className="chat-header">
                                         <p className="chat-name">{estudo.nome}</p>
                                     </div>
-                                    <p className="chat-owner">👑 Dono: {estudo.autor}</p>
+                                    <p className="chat-owner">👑 Author: {estudo.autor}</p>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        ))
+                    )}
                 </div>
-            )}
-        </div>
-    );
+            </div>
+        </div >
+    )
+
 }
