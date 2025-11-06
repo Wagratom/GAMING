@@ -1,4 +1,6 @@
 import { IoIosReturnLeft } from "react-icons/io";
+import ArchiteturaImg from "../../assets/game/cleanArc.jpg"
+import { MdHeight } from "react-icons/md";
 
 export default function CleanArchitectureArticle({ closeEstudo }: { closeEstudo: (e: any, name: string) => void }) {
     return (
@@ -47,19 +49,21 @@ export default function CleanArchitectureArticle({ closeEstudo }: { closeEstudo:
                 Um dos diagramas mais famosos da Clean Architecture organiza o sistema em camadas em formato de círculos, onde as dependências sempre apontam para dentro:
             </p>
 
-            <pre
-                className="mt-3"
-                style={{
-                    background: "#27293d",
-                    padding: "16px",
-                    borderRadius: "8px",
-                    color: "#a3e635",
-                    whiteSpace: "pre",
-                    fontFamily: "monospace",
-                    display: "table"
-                }}
-            >
-{`+-----------------------------+
+            <div className="d-flex">
+                <pre
+                    className="mt-3"
+                    style={{
+                        background: "#27293d",
+                        padding: "16px",
+                        borderRadius: "8px",
+                        color: "#a3e635",
+                        whiteSpace: "pre",
+                        fontFamily: "monospace",
+                        display: "table",
+                        flex: "1"
+                    }}
+                >
+                    {`+-----------------------------+
 |        Frameworks & UI      |  → ex: Spring, React, FastAPI
 +-----------------------------+
 |     Interface Adapters      |  → Controllers, DTOs, Gateways
@@ -68,7 +72,17 @@ export default function CleanArchitectureArticle({ closeEstudo }: { closeEstudo:
 +-----------------------------+
 |           Domain            |  → entidades e regras de negócio
 +-----------------------------+`}
-            </pre>
+                </pre>
+
+                <div
+                    style={{
+                        flex: "1",
+                        maxHeight: "300px",
+                        padding: "16px",
+                    }}>
+                    <img src={ArchiteturaImg} alt="Foto mostrando como deve ser a arquitetura circular" style={{ height: "100%", borderRadius: "8px" }} />
+                </div>
+            </div>
 
             <p className="mt-3">
                 As camadas internas (como o <code>Domain</code>) não conhecem os detalhes externos. Já as camadas externas conhecem e dependem das internas.
@@ -82,10 +96,6 @@ export default function CleanArchitectureArticle({ closeEstudo }: { closeEstudo:
                 <li><strong>Legibilidade:</strong> o código tende a refletir o domínio do negócio, não a tecnologia usada.</li>
             </ul>
 
-            <p className="mt-3">
-                Quer que eu agora explique, uma a uma, as camadas principais (<strong>Domain</strong>, <strong>Use Cases</strong>, <strong>Interface Adapters</strong> e <strong>Infrastructure</strong>) com exemplos práticos?
-                Depois a gente transforma tudo em um componente HTML/React pronto para colar no seu projeto.
-            </p>
         </div>
     );
 }
