@@ -4,6 +4,7 @@ import DDDArticle from './DDDArticle';
 import { useState, MouseEvent } from 'react';
 import SOLIDArticle from './SOLIDArticle';
 import CleanArchitectureArticle from './CleanArchitectureArticle';
+import JwtArticle from './JwtArticle';
 
 type PropsRanking = {
     openPublicChat: (name: string) => void;
@@ -28,6 +29,7 @@ export default function EstudoList({ openPublicChat }: PropsRanking) {
         { nome: 'DDD', autor: 'bankai', component: <DDDArticle closeEstudo={handleClick} /> },
         { nome: 'SOLID', autor: 'bankai', component: <SOLIDArticle closeEstudo={handleClick} /> },
         { nome: 'Clean Architecture', autor: 'bankai', component: <CleanArchitectureArticle closeEstudo={handleClick} />},
+        { nome: 'JWT Authentication', autor: 'bankai', component: <JwtArticle closeEstudo={handleClick} />},
         // Adicione quantos estudos quiser
     ];
 
@@ -58,8 +60,8 @@ export default function EstudoList({ openPublicChat }: PropsRanking) {
             )}
 
             {!selected && (
-                <div className="d-flex flex-column h-100">
-                    <div className="d-flex p-3 overflow-auto" id="showChats">
+                <div className="col-12 col-md-6 col-lg-4">
+                    <div className="d-flex p-3 overflow" id="showChats">
                         {estudos.map((estudo) => (
                             <div
                                 key={estudo.nome}
