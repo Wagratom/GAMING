@@ -1,5 +1,4 @@
 import { IoIosReturnLeft } from "react-icons/io";
-import { MouseEvent } from 'react';
 
 export default function DDDArticle({closeEstudo}: {closeEstudo: (e: any, name: string) => void}) {
     return (
