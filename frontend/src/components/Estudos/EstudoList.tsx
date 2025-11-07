@@ -15,6 +15,7 @@ import KafkaArticle from './KafkaArticle';
 import PubSubArticle from './PubSubArticle';
 import DockerArticle from './DockerArticle';
 import DockerComposeArticle from './DockerComposeArticle';
+import KubernetesArticle from './KubernetesArticle';
 
 type PropsRanking = {
     openPublicChat: (name: string) => void;
@@ -50,6 +51,7 @@ export default function EstudoList({ openPublicChat }: PropsRanking) {
         { nome: 'Pub/Sub', autor: 'bankai', component: <PubSubArticle closeEstudo={handleClick} /> },
         { nome: 'Docker', autor: 'bankai', component: <DockerArticle closeEstudo={handleClick} /> },
         { nome: 'DockerCompose', autor: 'bankai', component: <DockerComposeArticle closeEstudo={handleClick} /> },
+        { nome: 'Kubernetes', autor: 'bankai', component: <KubernetesArticle closeEstudo={handleClick} /> },
         // Adicione quantos estudos quiser
     ];
 
