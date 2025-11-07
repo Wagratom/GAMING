@@ -12,6 +12,9 @@ import SpringBootArticle from './SpringBootArticle';
 import SpringSecurityArticle from './SpringSecurityArticle';
 import RabbitMQArticle from './RabbitMQArticle';
 import KafkaArticle from './KafkaArticle';
+import PubSubArticle from './PubSubArticle';
+import DockerArticle from './DockerArticle';
+import DockerComposeArticle from './DockerComposeArticle';
 
 type PropsRanking = {
     openPublicChat: (name: string) => void;
@@ -44,6 +47,9 @@ export default function EstudoList({ openPublicChat }: PropsRanking) {
         { nome: 'Spring Security', autor: 'bankai', component: <SpringSecurityArticle closeEstudo={handleClick} /> },
         { nome: 'RabbitMQ', autor: 'bankai', component: <RabbitMQArticle closeEstudo={handleClick} /> },
         { nome: 'Kafka', autor: 'bankai', component: <KafkaArticle closeEstudo={handleClick} /> },
+        { nome: 'Pub/Sub', autor: 'bankai', component: <PubSubArticle closeEstudo={handleClick} /> },
+        { nome: 'Docker', autor: 'bankai', component: <DockerArticle closeEstudo={handleClick} /> },
+        { nome: 'DockerCompose', autor: 'bankai', component: <DockerComposeArticle closeEstudo={handleClick} /> },
         // Adicione quantos estudos quiser
     ];
 
