@@ -142,9 +142,8 @@ export default function Game() {
 					{collisionPnt === 'base' && <Ranking openStore={updateColition} />}
 					{collisionPnt === 'Lua' && <DinamicProfile openDinamicProfile={updateColition} id={user.id} />}
 					{collisionPnt === 'pntBase' && <Perfil close={updateColition} />}
+					{collisionPnt === 'pntEstudo' && <EstudoList openPublicChat={updateColition} />}
 
-
-					<EstudoList openPublicChat={updateColition} />
 					{openModalConvite && (
 						<ModalConvite
 							setOpenChat={setOpenModalConvite}

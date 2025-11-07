@@ -19,6 +19,7 @@ export default function FormatMessages({ messages }: { messages: MessageDto[] })
 	}
 
 	const getDateFormating = (date: string) => {
+		if (!date) return ""
 		const data = new Date(date.replace(/\.\d{3,6}/, '.000'));
 		const horas = String(data.getHours()).padStart(2, "0");
 		const minutos = String(data.getMinutes()).padStart(2, "0");

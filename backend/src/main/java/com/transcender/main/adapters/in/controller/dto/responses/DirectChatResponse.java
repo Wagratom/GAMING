@@ -21,7 +21,7 @@ public class DirectChatResponse {
                         new MessageDto(
                                 message.getId(),
                                 message.getConteudo(),
-                                message.getAtualizadoEm(),
+                                message.getAtualizadoEm() != null ? message.getAtualizadoEm() : message.getCriadoEm(),
                                 new SenderDto(
                                         message.getSender().getId(),
                                         message.getSender().getNickname(),

@@ -56,6 +56,7 @@ export default class GameScene extends Phaser.Scene {
 
         // 🔥 Planeta Estudo
         this.pntEstudo = this.physics.add.sprite(w * 0.7, h * 0.1, "pntEstudo").setScale(0.1);
+        this.pntEstudo.setCircle(this.pntEstudo.width / 2, 0, 0);
 
         // 🔥 Planeta Game
         this.pntGame = this.physics.add.sprite(w * 0.9, h * 0.8, "planetGame").setScale(0.3);
@@ -89,7 +90,7 @@ export default class GameScene extends Phaser.Scene {
         // Escala inicial da nave
         this.updateNaveScale();
 
-        [this.pntTerra, this.pntLua, this.pntGame, this.pntBase, this.luaTerra, this.sateleteChat].forEach(planet => {
+        [this.pntTerra, this.pntLua, this.pntGame, this.pntBase, this.luaTerra, this.sateleteChat, this.pntEstudo].forEach(planet => {
             planet.setImmovable(true);
             planet.body!.pushable = false;
         });
@@ -137,11 +138,11 @@ export default class GameScene extends Phaser.Scene {
 
     setupPntClicaveis() {
         // Deixa planetas clicáveis
-        [this.pntTerra, this.pntLua, this.pntGame, this.pntBase, this.luaTerra, this.sateleteChat].forEach((planet, i) => {
+        [this.pntTerra, this.pntLua, this.pntGame, this.pntBase, this.luaTerra, this.sateleteChat, this.pntEstudo].forEach((planet, i) => {
             planet.setInteractive({ useHandCursor: true });
 
             planet.on('pointerdown', () => {
-                const planetNames = ["planetTerra", "planetLua", "planetGame", "pntBase", "Lua", "satelite"];
+                const planetNames = ["planetTerra", "planetLua", "planetGame", "pntBase", "Lua", "satelite", "pntEstudo"];
                 if (this.collisionCallback) {
                     this.collisionCallback(planetNames[i], true); // simula a colisão
                 }
@@ -152,6 +153,7 @@ export default class GameScene extends Phaser.Scene {
     setupColliders() {
         const colliders = [
             [this.nave, this.pntTerra, "planetTerra"],
+            [this.nave, this.pntEstudo, "pntEstudo"],
             [this.nave, this.pntLua, "planetLua"],
             [this.nave, this.pntGame, "planetGame"],
             [this.nave, this.pntBase, "pntBase"],
