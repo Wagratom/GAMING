@@ -7,6 +7,7 @@ import CleanArchitectureArticle from './CleanArchitectureArticle';
 import JwtArticle from './JwtArticle';
 import OAuthArticle from './OAuthArticle';
 import SessionArticle from './SessionArticle';
+import SpringDataArticle from './SpringDataArticle';
 
 type PropsRanking = {
     openPublicChat: (name: string) => void;
@@ -34,6 +35,7 @@ export default function EstudoList({ openPublicChat }: PropsRanking) {
         { nome: 'Session Authentication', autor: 'bankai', component: <SessionArticle closeEstudo={handleClick} /> },
         { nome: 'JWT Authentication', autor: 'bankai', component: <JwtArticle closeEstudo={handleClick} /> },
         { nome: 'OAuth Authentication', autor: 'bankai', component: <OAuthArticle closeEstudo={handleClick} /> },
+        { nome: 'Spring Data', autor: 'bankai', component: <SpringDataArticle closeEstudo={handleClick} /> },
         // Adicione quantos estudos quiser
     ];
 
