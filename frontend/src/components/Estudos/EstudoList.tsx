@@ -16,6 +16,9 @@ import PubSubArticle from './PubSubArticle';
 import DockerArticle from './DockerArticle';
 import DockerComposeArticle from './DockerComposeArticle';
 import KubernetesArticle from './KubernetesArticle';
+import MicroservicesArticle from './MicroservicesArticle';
+import MonolithArticle from './MonolithArticle';
+import ModularArticle from './ModularArticle';
 
 type PropsRanking = {
     openPublicChat: (name: string) => void;
@@ -52,6 +55,10 @@ export default function EstudoList({ openPublicChat }: PropsRanking) {
         { nome: 'Docker', autor: 'bankai', component: <DockerArticle closeEstudo={handleClick} /> },
         { nome: 'DockerCompose', autor: 'bankai', component: <DockerComposeArticle closeEstudo={handleClick} /> },
         { nome: 'Kubernetes', autor: 'bankai', component: <KubernetesArticle closeEstudo={handleClick} /> },
+        { nome: 'MicroServiços', autor: 'bankai', component: <MicroservicesArticle closeEstudo={handleClick} /> },
+        { nome: 'Monolito', autor: 'bankai', component: <MonolithArticle closeEstudo={handleClick} /> },
+        { nome: 'Modular', autor: 'bankai', component: <ModularArticle closeEstudo={handleClick} /> },
+        { nome: 'Modular', autor: 'bankai', component: <ModularArticle closeEstudo={handleClick} /> },
         // Adicione quantos estudos quiser
     ];
 
@@ -81,9 +88,8 @@ export default function EstudoList({ openPublicChat }: PropsRanking) {
                 </div>
             )}
 
-            <div className='d-flex p-3 overflow-auto' id='showChats'>
-                <div className="row g-0 w-100">
-
+            <div className='d-flex p-3 overflow-auto h-100' id='showChats'>
+                <div className="row g-0 w-100 h-100">
                     {!selected && (
                         estudos.map((estudo) => (
                             <div
