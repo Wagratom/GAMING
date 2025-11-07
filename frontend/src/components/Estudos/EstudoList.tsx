@@ -9,6 +9,9 @@ import OAuthArticle from './OAuthArticle';
 import SessionArticle from './SessionArticle';
 import SpringDataArticle from './SpringDataArticle';
 import SpringBootArticle from './SpringBootArticle';
+import SpringSecurityArticle from './SpringSecurityArticle';
+import RabbitMQArticle from './RabbitMQArticle';
+import KafkaArticle from './KafkaArticle';
 
 type PropsRanking = {
     openPublicChat: (name: string) => void;
@@ -38,6 +41,9 @@ export default function EstudoList({ openPublicChat }: PropsRanking) {
         { nome: 'OAuth Authentication', autor: 'bankai', component: <OAuthArticle closeEstudo={handleClick} /> },
         { nome: 'Spring Boot', autor: 'bankai', component: <SpringBootArticle closeEstudo={handleClick} /> },
         { nome: 'Spring Data', autor: 'bankai', component: <SpringDataArticle closeEstudo={handleClick} /> },
+        { nome: 'Spring Security', autor: 'bankai', component: <SpringSecurityArticle closeEstudo={handleClick} /> },
+        { nome: 'RabbitMQ', autor: 'bankai', component: <RabbitMQArticle closeEstudo={handleClick} /> },
+        { nome: 'Kafka', autor: 'bankai', component: <KafkaArticle closeEstudo={handleClick} /> },
         // Adicione quantos estudos quiser
     ];
 
